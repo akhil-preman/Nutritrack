@@ -1,6 +1,17 @@
-# NutriTrack AI
+# NutriTrack AI - BMI and Age based nutrition deficiency detection
 
-**Project Abstract:**
-NutriTrack AI is an intelligent nutrition tracking system that calculates nutritional deficiencies based on user's BMI and age. Users register with age, height, and weight. The system calculates BMI and required daily nutrition based on age group. Users log meals (and later upload food photos via OpenCV MobileNetV2 Food-101 model) and the system shows deficiency alerts. 
+## Week 1 Progress
 
-**Tech Stack:** Python Flask, SQLite, HTML/CSS/JS.
+### Day 1 - Completed ✅
+- Created Flask project structure
+- Home page running on http://127.0.0.1:5000
+- Pushed to GitHub
+
+### Day 2 - Next
+- User registration with age, height, weight
+- BMI calculation
+
+### Tech Stack
+- Python Flask
+- SQLite
+- HTML/CSS
