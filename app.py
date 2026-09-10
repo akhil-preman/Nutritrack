@@ -1,20 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 import os
+from utils.food_db import get_food_nutrition, suggest_foods
 
 app = Flask(__name__)
-# A secret key is needed to keep the client-side sessions secure. 
-# In a real app, this should be a random, hard-to-guess string.
 app.secret_key = 'nutritrack_secret_key'
-
-# Configure SQLite Database. It will be created in the 'instance' folder.
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nutritrack.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# Database Model for User
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -23,108 +20,145 @@ class User(db.Model):
     age = db.Column(db.Integer, nullable=False)
     height_cm = db.Column(db.Float, nullable=False)
     weight_kg = db.Column(db.Float, nullable=False)
+    meals = db.relationship('Meal', backref='user', lazy=True)
 
-# Create database tables within the application context
+class Meal(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    food_name = db.Column(db.String(100), nullable=False)
+    calories = db.Column(db.Float, nullable=False)
+    protein = db.Column(db.Float, nullable=False)
+    carbs = db.Column(db.Float, nullable=False)
+    fats = db.Column(db.Float, nullable=False)
+    # New: Tracking Vitamins as required by the abstract
+    vit_c = db.Column(db.Float, nullable=False, default=0.0)
+    calcium = db.Column(db.Float, nullable=False, default=0.0)
+    iron = db.Column(db.Float, nullable=False, default=0.0)
+    date_logged = db.Column(db.Date, default=datetime.now)
+
 with app.app_context():
     db.create_all()
 
 def calculate_bmi(weight_kg, height_cm):
-    # BMI Formula: weight in kg divided by height in meters squared
-    # Since height is in cm, we divide by 100 to get meters (height_cm / 100)
-    height_m = height_cm / 100
-    bmi = weight_kg / (height_m ** 2)
-    return round(bmi, 2)
+    return round(weight_kg / ((height_cm / 100) ** 2), 2)
 
 def get_bmi_category(bmi):
-    if bmi < 18.5:
-        return "Underweight"
-    elif 18.5 <= bmi <= 24.9:
-        return "Normal"
-    elif 25 <= bmi <= 29.9:
-        return "Overweight"
-    else:
-        return "Obese"
+    if bmi < 18.5: return "Underweight"
+    elif 18.5 <= bmi <= 24.9: return "Normal"
+    elif 25 <= bmi <= 29.9: return "Overweight"
+    else: return "Obese"
+
+def get_daily_requirements(weight_kg, height_cm, age):
+    bmr = (10 * weight_kg) + (6.25 * height_cm) - (5 * age) + 5
+    req_calories = bmr * 1.2
+    
+    return {
+        "bmr": round(bmr, 1),
+        "calories": round(req_calories, 1),
+        "protein": round(weight_kg * 0.8, 1),
+        "carbs": round((req_calories * 0.5) / 4, 1),
+        "fats": round((req_calories * 0.3) / 9, 1),
+        "vit_c": 90, # mg
+        "calcium": 1000, # mg
+        "iron": 18 # mg
+    }
 
 @app.route('/')
 def home():
-    # Render the simple home page
     return render_template('index.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        name = request.form.get('name')
+        hashed_pw = generate_password_hash(request.form.get('password'))
         email = request.form.get('email')
-        password = request.form.get('password')
-        age = int(request.form.get('age'))
-        height_cm = float(request.form.get('height_cm'))
-        weight_kg = float(request.form.get('weight_kg'))
-
-        # Hash the password for security
-        hashed_pw = generate_password_hash(password)
-
-        # Check if user already exists
         if User.query.filter_by(email=email).first():
             flash("Email already exists. Please login.")
             return redirect(url_for('login'))
 
-        # Create new user and save to DB
-        new_user = User(name=name, email=email, password_hash=hashed_pw, 
-                        age=age, height_cm=height_cm, weight_kg=weight_kg)
+        new_user = User(
+            name=request.form.get('name'), email=email, password_hash=hashed_pw, 
+            age=int(request.form.get('age')), height_cm=float(request.form.get('height_cm')), 
+            weight_kg=float(request.form.get('weight_kg'))
+        )
         db.session.add(new_user)
         db.session.commit()
-
-        # Calculate BMI and save user info in session
-        bmi = calculate_bmi(weight_kg, height_cm)
         session['user_id'] = new_user.id
-        session['user_name'] = new_user.name
-        session['user_age'] = new_user.age
-        session['bmi'] = bmi
-        
         return redirect(url_for('dashboard'))
-
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-
-        user = User.query.filter_by(email=email).first()
-
-        # Check if user exists and password hash matches
-        if user and check_password_hash(user.password_hash, password):
-            # Login successful, setup session
+        user = User.query.filter_by(email=request.form.get('email')).first()
+        if user and check_password_hash(user.password_hash, request.form.get('password')):
             session['user_id'] = user.id
-            session['user_name'] = user.name
-            session['user_age'] = user.age
-            session['bmi'] = calculate_bmi(user.weight_kg, user.height_cm)
             return redirect(url_for('dashboard'))
-        else:
-            flash("Invalid email or password.")
-            
+        flash("Invalid email or password.")
     return render_template('login.html')
 
 @app.route('/dashboard')
 def dashboard():
-    # Protect route: check if user is logged in
-    if 'user_id' not in session:
-        flash("Please log in to view the dashboard.")
-        return redirect(url_for('login'))
+    if 'user_id' not in session: return redirect(url_for('login'))
         
-    bmi = session.get('bmi')
-    category = get_bmi_category(bmi)
+    user = User.query.get(session['user_id'])
+    bmi = calculate_bmi(user.weight_kg, user.height_cm)
+    reqs = get_daily_requirements(user.weight_kg, user.height_cm, user.age)
     
-    return render_template('dashboard.html', 
-                           name=session.get('user_name'), 
-                           age=session.get('user_age'), 
-                           bmi=bmi, 
-                           category=category)
+    # Get date from query param, default to local today
+    date_str = request.args.get('date')
+    if date_str:
+        try:
+            selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        except ValueError:
+            selected_date = datetime.now().date()
+    else:
+        selected_date = datetime.now().date()
+        
+    todays_meals = Meal.query.filter_by(user_id=user.id, date_logged=selected_date).all()
+    
+    consumed = {"calories": 0, "protein": 0, "carbs": 0, "fats": 0, "vit_c": 0, "calcium": 0, "iron": 0}
+    for meal in todays_meals:
+        consumed["calories"] += meal.calories
+        consumed["protein"] += meal.protein
+        consumed["carbs"] += meal.carbs
+        consumed["fats"] += meal.fats
+        consumed["vit_c"] += meal.vit_c
+        consumed["calcium"] += meal.calcium
+        consumed["iron"] += meal.iron
+        
+    return render_template('dashboard.html', user=user, bmi=bmi, category=get_bmi_category(bmi),
+                           reqs=reqs, consumed=consumed, meals=todays_meals,
+                           selected_date=selected_date.strftime('%Y-%m-%d'))
+
+@app.route('/log_meal', methods=['GET', 'POST'])
+def log_meal():
+    if 'user_id' not in session: return redirect(url_for('login'))
+    
+    user = User.query.get(session['user_id'])
+        
+    if request.method == 'POST':
+        food_name = request.form.get('food_name')
+        nutrition = get_food_nutrition(food_name)
+        
+        if nutrition:
+            new_meal = Meal(
+                user_id=session['user_id'], food_name=food_name.title(), 
+                calories=nutrition['calories'], protein=nutrition['protein'], 
+                carbs=nutrition['carbs'], fats=nutrition['fats'],
+                vit_c=nutrition['vit_c'], calcium=nutrition['calcium'], iron=nutrition['iron']
+            )
+            db.session.add(new_meal)
+            db.session.commit()
+            flash(f"Successfully logged {food_name.title()}!")
+            return redirect(url_for('dashboard'))
+        flash(f"Sorry, couldn't find '{food_name}'. Try 'Palak Paneer' or 'Chapati'.")
+            
+    return render_template('log_meal.html', user=user)
 
 @app.route('/logout')
 def logout():
-    session.clear() # Clear all data stored in the session
+    session.clear()
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
