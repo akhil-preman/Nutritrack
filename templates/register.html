@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - NutriTrack AI</title>
+    <!-- Link to our new CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>NutriTrack AI</h1>
+        <p class="subtitle">Create your account</p>
+        
+        <!-- Show any flashed messages like 'Email already exists' -->
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/register">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required placeholder="">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="">
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" name="age" required placeholder="">
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label for="height_cm">Height (cm)</label>
+                    <input type="number" step="0.1" id="height_cm" name="height_cm" required placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="weight_kg">Weight (kg)</label>
+                    <input type="number" step="0.1" id="weight_kg" name="weight_kg" required placeholder="">
+                </div>
+            </div>
+
+            <button type="submit">Create Account</button>
+        </form>
+        
+        <div class="auth-links">
+            <p>Already have an account? <a href="/login">Log in here</a></p>
+        </div>
+    </div>
+</body>
+</html>
