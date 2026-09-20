@@ -4,3 +4,6 @@ __pycache__/
 venv/
 .env
 .DS_Store
+*.png
+draw_*.py
+test_*.py
