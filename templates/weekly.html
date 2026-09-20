@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Analysis - NutriTrack AI</title>
+    <style>
+        :root {
+            --primary-color: #22c55e;
+            --bg-color: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+        }
+        /* Navbar */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); }
+        .nav-brand { font-size: 1.2rem; font-weight: bold; color: var(--primary-color); display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; align-items: center; gap: 1.5rem; font-size: 0.9rem; font-weight: 600; }
+        .nav-links a { color: var(--text-main); text-decoration: none; }
+        .nav-links a:hover { color: var(--primary-color); }
+        .btn-logout { background-color: var(--primary-color); color: white !important; padding: 0.4rem 1rem; border-radius: 20px; }
+
+        .container { max-width: 900px; margin: 2rem auto; padding: 0 1.5rem; }
+        .header-title h1 { font-size: 2rem; margin: 0 0 0.5rem 0; color: var(--text-main); }
+        .header-title p { margin: 0 0 2rem 0; color: var(--text-muted); font-size: 0.95rem; }
+        
+        .card { background-color: var(--card-bg); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
+        .card h3 { margin-top: 0; margin-bottom: 1rem; }
+        
+        .nutrition-table { width: 100%; border-collapse: collapse; }
+        .nutrition-table th, .nutrition-table td { border-bottom: 1px solid var(--border-color); padding: 0.8rem; text-align: left; }
+        .nutrition-table th { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
+        
+        .suggestions-box { background-color: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; padding: 1.5rem; margin-top: 1rem; }
+        .suggestion-item { margin-bottom: 0.8rem; color: #064e3b; background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid #d32f2f; box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
+        .suggestion-item strong { color: #d32f2f; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">NutriTrack AI</div>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/log_meal">Log Food</a>
+            <a href="/weekly" style="color: var(--primary-color);">Weekly</a>
+            <span style="color: var(--text-muted);">{{ user.name }}</span>
+            <a href="/logout" class="btn-logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header-title">
+            <h1>Weekly Analysis Report</h1>
+            <p></p>
+        </div>
+
+        <div class="card">
+            <h3>7-Day Overview</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">You logged meals on {{ days_logged }} out of the last 7 days.</p>
+            <table class="nutrition-table">
+                <thead>
+                    <tr><th>Nutrient</th><th>7-Day Consumed</th><th>7-Day Goal</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Calories</td><td>{{ consumed.calories | round | int }} kcal</td><td>{{ reqs.calories | round | int }} kcal</td>
+                        <td><strong style="color: {{ 'var(--primary-color)' if consumed.calories >= reqs.calories * 0.7 else '#d32f2f' }}">{{ ((consumed.calories / reqs.calories)*100)|round|int if reqs.calories else 0 }}%</strong></td></tr>
+                    <tr><td>Protein</td><td>{{ consumed.protein | round | int }} g</td><td>{{ reqs.protein | round | int }} g</td>
+                        <td><strong style="color: {{ 'var(--primary-color)' if consumed.protein >= reqs.protein * 0.7 else '#d32f2f' }}">{{ ((consumed.protein / reqs.protein)*100)|round|int if reqs.protein else 0 }}%</strong></td></tr>
+                    <tr><td>Vitamin C</td><td>{{ consumed.vit_c | round | int }} mg</td><td>{{ reqs.vit_c | round | int }} mg</td>
+                        <td><strong style="color: {{ 'var(--primary-color)' if consumed.vit_c >= reqs.vit_c * 0.7 else '#d32f2f' }}">{{ ((consumed.vit_c / reqs.vit_c)*100)|round|int if reqs.vit_c else 0 }}%</strong></td></tr>
+                    <tr><td>Calcium</td><td>{{ consumed.calcium | round | int }} mg</td><td>{{ reqs.calcium | round | int }} mg</td>
+                        <td><strong style="color: {{ 'var(--primary-color)' if consumed.calcium >= reqs.calcium * 0.7 else '#d32f2f' }}">{{ ((consumed.calcium / reqs.calcium)*100)|round|int if reqs.calcium else 0 }}%</strong></td></tr>
+                    <tr><td>Iron</td><td>{{ consumed.iron | round | int }} mg</td><td>{{ reqs.iron | round | int }} mg</td>
+                        <td><strong style="color: {{ 'var(--primary-color)' if consumed.iron >= reqs.iron * 0.7 else '#d32f2f' }}">{{ ((consumed.iron / reqs.iron)*100)|round|int if reqs.iron else 0 }}%</strong></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</body>
+</html>

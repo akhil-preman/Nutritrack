@@ -149,11 +149,11 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-brand">🥗 NutriTrack AI</div>
+        <div class="nav-brand">NutriTrack AI</div>
         <div class="nav-links">
             <a href="/dashboard">Dashboard</a>
             <a href="/log_meal" style="color: var(--primary-color);">Log Food</a>
-            <a href="#">Weekly</a>
+            <a href="/weekly">Weekly</a>
             <span style="color: var(--text-muted);">{{ user.name }}</span>
             <a href="/logout" class="btn-logout">Logout</a>
         </div>
@@ -162,7 +162,7 @@
     <div class="container">
         <div class="page-header">
             <h1>Log Meal</h1>
-            <p>Search food or upload a photo for AI recognition (TensorFlow+OpenCV)</p>
+            <p>Search food or upload a photo </p>
         </div>
 
         {% with messages = get_flashed_messages() %}
@@ -188,8 +188,8 @@
 
             <!-- Right Column: AI Photo -->
             <div class="card">
-                <h3>📸 Photo Detection (AI)</h3>
-                <p class="photo-upload-subtitle">Upload meal photo. MobileNetV2 + OpenCV preprocessing. Falls back to heuristic if offline.</p>
+                <h3>📸 Upload Photo</h3>
+                <p class="photo-upload-subtitle">Upload meal photo.</p>
                 <button type="button" class="btn-upload">Choose Photo</button>
             </div>
         </div>

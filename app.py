@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 from utils.food_db import get_food_nutrition, suggest_foods
 
@@ -155,6 +155,42 @@ def log_meal():
         flash(f"Sorry, couldn't find '{food_name}'. Try 'Palak Paneer' or 'Chapati'.")
             
     return render_template('log_meal.html', user=user)
+
+@app.route('/weekly')
+def weekly():
+    if 'user_id' not in session: return redirect(url_for('login'))
+        
+    user = User.query.get(session['user_id'])
+    
+    # Get the last 7 days of meals
+    today = datetime.now().date()
+    seven_days_ago = today - timedelta(days=6) # 7 days total including today
+    
+    meals_last_7_days = Meal.query.filter(
+        Meal.user_id == user.id,
+        Meal.date_logged >= seven_days_ago,
+        Meal.date_logged <= today
+    ).all()
+    
+    # Calculate daily requirements and multiply by 7 for the week
+    daily_reqs = get_daily_requirements(user.weight_kg, user.height_cm, user.age)
+    weekly_reqs = {k: v * 7 for k, v in daily_reqs.items()}
+    
+    # Sum consumed nutrients over the last 7 days
+    consumed = {"calories": 0, "protein": 0, "carbs": 0, "fats": 0, "vit_c": 0, "calcium": 0, "iron": 0}
+    for meal in meals_last_7_days:
+        consumed["calories"] += meal.calories
+        consumed["protein"] += meal.protein
+        consumed["carbs"] += meal.carbs
+        consumed["fats"] += meal.fats
+        consumed["vit_c"] += meal.vit_c
+        consumed["calcium"] += meal.calcium
+        consumed["iron"] += meal.iron
+        
+    # Count how many unique days they logged food
+    unique_days = len(set(m.date_logged for m in meals_last_7_days))
+
+    return render_template('weekly.html', user=user, reqs=weekly_reqs, consumed=consumed, days_logged=unique_days)
 
 @app.route('/logout')
 def logout():

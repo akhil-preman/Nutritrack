@@ -239,11 +239,11 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-brand">🥗 NutriTrack AI</div>
+        <div class="nav-brand">NutriTrack AI</div>
         <div class="nav-links">
             <a href="/dashboard" style="color: var(--primary-color);">Dashboard</a>
             <a href="/log_meal">Log Food</a>
-            <a href="#">Weekly</a>
+            <a href="/weekly">Weekly</a>
             <span style="color: var(--text-muted);">{{ user.name }}</span>
             <a href="/logout" class="btn-logout">Logout</a>
         </div>
@@ -334,7 +334,7 @@
                     <p class="empty-meals">No meals logged yet. <a href="/log_meal">Log your first meal →</a></p>
                     <div class="action-buttons">
                         <a href="/log_meal" class="btn btn-solid">+ Log Meal</a>
-                        <a href="#" class="btn btn-outline">Weekly Analysis</a>
+                        <a href="/weekly" class="btn btn-outline">Weekly Analysis</a>
                     </div>
                 {% endif %}
             </div>
