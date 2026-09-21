@@ -256,7 +256,7 @@
                 <p>BMR: {{ reqs.bmr }} kcal • TDEE: {{ reqs.calories }} kcal • BMI: {{ bmi }} ({{ category }})</p>
             </div>
             <form id="dateForm" action="/dashboard" method="GET" style="margin: 0;">
-                <input type="date" name="date" class="date-picker" value="{{ selected_date }}" onchange="document.getElementById('dateForm').submit();" style="cursor: pointer; font-family: inherit; font-size: 1rem;">
+                <input type="date" name="date" class="date-picker" value="{{ selected_date }}" onchange="document.getElementById('dateForm').submit();" max="{{ datetime_now }}" style="cursor: pointer; font-family: inherit; font-size: 1rem; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 8px;">
             </form>
         </div>
 
@@ -305,7 +305,6 @@
         <div class="main-grid">
             <div class="panel">
                 <h3>Macro Split</h3>
-                <!-- Placeholder for future pie chart -->
                 <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.9rem;">
                     
                 </div>
@@ -327,19 +326,29 @@
                             </li>
                         {% endfor %}
                     </ul>
+                    {% if is_today %}
                     <div class="action-buttons">
                         <a href="/log_meal" class="btn btn-solid">+ Log Another Meal</a>
                     </div>
+                    {% else %}
+                    <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-top: 1rem;">Logging is disabled for past dates.</p>
+                    {% endif %}
                 {% else %}
-                    <p class="empty-meals">No meals logged yet. <a href="/log_meal">Log your first meal →</a></p>
+                    <p class="empty-meals">No meals logged on this date.</p>
+                    {% if is_today %}
                     <div class="action-buttons">
                         <a href="/log_meal" class="btn btn-solid">+ Log Meal</a>
                         <a href="/weekly" class="btn btn-outline">Weekly Analysis</a>
                     </div>
+                    {% else %}
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Logging is disabled for past dates.</p>
+                    <div class="action-buttons" style="margin-top: 1rem;">
+                        <a href="/dashboard" class="btn btn-solid">Return to Today</a>
+                    </div>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
-        
     </div>
 </body>
 </html>

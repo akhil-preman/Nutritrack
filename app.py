@@ -4,11 +4,17 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import os
 from utils.food_db import get_food_nutrition, suggest_foods
+from utils.ai_engine import predict_food_from_image
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.secret_key = 'nutritrack_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nutritrack.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+
+# Ensure upload directory exists
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 db = SQLAlchemy(app)
 
@@ -105,15 +111,19 @@ def dashboard():
     bmi = calculate_bmi(user.weight_kg, user.height_cm)
     reqs = get_daily_requirements(user.weight_kg, user.height_cm, user.age)
     
+    today = datetime.now().date()
+    
     # Get date from query param, default to local today
     date_str = request.args.get('date')
     if date_str:
         try:
             selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
         except ValueError:
-            selected_date = datetime.now().date()
+            selected_date = today
     else:
-        selected_date = datetime.now().date()
+        selected_date = today
+        
+    is_today = (selected_date == today)
         
     todays_meals = Meal.query.filter_by(user_id=user.id, date_logged=selected_date).all()
     
@@ -129,32 +139,96 @@ def dashboard():
         
     return render_template('dashboard.html', user=user, bmi=bmi, category=get_bmi_category(bmi),
                            reqs=reqs, consumed=consumed, meals=todays_meals,
-                           selected_date=selected_date.strftime('%Y-%m-%d'))
+                           selected_date=selected_date.strftime('%Y-%m-%d'), 
+                           is_today=is_today, datetime_now=today.strftime('%Y-%m-%d'))
 
 @app.route('/log_meal', methods=['GET', 'POST'])
 def log_meal():
     if 'user_id' not in session: return redirect(url_for('login'))
-    
     user = User.query.get(session['user_id'])
+    
+    found_food = None
         
     if request.method == 'POST':
         food_name = request.form.get('food_name')
         nutrition = get_food_nutrition(food_name)
         
         if nutrition:
-            new_meal = Meal(
-                user_id=session['user_id'], food_name=food_name.title(), 
-                calories=nutrition['calories'], protein=nutrition['protein'], 
-                carbs=nutrition['carbs'], fats=nutrition['fats'],
-                vit_c=nutrition['vit_c'], calcium=nutrition['calcium'], iron=nutrition['iron']
-            )
-            db.session.add(new_meal)
-            db.session.commit()
-            flash(f"Successfully logged {food_name.title()}!")
-            return redirect(url_for('dashboard'))
-        flash(f"Sorry, couldn't find '{food_name}'. Try 'Palak Paneer' or 'Chapati'.")
+            # Instead of saving, just return the data to the template to show the modal
+            found_food = {
+                "name": food_name.title(),
+                "nutrition": nutrition
+            }
+        else:
+            flash(f"Sorry, couldn't find '{food_name}'. Try 'Palak Paneer' or 'Egg'.")
             
-    return render_template('log_meal.html', user=user)
+    return render_template('log_meal.html', user=user, found_food=found_food)
+
+@app.route('/confirm_log_meal', methods=['POST'])
+def confirm_log_meal():
+    if 'user_id' not in session: return redirect(url_for('login'))
+    
+    food_name = request.form.get('food_name')
+    quantity = float(request.form.get('quantity', 1.0))
+    nutrition = get_food_nutrition(food_name)
+    
+    if nutrition:
+        new_meal = Meal(
+            user_id=session['user_id'], food_name=f"{quantity}x {food_name.title()}", 
+            calories=nutrition['calories'] * quantity, 
+            protein=nutrition['protein'] * quantity, 
+            carbs=nutrition['carbs'] * quantity, 
+            fats=nutrition['fats'] * quantity,
+            vit_c=nutrition['vit_c'] * quantity, 
+            calcium=nutrition['calcium'] * quantity, 
+            iron=nutrition['iron'] * quantity
+        )
+        db.session.add(new_meal)
+        db.session.commit()
+        flash(f"Successfully logged {quantity}x {food_name.title()}!")
+        return redirect(url_for('dashboard'))
+        
+    flash("Error logging meal.")
+    return redirect(url_for('log_meal'))
+
+@app.route('/predict_meal', methods=['POST'])
+def predict_meal():
+    if 'user_id' not in session: return redirect(url_for('login'))
+    user = User.query.get(session['user_id'])
+    
+    if 'food_image' not in request.files:
+        flash("No file part")
+        return redirect(url_for('log_meal'))
+        
+    file = request.files['food_image']
+    if file.filename == '':
+        flash("No selected file")
+        return redirect(url_for('log_meal'))
+        
+    if file:
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        
+        # Run AI prediction via OpenCV + MobileNet pipeline
+        predicted_food = predict_food_from_image(filepath)
+        
+        # Cleanup uploaded file
+        if os.path.exists(filepath):
+            os.remove(filepath)
+            
+        nutrition = get_food_nutrition(predicted_food)
+        if nutrition:
+            # Trigger confirmation modal instead of instant save
+            found_food = {
+                "name": predicted_food.title(),
+                "nutrition": nutrition,
+                "is_ai": True
+            }
+            return render_template('log_meal.html', user=user, found_food=found_food)
+            
+        flash(f"AI predicted '{predicted_food}', but it's not in our database.")
+        return redirect(url_for('log_meal'))
 
 @app.route('/weekly')
 def weekly():

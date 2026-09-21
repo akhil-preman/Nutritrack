@@ -145,6 +145,70 @@
             border-left: 4px solid #d32f2f;
             font-size: 0.95rem;
         }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-box {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 400px;
+        }
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .nutri-item {
+            background: #f1f5f9;
+            padding: 0.8rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .nutri-item span {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .nutri-item strong {
+            display: block;
+            color: var(--text-main);
+            font-size: 1.1rem;
+        }
+        .btn-cancel, .btn-confirm {
+            flex: 1;
+            padding: 0.8rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-cancel {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+        .btn-cancel:hover { background: #cbd5e1; }
+        .btn-confirm {
+            background: var(--primary-color);
+            color: white;
+        }
+        .btn-confirm:hover { background: #16a34a; }
     </style>
 </head>
 <body>
@@ -189,10 +253,71 @@
             <!-- Right Column: AI Photo -->
             <div class="card">
                 <h3>📸 Upload Photo</h3>
-                <p class="photo-upload-subtitle">Upload meal photo.</p>
-                <button type="button" class="btn-upload">Choose Photo</button>
+                <p class="photo-upload-subtitle">Upload meal photo for AI automatic logging.</p>
+                <form method="POST" action="/predict_meal" enctype="multipart/form-data" id="photoForm">
+                    <input type="file" id="food_image" name="food_image" accept="image/*" style="display: none;" onchange="document.getElementById('uploadText').innerText = 'Analyzing with OpenCV...'; document.getElementById('photoForm').submit();">
+                    <button type="button" class="btn-upload" onclick="document.getElementById('food_image').click();">
+                        <span id="uploadText">Choose Photo</span>
+                    </button>
+                </form>
             </div>
         </div>
     </div>
+
+    <!-- Confirmation Modal Overlay -->
+    {% if found_food %}
+    <div class="modal-overlay" id="confirmationModal">
+        <div class="modal-box">
+            {% if found_food.is_ai %}
+            <div style="text-align: center; color: var(--primary-color); font-weight: bold; margin-bottom: 10px;">✨ AI Detected ✨</div>
+            {% endif %}
+            <h2 style="text-align: center; margin-top: 0; color: var(--text-main);">{{ found_food.name }}</h2>
+            
+            {% set lower_name = found_food.name.lower() %}
+            {% if 'apple' in lower_name or 'egg' in lower_name or 'banana' in lower_name or 'orange' in lower_name or 'piece' in lower_name %}
+                {% set unit = 'Pieces' %}
+            {% elif 'dal' in lower_name or 'soup' in lower_name or 'kheer' in lower_name or 'curry' in lower_name %}
+                {% set unit = 'Bowls' %}
+            {% else %}
+                {% set unit = 'Plates/Servings' %}
+            {% endif %}
+
+            <div style="margin-top: 1.5rem; text-align: center;">
+                <label for="quantity" style="display: block; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px;">Quantity ({{ unit }})</label>
+                <input type="number" id="quantityInput" form="confirmForm" name="quantity" value="1" min="0.5" step="0.5" style="width: 80px; text-align: center; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 1.1rem; outline: none;" oninput="updateNutrition()">
+            </div>
+            
+            <div class="nutrition-grid">
+                <div class="nutri-item"><span>Calories</span><strong id="val-calories">{{ found_food.nutrition.calories }} kcal</strong></div>
+                <div class="nutri-item"><span>Protein</span><strong id="val-protein">{{ found_food.nutrition.protein }}g</strong></div>
+                <div class="nutri-item"><span>Carbs</span><strong id="val-carbs">{{ found_food.nutrition.carbs }}g</strong></div>
+                <div class="nutri-item"><span>Fats</span><strong id="val-fats">{{ found_food.nutrition.fats }}g</strong></div>
+            </div>
+
+            <form id="confirmForm" method="POST" action="/confirm_log_meal" style="margin-top: 2rem; display: flex; gap: 1rem;">
+                <input type="hidden" name="food_name" value="{{ found_food.name }}">
+                <button type="button" class="btn-cancel" onclick="document.getElementById('confirmationModal').style.display='none';">Cancel</button>
+                <button type="submit" class="btn-confirm">Log Food</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const baseNutrition = {
+            calories: {{ found_food.nutrition.calories }},
+            protein: {{ found_food.nutrition.protein }},
+            carbs: {{ found_food.nutrition.carbs }},
+            fats: {{ found_food.nutrition.fats }}
+        };
+
+        function updateNutrition() {
+            let qty = parseFloat(document.getElementById('quantityInput').value) || 0;
+            document.getElementById('val-calories').innerText = (baseNutrition.calories * qty).toFixed(1) + ' kcal';
+            document.getElementById('val-protein').innerText = (baseNutrition.protein * qty).toFixed(1) + 'g';
+            document.getElementById('val-carbs').innerText = (baseNutrition.carbs * qty).toFixed(1) + 'g';
+            document.getElementById('val-fats').innerText = (baseNutrition.fats * qty).toFixed(1) + 'g';
+        }
+    </script>
+    {% endif %}
 </body>
 </html>
