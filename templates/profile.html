@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - NutriTrack AI</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1c1c1e;
+            --card-bg-light: #2c2c2e;
+            --primary-color: #c4f042;
+            --text-main: #ffffff;
+            --text-muted: #8e8e93;
+            --border-color: #2c2c2e;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--text-main); }
+        
+        /* Navbar */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 3rem; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); }
+        .nav-brand { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; align-items: center; gap: 2rem; font-size: 1rem; font-weight: 500; }
+        .nav-links a { color: var(--text-main); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-color); }
+        
+        .user-profile { display: flex; align-items: center; gap: 1rem; }
+        .profile-pic { width: 36px; height: 36px; border-radius: 50%; background: var(--card-bg-light); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--primary-color); }
+
+        .container { max-width: 600px; margin: 4rem auto; padding: 0 1.5rem; }
+        
+        .profile-card {
+            background: var(--card-bg); border-radius: 24px; padding: 3rem; 
+            border: 1px solid var(--border-color); text-align: center;
+        }
+        
+        .large-pic {
+            width: 100px; height: 100px; border-radius: 50%; background: var(--card-bg-light);
+            display: flex; align-items: center; justify-content: center; font-weight: bold; 
+            color: var(--primary-color); font-size: 3rem; margin: 0 auto 1.5rem auto;
+            border: 2px solid var(--primary-color);
+        }
+
+        .profile-name { font-size: 2rem; margin: 0 0 5px 0; font-weight: 600; }
+        .profile-email { color: var(--text-muted); font-size: 1rem; margin: 0 0 2rem 0; }
+
+        .flashes { list-style: none; padding: 0; margin: 0 0 2rem 0; }
+        .flashes li { background: rgba(196, 240, 66, 0.1); color: var(--primary-color); padding: 1rem; border-radius: 12px; font-size: 0.95rem; text-align: center; border: 1px solid rgba(196, 240, 66, 0.2); }
+
+        .details-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2.5rem;
+        }
+        .detail-box {
+            background: var(--card-bg-light); border-radius: 16px; padding: 1.2rem 1rem;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .detail-box input { 
+            background: transparent; border: 1px solid transparent; color: var(--text-main); 
+            font-size: 1.5rem; font-weight: 700; width: 100%; text-align: center; 
+            margin-bottom: 4px; border-radius: 8px; outline: none; transition: all 0.2s;
+        }
+        
+        /* Edit state styling */
+        .detail-box input:not(:disabled) { border-bottom: 2px solid var(--primary-color); background: rgba(255,255,255,0.05); }
+        .detail-box input:not(:disabled):focus { background: rgba(196, 240, 66, 0.1); }
+        
+        .detail-box span { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .action-buttons { display: flex; justify-content: center; gap: 1rem; }
+        
+        .edit-btn {
+            background: var(--card-bg-light); color: var(--text-main); 
+            border: 1px solid var(--border-color); padding: 0.8rem 2rem; border-radius: 20px; 
+            font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s;
+        }
+        .edit-btn:hover { background: var(--text-main); color: var(--bg-color); }
+
+        .save-btn {
+            background: var(--primary-color); color: #000; 
+            border: none; padding: 0.8rem 2rem; border-radius: 20px; 
+            font-weight: 700; font-size: 1rem; cursor: pointer; transition: transform 0.2s;
+        }
+        .save-btn:hover { transform: scale(1.05); }
+
+        .cancel-btn {
+            background: transparent; color: var(--text-muted); 
+            border: 1px solid var(--border-color); padding: 0.8rem 2rem; border-radius: 20px; 
+            font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s;
+        }
+        .cancel-btn:hover { color: white; border-color: white; }
+
+        .logout-btn {
+            display: inline-block; background: transparent; color: #f43f5e; 
+            border: 1px solid #f43f5e; padding: 0.8rem 2rem; border-radius: 20px; 
+            text-decoration: none; font-weight: 600; font-size: 1rem; transition: all 0.2s;
+        }
+        .logout-btn:hover { background: #f43f5e; color: white; }
+        
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">NutriTrack AI</div>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/log_meal">Log Food</a>
+            <a href="/weekly">Weekly Analysis</a>
+        </div>
+        <div class="user-profile">
+            <a href="/profile" style="text-decoration: none; display: flex; align-items: center;">
+                <div class="profile-pic" style="border: 2px solid var(--primary-color);">{{ user.name[0].upper() }}</div>
+            </a>
+            <a href="/logout" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; margin-left: 1rem;">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="profile-card">
+            <div class="large-pic">{{ user.name[0].upper() }}</div>
+            <h1 class="profile-name">{{ user.name }}</h1>
+            <p class="profile-email">{{ user.email }}</p>
+
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="/profile">
+                <div class="details-grid">
+                    <div class="detail-box">
+                        <input type="number" id="inp-age" name="age" value="{{ user.age }}" disabled required>
+                        <span>Years Old</span>
+                    </div>
+                    <div class="detail-box">
+                        <input type="number" step="0.1" id="inp-height" name="height_cm" value="{{ user.height_cm }}" disabled required>
+                        <span>cm Height</span>
+                    </div>
+                    <div class="detail-box">
+                        <input type="number" step="0.1" id="inp-weight" name="weight_kg" value="{{ user.weight_kg }}" disabled required>
+                        <span>kg Weight</span>
+                    </div>
+                </div>
+
+                <div class="goal-box" style="margin-bottom: 2.5rem; text-align: left;">
+                    <label style="color: var(--text-muted); font-size: 0.85rem; display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center;">Fitness Goal</label>
+                    <select id="inp-goal" name="goal" disabled required style="width: 100%; padding: 1rem; background: var(--card-bg-light); border: 1px solid transparent; border-radius: 12px; color: white; font-size: 1.1rem; outline: none; text-align: center; font-weight: 600; cursor: pointer;">
+                        <option value="cut" {% if user.goal == 'cut' %}selected{% endif %}>Cut Weight (-500 kcal)</option>
+                        <option value="maintain" {% if user.goal == 'maintain' or not user.goal %}selected{% endif %}>Maintain Weight</option>
+                        <option value="gain" {% if user.goal == 'gain' %}selected{% endif %}>Gain Weight (+500 kcal)</option>
+                    </select>
+                </div>
+
+                <!-- Default View Actions -->
+                <div class="action-buttons" id="view-actions">
+                    <button type="button" class="edit-btn" onclick="enableEdit()">Edit Profile</button>
+                    <a href="/logout" class="logout-btn">Log Out</a>
+                </div>
+
+                <!-- Edit Mode Actions (Hidden by default) -->
+                <div class="action-buttons" id="edit-actions" style="display: none;">
+                    <button type="submit" class="save-btn">Save Changes</button>
+                    <button type="button" class="cancel-btn" onclick="cancelEdit()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function enableEdit() {
+            // Enable inputs
+            document.getElementById('inp-age').disabled = false;
+            document.getElementById('inp-height').disabled = false;
+            document.getElementById('inp-weight').disabled = false;
+            document.getElementById('inp-goal').disabled = false;
+            document.getElementById('inp-goal').style.borderBottom = '2px solid var(--primary-color)';
+            
+            // Swap buttons
+            document.getElementById('view-actions').style.display = 'none';
+            document.getElementById('edit-actions').style.display = 'flex';
+            
+            // Auto focus on the first input
+            document.getElementById('inp-age').focus();
+        }
+
+        function cancelEdit() {
+            // Disable inputs
+            document.getElementById('inp-age').disabled = true;
+            document.getElementById('inp-height').disabled = true;
+            document.getElementById('inp-weight').disabled = true;
+            document.getElementById('inp-goal').disabled = true;
+            document.getElementById('inp-goal').style.borderBottom = '1px solid transparent';
+            
+            // Revert to original values from backend
+            document.getElementById('inp-age').value = "{{ user.age }}";
+            document.getElementById('inp-height').value = "{{ user.height_cm }}";
+            document.getElementById('inp-weight').value = "{{ user.weight_kg }}";
+            document.getElementById('inp-goal').value = "{{ user.goal or 'maintain' }}";
+            
+            // Swap buttons
+            document.getElementById('view-actions').style.display = 'flex';
+            document.getElementById('edit-actions').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

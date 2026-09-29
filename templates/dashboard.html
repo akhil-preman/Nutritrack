@@ -3,350 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - NutriTrack AI</title>
+    <title>NutriTrack AI Dashboard</title>
     <style>
         :root {
-            --primary-color: #22c55e;
-            --primary-dark: #16a34a;
-            --bg-color: #f8fafc;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --card-bg: #ffffff;
-            --border-color: #e2e8f0;
+            --bg-color: #121212;
+            --card-bg: #1c1c1e;
+            --card-bg-light: #2c2c2e;
+            --primary-color: #c4f042;
+            --primary-dark: #a8d626;
+            --text-main: #ffffff;
+            --text-muted: #8e8e93;
+            --border-color: #2c2c2e;
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 0;
-            color: var(--text-main);
-        }
-
-        /* Navbar */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-        }
-        .nav-brand {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-        .nav-links a { color: var(--text-main); text-decoration: none; }
-        .nav-links a:hover { color: var(--primary-color); }
-        .btn-logout {
-            background-color: var(--primary-color);
-            color: white !important;
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-        }
-
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
-
-        /* Header */
-        .header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 2rem;
-        }
-        .header-title h1 {
-            font-size: 2rem;
-            margin: 0 0 0.5rem 0;
-            color: var(--text-main);
-        }
-        .header-title p {
-            margin: 0;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-        .date-picker {
-            padding: 0.6rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: var(--card-bg);
-            font-weight: 500;
-            color: var(--text-main);
-        }
-
-        /* 4 Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .stat-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-color);
-        }
-        .stat-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            font-weight: 600;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
-        }
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--text-main);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: baseline;
-            justify-content: center;
-            gap: 4px;
-        }
-        .stat-value.calories { color: var(--primary-color); }
-        .stat-value span {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-        .progress-bar-bg {
-            height: 6px;
-            background-color: #e2e8f0;
-            border-radius: 4px;
-            margin-bottom: 0.5rem;
-            overflow: hidden;
-        }
-        .progress-bar-fill {
-            height: 100%;
-            background-color: var(--primary-color);
-            border-radius: 4px;
-        }
-        .stat-percent {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        /* Main 2 Columns */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .panel {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-color);
-            min-height: 250px;
-            display: flex;
-            flex-direction: column;
-        }
-        .panel h3 {
-            margin: 0 0 1rem 0;
-            font-size: 1.1rem;
-        }
-
-        /* Macro Split Legend */
-        .macro-legend {
-            margin-top: auto;
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .dot { width: 8px; height: 8px; border-radius: 50%; }
-        .dot.protein { background-color: var(--primary-color); }
-        .dot.carbs { background-color: #f59e0b; }
-        .dot.fats { background-color: #ef4444; }
-
-        /* Meals Panel */
-        .empty-meals {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
-        }
-        .empty-meals a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-solid {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-        }
-        .btn-outline {
-            background-color: transparent;
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--text-main); }
         
-        .meal-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 1.5rem 0;
+        /* Navbar (Desktop) */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 3rem; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); }
+        .nav-brand { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; align-items: center; gap: 2rem; font-size: 1rem; font-weight: 500; }
+        .nav-links a { color: var(--text-main); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-color); }
+        .user-profile { display: flex; align-items: center; gap: 1rem; }
+        .profile-pic { width: 36px; height: 36px; border-radius: 50%; background: var(--card-bg-light); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--primary-color); }
+        
+        /* Layout */
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .header h1 { font-size: 2rem; margin: 0; }
+        .header p { color: var(--text-muted); margin: 0.5rem 0 0 0; }
+        
+        .date-picker { background: var(--card-bg); color: var(--primary-color); border: 1px solid var(--border-color); padding: 0.8rem 1rem; border-radius: 12px; font-size: 1rem; cursor: pointer; outline: none; }
+
+        .dashboard-grid { display: grid; grid-template-columns: 400px 1fr; gap: 2rem; align-items: start; }
+        
+        /* Left Column */
+        .summary-card { background: var(--card-bg); border-radius: 24px; padding: 2.5rem 2rem; border: 1px solid var(--border-color); }
+        
+        .ring-container {
+            width: 240px; height: 240px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 2.5rem auto;
         }
-        .meal-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.8rem 0;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.95rem;
+        .ring-inner {
+            width: 200px; height: 200px; border-radius: 50%;
+            background: var(--card-bg); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+        }
+        .ring-inner h2 { font-size: 3.5rem; font-weight: 700; margin: 0; color: var(--text-main); line-height: 1.1; }
+        .ring-inner p { font-size: 1rem; color: var(--text-muted); margin: 0; }
+        .ring-inner .subtitle { color: var(--primary-color); font-size: 0.85rem; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+
+        .macro-boxes { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .macro-box {
+            flex: 1; background: var(--card-bg-light); border-radius: 16px;
+            padding: 1.2rem; display: flex; flex-direction: column; text-align: center;
+        }
+        .macro-box span { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .macro-box strong { font-size: 1.4rem; margin-bottom: 0.8rem; font-weight: 600; }
+        .macro-bar { height: 4px; width: 100%; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+        .macro-bar-fill { height: 100%; border-radius: 2px; }
+
+        .alert-box {
+            background: rgba(196, 240, 66, 0.08); border: 1px solid rgba(196, 240, 66, 0.15);
+            border-radius: 16px; padding: 1.2rem; display: flex; gap: 1rem;
+            align-items: flex-start; font-size: 0.95rem; line-height: 1.5; color: #d4d4d8;
+        }
+        .alert-icon {
+            background: var(--primary-color); color: #000; width: 24px; height: 24px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: bold;
         }
 
-        /* End of styling */
+        /* Right Column */
+        .meals-section { background: var(--card-bg); border-radius: 24px; padding: 2rem; border: 1px solid var(--border-color); }
+        .meals-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .meals-header h3 { font-size: 1.4rem; margin: 0; }
+        
+        .add-btn {
+            background: var(--primary-color); color: #000; padding: 0.8rem 1.5rem; border-radius: 20px;
+            text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: transform 0.2s;
+        }
+        .add-btn:hover { transform: scale(1.05); }
+
+        .meal-list { display: flex; flex-direction: column; gap: 1rem; }
+        .meal-item {
+            display: flex; justify-content: space-between; padding: 1.5rem; background: var(--card-bg-light);
+            border-radius: 16px; align-items: center;
+        }
+        .meal-info strong { display: block; font-size: 1.1rem; font-weight: 500; margin-bottom: 6px; }
+        .meal-info span { font-size: 0.9rem; color: var(--text-muted); }
+        .meal-cals { font-size: 1.3rem; font-weight: 600; color: var(--text-main); }
+        
     </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-brand">NutriTrack AI</div>
         <div class="nav-links">
-            <a href="/dashboard" style="color: var(--primary-color);">Dashboard</a>
+            <a href="/dashboard" class="active">Dashboard</a>
             <a href="/log_meal">Log Food</a>
-            <a href="/weekly">Weekly</a>
-            <span style="color: var(--text-muted);">{{ user.name }}</span>
-            <a href="/logout" class="btn-logout">Logout</a>
+            <a href="/weekly">Weekly Analysis</a>
+        </div>
+        <div class="user-profile">
+            <a href="/profile" style="text-decoration: none; display: flex; align-items: center;">
+                <div class="profile-pic" style="cursor: pointer; border: 2px solid transparent; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--primary-color)'" onmouseout="this.style.borderColor='transparent'">{{ user.name[0].upper() }}</div>
+            </a>
+            <a href="/logout" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; margin-left: 1rem;">Logout</a>
         </div>
     </nav>
 
     <div class="container">
-        <div class="header-row">
-            <div class="header-title">
-                <h1>Daily Dashboard</h1>
-                <p>BMR: {{ reqs.bmr }} kcal • TDEE: {{ reqs.calories }} kcal • BMI: {{ bmi }} ({{ category }})</p>
+        <div class="header">
+            <div>
+                <h1>Good {{ 'evening' if datetime_now[-5:] > '12:00' else 'day' }}, {{ user.name.split()[0] }}</h1>
+                <p>Here is your nutrition summary for today.</p>
             </div>
-            <form id="dateForm" action="/dashboard" method="GET" style="margin: 0;">
-                <input type="date" name="date" class="date-picker" value="{{ selected_date }}" onchange="document.getElementById('dateForm').submit();" max="{{ datetime_now }}" style="cursor: pointer; font-family: inherit; font-size: 1rem; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 8px;">
+            <form id="dateForm" action="/dashboard" method="GET">
+                <input type="date" name="date" class="date-picker" value="{{ selected_date }}" onchange="document.getElementById('dateForm').submit();" max="{{ datetime_now }}">
             </form>
         </div>
 
-        <div class="stats-grid">
-            {% set cal_pct = ((consumed.calories / reqs.calories) * 100) | round | int %}
-            <div class="stat-card">
-                <div class="stat-title">Calories</div>
-                <div class="stat-value calories">{{ consumed.calories | round | int }} <span>/ {{ reqs.calories }}</span></div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="width: {{ cal_pct if cal_pct <= 100 else 100 }}%;"></div>
+        <div class="dashboard-grid">
+            <!-- Left Column: Circular Ring & Macros -->
+            <div class="summary-card">
+                {% set cal_pct = ((consumed.calories / reqs.calories) * 100) | round | int %}
+                {% set remaining = (reqs.calories - consumed.calories) | round | int %}
+                <div class="ring-container" style="background: conic-gradient(var(--primary-color) {{ cal_pct }}%, var(--card-bg-light) 0);">
+                    <div class="ring-inner">
+                        <h2>{{ remaining if remaining > 0 else 0 }}</h2>
+                        <p>kcal left</p>
+                        <div class="subtitle">▲ {{ consumed.calories | round | int }} consumed</div>
+                    </div>
                 </div>
-                <div class="stat-percent">{{ cal_pct }}% of daily goal</div>
-            </div>
 
-            {% set pro_pct = ((consumed.protein / reqs.protein) * 100) | round | int %}
-            <div class="stat-card">
-                <div class="stat-title">Protein</div>
-                <div class="stat-value">{{ consumed.protein | round | int }}g <span>/ {{ reqs.protein }}g</span></div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="width: {{ pro_pct if pro_pct <= 100 else 100 }}%; background-color: #3b82f6;"></div>
-                </div>
-                <div class="stat-percent">{{ pro_pct }}%</div>
-            </div>
-
-            {% set carb_pct = ((consumed.carbs / reqs.carbs) * 100) | round | int %}
-            <div class="stat-card">
-                <div class="stat-title">Carbs</div>
-                <div class="stat-value">{{ consumed.carbs | round | int }}g <span>/ {{ reqs.carbs }}g</span></div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="width: {{ carb_pct if carb_pct <= 100 else 100 }}%; background-color: #f59e0b;"></div>
-                </div>
-                <div class="stat-percent">{{ carb_pct }}%</div>
-            </div>
-
-            {% set fat_pct = ((consumed.fats / reqs.fats) * 100) | round | int %}
-            <div class="stat-card">
-                <div class="stat-title">Fat</div>
-                <div class="stat-value">{{ consumed.fats | round | int }}g <span>/ {{ reqs.fats }}g</span></div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="width: {{ fat_pct if fat_pct <= 100 else 100 }}%; background-color: #ef4444;"></div>
-                </div>
-                <div class="stat-percent">{{ fat_pct }}%</div>
-            </div>
-        </div>
-
-        <div class="main-grid">
-            <div class="panel">
-                <h3>Macro Split</h3>
-                <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.9rem;">
+                <div class="macro-boxes">
+                    {% set pro_pct = ((consumed.protein / reqs.protein) * 100) | round | int %}
+                    <div class="macro-box">
+                        <span>Protein</span>
+                        <strong>{{ consumed.protein | round | int }}g</strong>
+                        <div class="macro-bar"><div class="macro-bar-fill" style="width: {{ pro_pct if pro_pct <= 100 else 100 }}%; background: var(--primary-color);"></div></div>
+                    </div>
                     
+                    {% set carb_pct = ((consumed.carbs / reqs.carbs) * 100) | round | int %}
+                    <div class="macro-box">
+                        <span>Carbs</span>
+                        <strong>{{ consumed.carbs | round | int }}g</strong>
+                        <div class="macro-bar"><div class="macro-bar-fill" style="width: {{ carb_pct if carb_pct <= 100 else 100 }}%; background: #60a5fa;"></div></div>
+                    </div>
+                    
+                    {% set fat_pct = ((consumed.fats / reqs.fats) * 100) | round | int %}
+                    <div class="macro-box">
+                        <span>Fat</span>
+                        <strong>{{ consumed.fats | round | int }}g</strong>
+                        <div class="macro-bar"><div class="macro-bar-fill" style="width: {{ fat_pct if fat_pct <= 100 else 100 }}%; background: #f43f5e;"></div></div>
+                    </div>
                 </div>
-                <div class="macro-legend">
-                    <div class="legend-item"><div class="dot protein"></div> Protein: {{ consumed.protein | round | int }}g</div>
-                    <div class="legend-item"><div class="dot carbs"></div> Carbs: {{ consumed.carbs | round | int }}g</div>
-                    <div class="legend-item"><div class="dot fats"></div> Fat: {{ consumed.fats | round | int }}g</div>
+
+                <div class="alert-box">
+                    <div class="alert-icon">✦</div>
+                    <div>
+                        Your BMI is <strong>{{ bmi }} ({{ category }})</strong>. You need {{ reqs.calories | round | int }} kcal daily to {% if user.goal == 'cut' %}cut weight{% elif user.goal == 'gain' %}gain weight{% else %}maintain your weight{% endif %}.
+                    </div>
                 </div>
             </div>
 
-            <div class="panel">
-                <h3>Logged Meals ({{ meals|length }})</h3>
-                {% if meals %}
-                    <ul class="meal-list">
+            <!-- Right Column: Meals -->
+            <div class="meals-section">
+                <div class="meals-header">
+                    <h3>Logged Meals ({{ meals|length }})</h3>
+                    {% if is_today %}
+                    <a href="/log_meal" class="add-btn">+ Add food</a>
+                    {% endif %}
+                </div>
+                
+                <div class="meal-list">
+                    {% if meals %}
                         {% for meal in meals %}
-                            <li class="meal-item">
-                                <strong>{{ meal.food_name }}</strong>
-                                <span>{{ meal.calories | round | int }} kcal</span>
-                            </li>
+                            <div class="meal-item">
+                                <div class="meal-info">
+                                    <strong>{{ meal.food_name }}</strong>
+                                    <span>Logged today</span>
+                                </div>
+                                <div class="meal-cals">{{ meal.calories | round | int }} kcal</div>
+                            </div>
                         {% endfor %}
-                    </ul>
-                    {% if is_today %}
-                    <div class="action-buttons">
-                        <a href="/log_meal" class="btn btn-solid">+ Log Another Meal</a>
-                    </div>
                     {% else %}
-                    <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-top: 1rem;">Logging is disabled for past dates.</p>
+                        <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                            <p style="font-size: 1.1rem; margin-bottom: 1rem;">No meals logged on this date.</p>
+                            {% if not is_today %}
+                            <p>Logging is disabled for past dates.</p>
+                            {% endif %}
+                        </div>
                     {% endif %}
-                {% else %}
-                    <p class="empty-meals">No meals logged on this date.</p>
-                    {% if is_today %}
-                    <div class="action-buttons">
-                        <a href="/log_meal" class="btn btn-solid">+ Log Meal</a>
-                        <a href="/weekly" class="btn btn-outline">Weekly Analysis</a>
-                    </div>
-                    {% else %}
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Logging is disabled for past dates.</p>
-                    <div class="action-buttons" style="margin-top: 1rem;">
-                        <a href="/dashboard" class="btn btn-solid">Return to Today</a>
-                    </div>
-                    {% endif %}
-                {% endif %}
+                </div>
             </div>
         </div>
     </div>

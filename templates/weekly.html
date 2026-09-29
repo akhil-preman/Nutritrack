@@ -3,45 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Analysis - NutriTrack AI</title>
+    <title>Progress - NutriTrack AI</title>
     <style>
         :root {
-            --primary-color: #22c55e;
-            --bg-color: #f8fafc;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --card-bg: #ffffff;
-            --border-color: #e2e8f0;
+            --bg-color: #121212;
+            --card-bg: #1c1c1e;
+            --card-bg-light: #2c2c2e;
+            --primary-color: #c4f042;
+            --text-main: #ffffff;
+            --text-muted: #8e8e93;
+            --border-color: #2c2c2e;
         }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 0;
-            color: var(--text-main);
-        }
-        /* Navbar */
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); }
-        .nav-brand { font-size: 1.2rem; font-weight: bold; color: var(--primary-color); display: flex; align-items: center; gap: 8px; }
-        .nav-links { display: flex; align-items: center; gap: 1.5rem; font-size: 0.9rem; font-weight: 600; }
-        .nav-links a { color: var(--text-main); text-decoration: none; }
-        .nav-links a:hover { color: var(--primary-color); }
-        .btn-logout { background-color: var(--primary-color); color: white !important; padding: 0.4rem 1rem; border-radius: 20px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--text-main); }
+        
+        /* Navbar (Desktop) */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 3rem; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); }
+        .nav-brand { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; align-items: center; gap: 2rem; font-size: 1rem; font-weight: 500; }
+        .nav-links a { color: var(--text-main); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-color); }
+        .user-profile { display: flex; align-items: center; gap: 1rem; }
+        .profile-pic { width: 36px; height: 36px; border-radius: 50%; background: var(--card-bg-light); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--primary-color); }
 
-        .container { max-width: 900px; margin: 2rem auto; padding: 0 1.5rem; }
-        .header-title h1 { font-size: 2rem; margin: 0 0 0.5rem 0; color: var(--text-main); }
-        .header-title p { margin: 0 0 2rem 0; color: var(--text-muted); font-size: 0.95rem; }
+        .container { max-width: 1000px; margin: 4rem auto; padding: 0 1.5rem; }
         
-        .card { background-color: var(--card-bg); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
-        .card h3 { margin-top: 0; margin-bottom: 1rem; }
+        .header h1 { font-size: 2.5rem; font-weight: 700; margin: 0 0 8px 0; }
+        .header p { font-size: 1.1rem; color: var(--text-muted); margin: 0 0 3rem 0; }
+
+        .weekly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+        .card { background: var(--card-bg); border-radius: 24px; padding: 2.5rem; border: 1px solid var(--border-color); }
+        .card h3 { font-size: 1.4rem; margin: 0 0 1.5rem 0; font-weight: 600; }
         
-        .nutrition-table { width: 100%; border-collapse: collapse; }
-        .nutrition-table th, .nutrition-table td { border-bottom: 1px solid var(--border-color); padding: 0.8rem; text-align: left; }
-        .nutrition-table th { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
+        .macro-row { display: flex; justify-content: space-between; padding: 1.2rem 0; border-bottom: 1px solid var(--border-color); align-items: center; }
+        .macro-row:last-child { border-bottom: none; }
+        .macro-name { font-size: 1.1rem; }
+        .macro-status { font-weight: 600; font-size: 1.2rem; color: var(--primary-color); }
+        .macro-bad { color: #f43f5e; }
+
+        /* Alert */
+        .alert-box {
+            background: rgba(196, 240, 66, 0.08); border: 1px solid rgba(196, 240, 66, 0.15);
+            border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; gap: 0.8rem;
+            font-size: 1rem; margin-bottom: 1.5rem; line-height: 1.5; color: #d4d4d8;
+        }
+        .alert-box-red {
+            background: rgba(244, 63, 94, 0.08); border: 1px solid rgba(244, 63, 94, 0.15);
+        }
+        .alert-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
+        .alert-icon {
+            background: var(--primary-color); color: #000; width: 32px; height: 32px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: bold; font-size: 1.2rem;
+        }
+        .alert-icon-red { background: #f43f5e; color: white; }
+        .suggestion { color: var(--text-main); font-size: 0.95rem; font-style: italic; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 12px; margin-top: 0.5rem;}
         
-        .suggestions-box { background-color: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; padding: 1.5rem; margin-top: 1rem; }
-        .suggestion-item { margin-bottom: 0.8rem; color: #064e3b; background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid #d32f2f; box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
-        .suggestion-item strong { color: #d32f2f; }
     </style>
 </head>
 <body>
@@ -50,38 +66,77 @@
         <div class="nav-links">
             <a href="/dashboard">Dashboard</a>
             <a href="/log_meal">Log Food</a>
-            <a href="/weekly" style="color: var(--primary-color);">Weekly</a>
-            <span style="color: var(--text-muted);">{{ user.name }}</span>
-            <a href="/logout" class="btn-logout">Logout</a>
+            <a href="/weekly" class="active">Weekly Analysis</a>
+        </div>
+        <div class="user-profile">
+            <a href="/profile" style="text-decoration: none; display: flex; align-items: center;">
+                <div class="profile-pic" style="cursor: pointer; border: 2px solid transparent; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--primary-color)'" onmouseout="this.style.borderColor='transparent'">{{ user.name[0].upper() }}</div>
+            </a>
+            <a href="/logout" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; margin-left: 1rem;">Logout</a>
         </div>
     </nav>
 
     <div class="container">
-        <div class="header-title">
-            <h1>Weekly Analysis Report</h1>
-            <p></p>
+        
+        <div class="header">
+            <h1>Progress & Analysis</h1>
+            <p>7-Day Rolling Macro & Micronutrient Analysis</p>
         </div>
 
-        <div class="card">
-            <h3>7-Day Overview</h3>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">You logged meals on {{ days_logged }} out of the last 7 days.</p>
-            <table class="nutrition-table">
-                <thead>
-                    <tr><th>Nutrient</th><th>7-Day Consumed</th><th>7-Day Goal</th><th>Status</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td>Calories</td><td>{{ consumed.calories | round | int }} kcal</td><td>{{ reqs.calories | round | int }} kcal</td>
-                        <td><strong style="color: {{ 'var(--primary-color)' if consumed.calories >= reqs.calories * 0.7 else '#d32f2f' }}">{{ ((consumed.calories / reqs.calories)*100)|round|int if reqs.calories else 0 }}%</strong></td></tr>
-                    <tr><td>Protein</td><td>{{ consumed.protein | round | int }} g</td><td>{{ reqs.protein | round | int }} g</td>
-                        <td><strong style="color: {{ 'var(--primary-color)' if consumed.protein >= reqs.protein * 0.7 else '#d32f2f' }}">{{ ((consumed.protein / reqs.protein)*100)|round|int if reqs.protein else 0 }}%</strong></td></tr>
-                    <tr><td>Vitamin C</td><td>{{ consumed.vit_c | round | int }} mg</td><td>{{ reqs.vit_c | round | int }} mg</td>
-                        <td><strong style="color: {{ 'var(--primary-color)' if consumed.vit_c >= reqs.vit_c * 0.7 else '#d32f2f' }}">{{ ((consumed.vit_c / reqs.vit_c)*100)|round|int if reqs.vit_c else 0 }}%</strong></td></tr>
-                    <tr><td>Calcium</td><td>{{ consumed.calcium | round | int }} mg</td><td>{{ reqs.calcium | round | int }} mg</td>
-                        <td><strong style="color: {{ 'var(--primary-color)' if consumed.calcium >= reqs.calcium * 0.7 else '#d32f2f' }}">{{ ((consumed.calcium / reqs.calcium)*100)|round|int if reqs.calcium else 0 }}%</strong></td></tr>
-                    <tr><td>Iron</td><td>{{ consumed.iron | round | int }} mg</td><td>{{ reqs.iron | round | int }} mg</td>
-                        <td><strong style="color: {{ 'var(--primary-color)' if consumed.iron >= reqs.iron * 0.7 else '#d32f2f' }}">{{ ((consumed.iron / reqs.iron)*100)|round|int if reqs.iron else 0 }}%</strong></td></tr>
-                </tbody>
-            </table>
+        <div class="weekly-grid">
+            <div class="card">
+                <h3>Weekly Summary ({{ days_logged }} days logged)</h3>
+                
+                <div class="macro-row">
+                    <span class="macro-name">Calories</span>
+                    <span class="macro-status {% if consumed.calories < reqs.calories * 0.7 %}macro-bad{% endif %}">{{ ((consumed.calories / reqs.calories)*100)|round|int if reqs.calories else 0 }}%</span>
+                </div>
+                <div class="macro-row">
+                    <span class="macro-name">Protein</span>
+                    <span class="macro-status {% if consumed.protein < reqs.protein * 0.7 %}macro-bad{% endif %}">{{ ((consumed.protein / reqs.protein)*100)|round|int if reqs.protein else 0 }}%</span>
+                </div>
+                <div class="macro-row">
+                    <span class="macro-name">Vitamin C</span>
+                    <span class="macro-status {% if consumed.vit_c < reqs.vit_c * 0.7 %}macro-bad{% endif %}">{{ ((consumed.vit_c / reqs.vit_c)*100)|round|int if reqs.vit_c else 0 }}%</span>
+                </div>
+                <div class="macro-row">
+                    <span class="macro-name">Calcium</span>
+                    <span class="macro-status {% if consumed.calcium < reqs.calcium * 0.7 %}macro-bad{% endif %}">{{ ((consumed.calcium / reqs.calcium)*100)|round|int if reqs.calcium else 0 }}%</span>
+                </div>
+                <div class="macro-row">
+                    <span class="macro-name">Iron</span>
+                    <span class="macro-status {% if consumed.iron < reqs.iron * 0.7 %}macro-bad{% endif %}">{{ ((consumed.iron / reqs.iron)*100)|round|int if reqs.iron else 0 }}%</span>
+                </div>
+            </div>
+
+            <div class="ai-section">
+                <h3 style="font-size: 1.4rem; margin: 0 0 1.5rem 0; font-weight: 600;">AI Alerts & Suggestions</h3>
+                
+                {% if deficiencies %}
+                    {% for def in deficiencies %}
+                    <div class="alert-box alert-box-red">
+                        <div class="alert-header">
+                            <div class="alert-icon alert-icon-red">!</div>
+                            <strong style="color: white; font-size: 1.1rem;">{{ def.name }} Alert</strong>
+                        </div>
+                        <div>{{ def.message }}</div>
+                        <div class="suggestion">💡 Try eating more: <strong>{{ def.foods|join(', ') }}</strong></div>
+                    </div>
+                    {% endfor %}
+                {% elif days_logged > 0 %}
+                    <div class="alert-box">
+                        <div class="alert-header">
+                            <div class="alert-icon">✦</div>
+                            <strong style="color: white; font-size: 1.1rem;">Perfect Nutrition!</strong>
+                        </div>
+                        <div>Our AI detected no micronutrient deficiencies based on your 7-day trailing average. Keep up the great work!</div>
+                    </div>
+                {% else %}
+                    <div style="background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px dashed var(--border-color); color: var(--text-muted); text-align: center;">
+                        Start logging meals to unlock AI Deficiency Analysis.
+                    </div>
+                {% endif %}
+            </div>
         </div>
 
     </div>

@@ -26,6 +26,7 @@ class User(db.Model):
     age = db.Column(db.Integer, nullable=False)
     height_cm = db.Column(db.Float, nullable=False)
     weight_kg = db.Column(db.Float, nullable=False)
+    goal = db.Column(db.String(20), default='maintain')
     meals = db.relationship('Meal', backref='user', lazy=True)
 
 class Meal(db.Model):
@@ -54,14 +55,24 @@ def get_bmi_category(bmi):
     elif 25 <= bmi <= 29.9: return "Overweight"
     else: return "Obese"
 
-def get_daily_requirements(weight_kg, height_cm, age):
+def get_daily_requirements(weight_kg, height_cm, age, goal="maintain"):
     bmr = (10 * weight_kg) + (6.25 * height_cm) - (5 * age) + 5
-    req_calories = bmr * 1.2
+    maint_calories = bmr * 1.2
     
+    if goal == "cut":
+        req_calories = maint_calories - 500
+        protein = weight_kg * 1.6 # Higher protein when cutting
+    elif goal == "gain":
+        req_calories = maint_calories + 500
+        protein = weight_kg * 1.2 # slightly higher protein
+    else:
+        req_calories = maint_calories
+        protein = weight_kg * 0.8
+        
     return {
         "bmr": round(bmr, 1),
         "calories": round(req_calories, 1),
-        "protein": round(weight_kg * 0.8, 1),
+        "protein": round(protein, 1),
         "carbs": round((req_calories * 0.5) / 4, 1),
         "fats": round((req_calories * 0.3) / 9, 1),
         "vit_c": 90, # mg
@@ -85,7 +96,7 @@ def register():
         new_user = User(
             name=request.form.get('name'), email=email, password_hash=hashed_pw, 
             age=int(request.form.get('age')), height_cm=float(request.form.get('height_cm')), 
-            weight_kg=float(request.form.get('weight_kg'))
+            weight_kg=float(request.form.get('weight_kg')), goal=request.form.get('goal', 'maintain')
         )
         db.session.add(new_user)
         db.session.commit()
@@ -109,7 +120,7 @@ def dashboard():
         
     user = User.query.get(session['user_id'])
     bmi = calculate_bmi(user.weight_kg, user.height_cm)
-    reqs = get_daily_requirements(user.weight_kg, user.height_cm, user.age)
+    reqs = get_daily_requirements(user.weight_kg, user.height_cm, user.age, user.goal)
     
     today = datetime.now().date()
     
@@ -247,7 +258,7 @@ def weekly():
     ).all()
     
     # Calculate daily requirements and multiply by 7 for the week
-    daily_reqs = get_daily_requirements(user.weight_kg, user.height_cm, user.age)
+    daily_reqs = get_daily_requirements(user.weight_kg, user.height_cm, user.age, user.goal)
     weekly_reqs = {k: v * 7 for k, v in daily_reqs.items()}
     
     # Sum consumed nutrients over the last 7 days
@@ -264,7 +275,70 @@ def weekly():
     # Count how many unique days they logged food
     unique_days = len(set(m.date_logged for m in meals_last_7_days))
 
-    return render_template('weekly.html', user=user, reqs=weekly_reqs, consumed=consumed, days_logged=unique_days)
+    # --- AI DEFICIENCY DETECTION & DIET SUGGESTIONS ---
+    deficiencies = []
+    # Only calculate if they have logged at least something to avoid false alarms
+    if unique_days > 0:
+        # Scale requirements down to the actual days they logged food
+        active_reqs = {k: v * unique_days for k, v in daily_reqs.items()}
+        
+        # Check Protein, Vit C, Calcium, and Iron (if they are under 75% of goal)
+        threshold = 0.75
+        
+        if consumed['protein'] < active_reqs['protein'] * threshold:
+            foods = suggest_foods('protein', 3)
+            deficiencies.append({
+                "name": "Protein", 
+                "message": "You are running low on Protein. It's crucial for muscle repair and energy.",
+                "foods": foods
+            })
+            
+        if consumed['vit_c'] < active_reqs['vit_c'] * threshold:
+            foods = suggest_foods('vit_c', 3)
+            deficiencies.append({
+                "name": "Vitamin C", 
+                "message": "Your Vitamin C intake is low, which can weaken immunity.",
+                "foods": foods
+            })
+            
+        if consumed['calcium'] < active_reqs['calcium'] * threshold:
+            foods = suggest_foods('calcium', 3)
+            deficiencies.append({
+                "name": "Calcium", 
+                "message": "Low Calcium detected! This is essential for bone health.",
+                "foods": foods
+            })
+            
+        if consumed['iron'] < active_reqs['iron'] * threshold:
+            foods = suggest_foods('iron', 3)
+            deficiencies.append({
+                "name": "Iron", 
+                "message": "Your Iron levels are tracking low, which can cause fatigue.",
+                "foods": foods
+            })
+
+    return render_template('weekly.html', user=user, reqs=weekly_reqs, consumed=consumed, days_logged=unique_days, deficiencies=deficiencies)
+
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    if 'user_id' not in session: return redirect(url_for('login'))
+    user = User.query.get(session['user_id'])
+    
+    if request.method == 'POST':
+        try:
+            user.age = int(request.form.get('age'))
+            user.height_cm = float(request.form.get('height_cm'))
+            user.weight_kg = float(request.form.get('weight_kg'))
+            if request.form.get('goal'):
+                user.goal = request.form.get('goal')
+            db.session.commit()
+            flash('Profile updated successfully! New goals calculated.')
+        except ValueError:
+            flash('Invalid input. Please enter valid numbers.')
+            
+        return redirect(url_for('profile'))
+        
+    return render_template('profile.html', user=user)
 
 @app.route('/logout')
 def logout():
