@@ -47,3 +47,28 @@ def suggest_foods(nutrient, limit=2):
     sorted_foods = sorted(FOOD_DATA.items(), key=lambda x: x[1][nutrient], reverse=True)
     suggestions = [f.title() for f, data in sorted_foods[:limit]]
     return suggestions
+
+def search_food_names(query, limit=5):
+    """
+    Returns a list of food names that match the query string for autocomplete.
+    """
+    query = query.strip().lower()
+    if not query:
+        return []
+    
+    matches = []
+    # Find items that start with the query first for better UX
+    for key in FOOD_DATA.keys():
+        if key.startswith(query):
+            matches.append(key.title())
+            if len(matches) >= limit:
+                return matches
+                
+    # Then find substring matches if we haven't hit the limit
+    for key in FOOD_DATA.keys():
+        if query in key and key.title() not in matches:
+            matches.append(key.title())
+            if len(matches) >= limit:
+                break
+                
+    return matches

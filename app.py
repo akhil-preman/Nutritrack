@@ -8,7 +8,8 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-from utils.food_db import get_food_nutrition, suggest_foods
+from utils.food_db import get_food_nutrition, suggest_foods, search_food_names
+from flask import jsonify
 from utils.ai_engine import predict_food_from_image
 from werkzeug.utils import secure_filename
 
@@ -359,6 +360,13 @@ def profile():
 def logout():
     session.clear()
     return redirect(url_for('home'))
+
+
+@app.route('/api/suggestions')
+def api_suggestions():
+    query = request.args.get('q', '')
+    suggestions = search_food_names(query)
+    return jsonify(suggestions)
 
 if __name__ == '__main__':
     app.run(debug=True)
