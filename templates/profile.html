@@ -144,15 +144,15 @@
             <form method="POST" action="/profile">
                 <div class="details-grid">
                     <div class="detail-box">
-                        <input type="number" id="inp-age" name="age" value="{{ user.age }}" disabled required>
+                        <input type="number" id="inp-age" name="age" value="{{ user.age }}" min="10" max="100" disabled required>
                         <span>Years Old</span>
                     </div>
                     <div class="detail-box">
-                        <input type="number" step="0.1" id="inp-height" name="height_cm" value="{{ user.height_cm }}" disabled required>
+                        <input type="number" step="0.1" id="inp-height" name="height_cm" value="{{ user.height_cm }}" min="1" disabled required>
                         <span>cm Height</span>
                     </div>
                     <div class="detail-box">
-                        <input type="number" step="0.1" id="inp-weight" name="weight_kg" value="{{ user.weight_kg }}" disabled required>
+                        <input type="number" step="0.1" id="inp-weight" name="weight_kg" value="{{ user.weight_kg }}" min="1" disabled required>
                         <span>kg Weight</span>
                     </div>
                 </div>
