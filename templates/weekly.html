@@ -112,30 +112,71 @@
             <div class="ai-section">
                 <h3 style="font-size: 1.4rem; margin: 0 0 1.5rem 0; font-weight: 600;">AI Alerts & Suggestions</h3>
                 
-                {% if deficiencies %}
-                    {% for def in deficiencies %}
-                    <div class="alert-box alert-box-red">
-                        <div class="alert-header">
-                            <div class="alert-icon alert-icon-red">!</div>
-                            <strong style="color: white; font-size: 1.1rem;">{{ def.name }} Alert</strong>
-                        </div>
-                        <div>{{ def.message }}</div>
-                        <div class="suggestion">💡 Try eating more: <strong>{{ def.foods|join(', ') }}</strong></div>
+                
+                {% if days_logged > 0 %}
+                    <div id="ai-insights-container" style="text-align: center; padding: 2rem 0;">
+                        <button id="btn-generate-ai" onclick="generateInsights()" style="background: var(--primary-color); color: #000; border: none; padding: 1rem 2rem; border-radius: 30px; font-size: 1.1rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: transform 0.2s; box-shadow: 0 10px 20px rgba(196, 240, 66, 0.2);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                            Generate AI Analysis
+                        </button>
                     </div>
-                    {% endfor %}
-                {% elif days_logged > 0 %}
-                    <div class="alert-box">
-                        <div class="alert-header">
-                            <div class="alert-icon">✦</div>
-                            <strong style="color: white; font-size: 1.1rem;">Perfect Nutrition!</strong>
-                        </div>
-                        <div>Our AI detected no micronutrient deficiencies based on your 7-day trailing average. Keep up the great work!</div>
-                    </div>
+                    
+                    <div id="ai-results" style="display: none;"></div>
+                    
+                    <script>
+                    async function generateInsights() {
+                        const btn = document.getElementById('btn-generate-ai');
+                        const resultsDiv = document.getElementById('ai-results');
+                        
+                        btn.innerHTML = 'Analyzing Weekly Data...';
+                        btn.style.opacity = '0.7';
+                        btn.style.pointerEvents = 'none';
+                        
+                        try {
+                            const res = await fetch('/api/generate_weekly_insights');
+                            const data = await res.json();
+                            
+                            document.getElementById('ai-insights-container').style.display = 'none';
+                            resultsDiv.style.display = 'block';
+                            resultsDiv.innerHTML = '';
+                            
+                            if (data.length === 0) {
+                                resultsDiv.innerHTML = `
+                                    <div class="alert-box">
+                                        <div class="alert-header">
+                                            <div class="alert-icon">✦</div>
+                                            <strong style="color: white; font-size: 1.1rem;">Perfect Nutrition!</strong>
+                                        </div>
+                                        <div>Our AI detected no micronutrient deficiencies based on your 7-day trailing average. Keep up the great work!</div>
+                                    </div>
+                                `;
+                            } else {
+                                data.forEach(def => {
+                                    resultsDiv.innerHTML += `
+                                        <div class="alert-box alert-box-red">
+                                            <div class="alert-header">
+                                                <div class="alert-icon alert-icon-red">!</div>
+                                                <strong style="color: white; font-size: 1.1rem;">${def.name} Alert</strong>
+                                            </div>
+                                            <div>${def.message}</div>
+                                            <div class="suggestion">💡 Try eating more: <strong>${def.foods.join(', ')}</strong></div>
+                                        </div>
+                                    `;
+                                });
+                            }
+                        } catch (e) {
+                            btn.innerHTML = 'Error. Try Again';
+                            btn.style.opacity = '1';
+                            btn.style.pointerEvents = 'auto';
+                        }
+                    }
+                    </script>
                 {% else %}
                     <div style="background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px dashed var(--border-color); color: var(--text-muted); text-align: center;">
                         Start logging meals to unlock AI Deficiency Analysis.
                     </div>
                 {% endif %}
+
             </div>
         </div>
 

@@ -291,13 +291,7 @@ def weekly():
     # Count how many unique days they logged food
     unique_days = len(set(m.date_logged for m in meals_last_7_days))
 
-    # --- AI DEFICIENCY DETECTION & DIET SUGGESTIONS ---
-    deficiencies = []
-    if unique_days > 0:
-        active_reqs = {k: v * unique_days for k, v in daily_reqs.items()}
-        deficiencies = generate_weekly_deficiencies(consumed, active_reqs, unique_days)
-        
-    return render_template('weekly.html', user=user, reqs=weekly_reqs, consumed=consumed, days_logged=unique_days, deficiencies=deficiencies)
+    return render_template('weekly.html', user=user, reqs=weekly_reqs, consumed=consumed, days_logged=unique_days)
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
@@ -331,6 +325,36 @@ def api_suggestions():
     query = request.args.get('q', '')
     suggestions = search_food_names(query)
     return jsonify(suggestions)
+
+
+@app.route('/api/generate_weekly_insights')
+def api_generate_weekly_insights():
+    if 'user_id' not in session: return jsonify({"error": "Unauthorized"}), 401
+    user = User.query.get(session['user_id'])
+    
+    today = datetime.now().date()
+    seven_days_ago = today - timedelta(days=6)
+    meals = Meal.query.filter(Meal.user_id == user.id, Meal.date_logged >= seven_days_ago, Meal.date_logged <= today).all()
+    
+    unique_days = len(set(m.date_logged for m in meals))
+    if unique_days == 0:
+        return jsonify([])
+        
+    daily_reqs = get_daily_requirements(user.weight_kg, user.height_cm, user.age, user.goal)
+    active_reqs = {k: v * unique_days for k, v in daily_reqs.items()}
+    
+    consumed = {"calories": 0, "protein": 0, "carbs": 0, "fats": 0, "vit_c": 0, "calcium": 0, "iron": 0}
+    for meal in meals:
+        consumed["calories"] += meal.calories
+        consumed["protein"] += meal.protein
+        consumed["carbs"] += meal.carbs
+        consumed["fats"] += meal.fats
+        consumed["vit_c"] += meal.vit_c
+        consumed["calcium"] += meal.calcium
+        consumed["iron"] += meal.iron
+        
+    deficiencies = generate_weekly_deficiencies(consumed, active_reqs, unique_days)
+    return jsonify(deficiencies)
 
 if __name__ == '__main__':
     app.run(debug=True)
