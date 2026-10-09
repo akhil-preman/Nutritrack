@@ -3,6 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
 from utils.food_db import get_food_nutrition, suggest_foods
 from utils.ai_engine import predict_food_from_image
 from werkzeug.utils import secure_filename
@@ -227,6 +232,16 @@ def predict_meal():
         # Cleanup uploaded file
         if os.path.exists(filepath):
             os.remove(filepath)
+            
+        if predicted_food == "error_missing_api_key":
+            flash("AI Engine Error: GEMINI_API_KEY is missing in your .env file!")
+            return redirect(url_for('log_meal'))
+        elif predicted_food == "error_api_failed":
+            flash("AI Engine Error: Failed to connect to Gemini API. Check your internet or API key.")
+            return redirect(url_for('log_meal'))
+        elif predicted_food == "error_invalid_image":
+            flash("AI Engine Error: Invalid image uploaded.")
+            return redirect(url_for('log_meal'))
             
         nutrition = get_food_nutrition(predicted_food)
         if nutrition:
