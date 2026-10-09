@@ -53,7 +53,7 @@
             background: var(--card-bg-light); border-radius: 16px; padding: 1.2rem 1rem;
             display: flex; flex-direction: column; align-items: center;
         }
-        .detail-box input { 
+        .detail-box input, .detail-box select { 
             background: transparent; border: 1px solid transparent; color: var(--text-main); 
             font-size: 1.5rem; font-weight: 700; width: 100%; text-align: center; 
             padding: 8px; margin-bottom: 8px; border-radius: 12px; outline: none; transition: all 0.2s;
@@ -61,19 +61,12 @@
         
         /* Edit state styling */
         
-        .detail-box input:not(:disabled) { 
+        .detail-box input:not(:disabled), .detail-box select:not(:disabled) { 
             border: 2px solid var(--primary-color); 
             background: rgba(0, 0, 0, 0.4); 
             box-shadow: inset 0 4px 8px rgba(0,0,0,0.5), 0 0 15px rgba(196, 240, 66, 0.15); 
         }
-        
-        #inp-goal:not(:disabled) {
-            border: 2px solid var(--primary-color) !important;
-            background: rgba(0, 0, 0, 0.4) !important;
-            box-shadow: inset 0 4px 8px rgba(0,0,0,0.5), 0 0 15px rgba(196, 240, 66, 0.15);
-        }
-
-        .detail-box input:not(:disabled):focus { background: rgba(196, 240, 66, 0.1); }
+        .detail-box input:not(:disabled):focus, .detail-box select:not(:disabled):focus { background: rgba(196, 240, 66, 0.1); }
         
         .detail-box span { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
 
@@ -194,13 +187,13 @@
                     </div>
                 </div>
 
-                <div class="goal-box" style="margin-bottom: 2.5rem; text-align: left;">
-                    <label style="color: var(--text-muted); font-size: 0.85rem; display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center;">Fitness Goal</label>
-                    <select id="inp-goal" name="goal" disabled required style="width: 100%; padding: 1rem; background: var(--card-bg-light); border: 1px solid transparent; border-radius: 12px; color: white; font-size: 1.1rem; outline: none; text-align: center; font-weight: 600; cursor: pointer;">
-                        <option value="cut" {% if user.goal == 'cut' %}selected{% endif %}>Cut Weight (-500 kcal)</option>
-                        <option value="maintain" {% if user.goal == 'maintain' or not user.goal %}selected{% endif %}>Maintain Weight</option>
-                        <option value="gain" {% if user.goal == 'gain' %}selected{% endif %}>Gain Weight (+500 kcal)</option>
+                <div class="detail-box" style="margin-bottom: 2.5rem; padding: 2rem;">
+                    <select id="inp-goal" name="goal" disabled required>
+                        <option value="cut" {% if user.goal == 'cut' %}selected{% endif %}>📉 Cut Weight (-500 kcal)</option>
+                        <option value="maintain" {% if user.goal == 'maintain' or not user.goal %}selected{% endif %}>⚖️ Maintain Weight</option>
+                        <option value="gain" {% if user.goal == 'gain' %}selected{% endif %}>💪 Gain Muscle (+500 kcal)</option>
                     </select>
+                    <span>Primary Fitness Goal</span>
                 </div>
 
                 <!-- Default View Actions -->
