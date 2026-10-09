@@ -212,59 +212,7 @@
             </div>
         </div>
         <script>
-        let debounceTimer;
-        function fetchSuggestions() {
-            clearTimeout(debounceTimer);
-            const query = document.getElementById('searchInput').value;
-            const box = document.getElementById('suggestionsBox');
-            
-            if(query.trim().length < 2) {
-                box.style.display = 'none';
-                return;
-            }
-            
-            debounceTimer = setTimeout(async () => {
-                try {
-                    const res = await fetch(`/api/suggestions?q=${encodeURIComponent(query)}`);
-                    const data = await res.json();
-                    
-                    if(data.length > 0) {
-                        box.innerHTML = '';
-                        data.forEach(item => {
-                            let div = document.createElement('div');
-                            div.className = 'suggestion-item';
-                            
-                            // Bold the matched characters like Google
-                            const regex = new RegExp(`(${query})`, "gi");
-                            div.innerHTML = item.replace(regex, "<strong>$1</strong>");
-                            
-                            div.onclick = function() {
-                                document.getElementById('searchInput').value = item;
-                                box.style.display = 'none';
-                                document.getElementById('searchInput').form.submit();
-                            };
-                            box.appendChild(div);
-                        });
-                        box.style.display = 'block';
-                    } else {
-                        box.style.display = 'none';
-                    }
-                } catch (e) {
-                    console.error("Error fetching suggestions:", e);
-                }
-            }, 300);
-        }
         
-        document.addEventListener('click', function(e) {
-            const searchInput = document.getElementById('searchInput');
-            const box = document.getElementById('suggestionsBox');
-            if (searchInput && box) {
-                if(!searchInput.contains(e.target) && !box.contains(e.target)) {
-                    box.style.display = 'none';
-                }
-            }
-        });
-
             const baseNutrition = {
                 calories: {{ found_food.nutrition.calories }},
                 protein: {{ found_food.nutrition.protein }},
@@ -300,7 +248,7 @@
             const query = document.getElementById('searchInput').value;
             const box = document.getElementById('suggestionsBox');
             
-            if(query.trim().length < 2) {
+            if(query.trim().length < 1) {
                 box.style.display = 'none';
                 return;
             }
@@ -334,7 +282,7 @@
                 } catch (e) {
                     console.error("Error fetching suggestions:", e);
                 }
-            }, 300);
+            }, 0);
         }
         
         document.addEventListener('click', function(e) {
