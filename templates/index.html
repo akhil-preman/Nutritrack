@@ -4,17 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NutriTrack AI</title>
-    <!-- Link to our new CSS file -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1c1c1e;
+            --card-bg-light: #2c2c2e;
+            --primary-color: #c4f042;
+            --text-main: #ffffff;
+            --text-muted: #8e8e93;
+            --border-color: #2c2c2e;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--text-main); }
+        
+        /* Navbar */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 3rem; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); }
+        .nav-brand { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .nav-links { display: flex; align-items: center; gap: 2rem; font-size: 1rem; font-weight: 500; }
+        .nav-links a { color: var(--text-main); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--primary-color); }
+
+        .hero-container { max-width: 800px; margin: 8rem auto; padding: 0 1.5rem; text-align: center; }
+        
+        .hero-container h1 { font-size: 4rem; margin: 0 0 1rem 0; color: var(--text-main); }
+        .hero-container h1 span { color: var(--primary-color); }
+        .hero-container p { color: var(--text-muted); font-size: 1.2rem; margin-bottom: 3rem; line-height: 1.6; }
+
+        .btn-group { display: flex; gap: 1.5rem; justify-content: center; }
+        .btn { padding: 1.2rem 3rem; border-radius: 16px; font-size: 1.1rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: transform 0.2s; }
+        .btn-primary { background: var(--primary-color); color: #000; border: none; }
+        .btn-primary:hover { transform: scale(1.05); }
+        .btn-secondary { background: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); }
+        .btn-secondary:hover { background: rgba(196, 240, 66, 0.1); }
+    </style>
 </head>
 <body>
-    <div class="container" style="text-align: center;">
-        <h1>NutriTrack AI</h1>
-        <p class="subtitle">BMI and Age based nutrition deficiency detection</p>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">NutriTrack AI</a>
+        <div class="nav-links">
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </div>
+    </nav>
+
+    <div class="hero-container">
+        <h1>Track smarter with <span>AI</span></h1>
+        <p>NutriTrack uses Google Gemini Vision AI to instantly recognize your meals, calculate macros, and suggest personalized Indian foods to hit your fitness goals.</p>
         
-        <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 10px;">
-            <a href="/login" style="display: block; background-color: var(--primary-color); color: white; padding: 0.8rem; border-radius: 6px; text-decoration: none; font-weight: bold;">Login</a>
-            <a href="/register" style="display: block; background-color: white; color: var(--primary-color); border: 2px solid var(--primary-color); padding: 0.8rem; border-radius: 6px; text-decoration: none; font-weight: bold;">Register</a>
+        <div class="btn-group">
+            <a href="/register" class="btn btn-primary">Get Started</a>
+            <a href="/login" class="btn btn-secondary">Login</a>
         </div>
     </div>
 </body>

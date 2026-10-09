@@ -8,68 +8,88 @@
         :root {
             --bg-color: #121212;
             --card-bg: #1c1c1e;
-            --input-bg: #2c2c2e;
+            --card-bg-light: #2c2c2e;
             --primary-color: #c4f042;
             --text-main: #ffffff;
             --text-muted: #8e8e93;
+            --border-color: #2c2c2e;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--text-main); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--text-main); }
         
-        .auth-container { background: var(--card-bg); width: 100%; max-width: 400px; padding: 3rem 2.5rem; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid var(--input-bg); box-sizing: border-box; }
-        
-        .brand { text-align: center; margin-bottom: 2.5rem; }
-        .brand h1 { font-size: 2rem; color: var(--primary-color); margin: 0 0 8px 0; font-weight: 700; }
-        .brand p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+        /* Navbar (Matches Inside Pages) */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 3rem; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); }
+        .nav-brand { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .nav-links { display: flex; align-items: center; gap: 2rem; font-size: 1rem; font-weight: 500; }
+        .nav-links a { color: var(--text-main); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-color); }
 
-        .flashes { list-style: none; padding: 0; margin: 0 0 1.5rem 0; }
-        .flashes li { background: rgba(244, 63, 94, 0.1); color: #f43f5e; padding: 1rem; border-radius: 12px; font-size: 0.9rem; text-align: center; border: 1px solid rgba(244, 63, 94, 0.2); }
+        .container { max-width: 500px; margin: 4rem auto; padding: 0 1.5rem; }
+        
+        .content-box { background: var(--card-bg); border-radius: 24px; padding: 3rem; border: 1px solid var(--border-color); }
+
+        .header { text-align: center; margin-bottom: 2rem; }
+        .header h1 { font-size: 2rem; margin: 0 0 10px 0; color: var(--primary-color); }
+        .header p { color: var(--text-muted); font-size: 1rem; margin: 0; }
+
+        .flashes { list-style: none; padding: 0; margin: 0 0 2rem 0; text-align: center; }
+        .flashes li { background: rgba(244, 63, 94, 0.1); color: #f43f5e; padding: 1rem; border-radius: 12px; font-size: 1rem; border: 1px solid rgba(244, 63, 94, 0.2); }
 
         .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-muted); }
-        .form-group input { width: 100%; padding: 1rem; background: var(--input-bg); border: 1px solid transparent; border-radius: 12px; color: white; font-size: 1rem; box-sizing: border-box; outline: none; transition: border 0.2s; }
-        .form-group input:focus { border-color: var(--primary-color); }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 0.95rem; color: var(--text-muted); }
+        .form-group input, .form-group select { width: 100%; padding: 1.2rem; background: var(--card-bg-light); border: 1px solid transparent; border-radius: 16px; color: white; font-size: 1rem; box-sizing: border-box; outline: none; transition: border 0.2s; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary-color); background: rgba(196, 240, 66, 0.05); }
         
         .btn-submit { width: 100%; padding: 1.2rem; background: var(--primary-color); color: #000; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: transform 0.2s; margin-top: 1rem; }
         .btn-submit:hover { transform: scale(1.02); }
 
-        .auth-links { text-align: center; margin-top: 2rem; font-size: 0.9rem; color: var(--text-muted); }
+        .auth-links { text-align: center; margin-top: 2rem; font-size: 0.95rem; color: var(--text-muted); }
         .auth-links a { color: var(--primary-color); text-decoration: none; font-weight: 600; }
         .auth-links a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-    <div class="auth-container">
-        <div class="brand">
-            <h1>NutriTrack AI</h1>
-            <p>Welcome back, log in to continue.</p>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">NutriTrack AI</a>
+        <div class="nav-links">
+            <a href="/login" class="active">Login</a>
+            <a href="/register">Register</a>
         </div>
+    </nav>
 
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            <ul class="flashes">
-            {% for message in messages %}
-              <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
-          {% endif %}
-        {% endwith %}
-
-        <form method="POST" action="/login">
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" required>
+    <div class="container">
+        <div class="content-box">
+            <div class="header">
+                <h1>Welcome Back</h1>
+                <p>Log in to access your dashboard</p>
             </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="/login">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <button type="submit" class="btn-submit">Log In</button>
+            </form>
+
+            <div class="auth-links">
+                Don't have an account? <a href="/register">Create one here</a>
             </div>
-
-            <button type="submit" class="btn-submit">Log in</button>
-        </form>
-
-        <div class="auth-links">
-            Don't have an account? <a href="/register">Register here</a>
         </div>
     </div>
 </body>
