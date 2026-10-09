@@ -10,7 +10,7 @@ load_dotenv()
 
 from utils.food_db import get_food_nutrition, suggest_foods, search_food_names
 from flask import jsonify
-from utils.ai_engine import predict_food_from_image
+from utils.ai_engine import predict_food_from_image, generate_weekly_deficiencies
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -293,46 +293,10 @@ def weekly():
 
     # --- AI DEFICIENCY DETECTION & DIET SUGGESTIONS ---
     deficiencies = []
-    # Only calculate if they have logged at least something to avoid false alarms
     if unique_days > 0:
-        # Scale requirements down to the actual days they logged food
         active_reqs = {k: v * unique_days for k, v in daily_reqs.items()}
+        deficiencies = generate_weekly_deficiencies(consumed, active_reqs, unique_days)
         
-        # Check Protein, Vit C, Calcium, and Iron (if they are under 75% of goal)
-        threshold = 0.75
-        
-        if consumed['protein'] < active_reqs['protein'] * threshold:
-            foods = suggest_foods('protein', 3)
-            deficiencies.append({
-                "name": "Protein", 
-                "message": "You are running low on Protein. It's crucial for muscle repair and energy.",
-                "foods": foods
-            })
-            
-        if consumed['vit_c'] < active_reqs['vit_c'] * threshold:
-            foods = suggest_foods('vit_c', 3)
-            deficiencies.append({
-                "name": "Vitamin C", 
-                "message": "Your Vitamin C intake is low, which can weaken immunity.",
-                "foods": foods
-            })
-            
-        if consumed['calcium'] < active_reqs['calcium'] * threshold:
-            foods = suggest_foods('calcium', 3)
-            deficiencies.append({
-                "name": "Calcium", 
-                "message": "Low Calcium detected! This is essential for bone health.",
-                "foods": foods
-            })
-            
-        if consumed['iron'] < active_reqs['iron'] * threshold:
-            foods = suggest_foods('iron', 3)
-            deficiencies.append({
-                "name": "Iron", 
-                "message": "Your Iron levels are tracking low, which can cause fatigue.",
-                "foods": foods
-            })
-
     return render_template('weekly.html', user=user, reqs=weekly_reqs, consumed=consumed, days_logged=unique_days, deficiencies=deficiencies)
 
 @app.route('/profile', methods=['GET', 'POST'])
