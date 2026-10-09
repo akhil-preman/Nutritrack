@@ -60,7 +60,7 @@
         }
         
         /* Edit state styling */
-        .detail-box input:not(:disabled) { border-bottom: 2px solid var(--primary-color); background: rgba(255,255,255,0.05); }
+        .detail-box input:not(:disabled) { border: 1px solid var(--primary-color); background: var(--bg-color); box-shadow: 0 0 10px rgba(196, 240, 66, 0.2); }
         .detail-box input:not(:disabled):focus { background: rgba(196, 240, 66, 0.1); }
         
         .detail-box span { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -109,7 +109,7 @@
 
 
         /* Disabled States (Read-Only Mode) */
-        .form-group input:disabled, .form-group select:disabled, #inp-goal:disabled {
+        input:disabled, select:disabled {
             background-image: none !important; /* Hide dropdown arrow */
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -118,12 +118,19 @@
             cursor: default;
         }
         
-        /* Hide number spinners on disabled */
-        .form-group input[type=number]:disabled::-webkit-inner-spin-button, 
-        .form-group input[type=number]:disabled::-webkit-outer-spin-button { 
+        
+        /* Hide all number spinners completely */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none; 
             margin: 0; 
         }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Hide number spinners on disabled */
+        
 
     </style>
 </head>
