@@ -56,11 +56,23 @@
         .detail-box input { 
             background: transparent; border: 1px solid transparent; color: var(--text-main); 
             font-size: 1.5rem; font-weight: 700; width: 100%; text-align: center; 
-            margin-bottom: 4px; border-radius: 8px; outline: none; transition: all 0.2s;
+            padding: 8px; margin-bottom: 8px; border-radius: 12px; outline: none; transition: all 0.2s;
         }
         
         /* Edit state styling */
-        .detail-box input:not(:disabled) { border: 1px solid var(--primary-color); background: var(--bg-color); box-shadow: 0 0 10px rgba(196, 240, 66, 0.2); }
+        
+        .detail-box input:not(:disabled) { 
+            border: 2px solid var(--primary-color); 
+            background: rgba(0, 0, 0, 0.4); 
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.5), 0 0 15px rgba(196, 240, 66, 0.15); 
+        }
+        
+        #inp-goal:not(:disabled) {
+            border: 2px solid var(--primary-color) !important;
+            background: rgba(0, 0, 0, 0.4) !important;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.5), 0 0 15px rgba(196, 240, 66, 0.15);
+        }
+
         .detail-box input:not(:disabled):focus { background: rgba(196, 240, 66, 0.1); }
         
         .detail-box span { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -213,7 +225,7 @@
             document.getElementById('inp-height').disabled = false;
             document.getElementById('inp-weight').disabled = false;
             document.getElementById('inp-goal').disabled = false;
-            document.getElementById('inp-goal').style.borderBottom = '2px solid var(--primary-color)';
+            
             
             // Swap buttons
             document.getElementById('view-actions').style.display = 'none';
@@ -229,7 +241,7 @@
             document.getElementById('inp-height').disabled = true;
             document.getElementById('inp-weight').disabled = true;
             document.getElementById('inp-goal').disabled = true;
-            document.getElementById('inp-goal').style.borderBottom = '1px solid transparent';
+            
             
             // Revert to original values from backend
             document.getElementById('inp-age').value = "{{ user.age }}";
