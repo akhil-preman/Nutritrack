@@ -291,7 +291,7 @@ def weekly():
     # Count how many unique days they logged food
     unique_days = len(set(m.date_logged for m in meals_last_7_days))
 
-    return render_template('weekly.html', user=user, reqs=weekly_reqs, consumed=consumed, days_logged=unique_days)
+    return render_template('weekly.html', user=user, reqs=weekly_reqs, daily_reqs=daily_reqs, consumed=consumed, days_logged=unique_days)
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():

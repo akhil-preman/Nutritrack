@@ -35,11 +35,20 @@
         .card { background: var(--card-bg); border-radius: 24px; padding: 2.5rem; border: 1px solid var(--border-color); }
         .card h3 { font-size: 1.4rem; margin: 0 0 1.5rem 0; font-weight: 600; }
         
-        .macro-row { display: flex; justify-content: space-between; padding: 1.2rem 0; border-bottom: 1px solid var(--border-color); align-items: center; }
+        .macro-row { padding: 1rem 0; border-bottom: 1px solid var(--border-color); }
         .macro-row:last-child { border-bottom: none; }
-        .macro-name { font-size: 1.1rem; }
-        .macro-status { font-weight: 600; font-size: 1.2rem; color: var(--primary-color); }
-        .macro-bad { color: #f43f5e; }
+        .macro-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.6rem; }
+        .macro-name { font-size: 1.05rem; font-weight: 600; color: var(--text-main); }
+        .macro-target-hint { display: block; font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+        .macro-numbers { display: flex; align-items: baseline; gap: 0.8rem; }
+        .macro-consumed { font-size: 0.95rem; color: var(--text-muted); }
+        .macro-consumed strong { color: var(--text-main); font-weight: 700; font-size: 1.05rem; }
+        .macro-badge { font-weight: 700; font-size: 0.95rem; min-width: 42px; text-align: right; }
+        .badge-good { color: var(--primary-color); }
+        .badge-low { color: #f43f5e; }
+        
+        .macro-bar { width: 100%; height: 8px; background: var(--card-bg-light); border-radius: 6px; overflow: hidden; }
+        .macro-bar-fill { height: 100%; border-radius: 6px; transition: width 0.4s ease; }
 
         /* Alert */
         .alert-box {
@@ -85,27 +94,143 @@
 
         <div class="weekly-grid">
             <div class="card">
-                <h3>Weekly Summary ({{ days_logged }} days logged)</h3>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem;">
+                    <h3 style="margin: 0;">Weekly Summary</h3>
+                    <span style="font-size: 0.85rem; color: var(--text-muted); background: var(--card-bg-light); padding: 4px 12px; border-radius: 12px; font-weight: 500;">{{ days_logged }} of 7 days logged</span>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0 0 1.5rem 0;">
+                    7-day totals consumed vs 7-day targets (based on {{ user.weight_kg }}kg bodyweight, {{ user.goal }} goal).
+                </p>
                 
+                <!-- Calories -->
+                {% set cal_pct = ((consumed.calories / reqs.calories)*100)|round|int if reqs.calories else 0 %}
                 <div class="macro-row">
-                    <span class="macro-name">Calories</span>
-                    <span class="macro-status {% if consumed.calories < reqs.calories * 0.7 %}macro-bad{% endif %}">{{ ((consumed.calories / reqs.calories)*100)|round|int if reqs.calories else 0 }}%</span>
+                    <div class="macro-header">
+                        <div>
+                            <span class="macro-name">Calories</span>
+                            <span class="macro-target-hint">Daily goal: {{ daily_reqs.calories|round|int }} kcal/day</span>
+                        </div>
+                        <div class="macro-numbers">
+                            <span class="macro-consumed"><strong>{{ consumed.calories|round|int }}</strong> / {{ reqs.calories|round|int }} kcal</span>
+                            <span class="macro-badge {% if cal_pct < 70 %}badge-low{% else %}badge-good{% endif %}">{{ cal_pct }}%</span>
+                        </div>
+                    </div>
+                    <div class="macro-bar">
+                        <div class="macro-bar-fill" style="width: {{ [cal_pct, 100]|min }}%; background: var(--primary-color);"></div>
+                    </div>
                 </div>
+
+                <!-- Protein -->
+                {% set pro_pct = ((consumed.protein / reqs.protein)*100)|round|int if reqs.protein else 0 %}
                 <div class="macro-row">
-                    <span class="macro-name">Protein</span>
-                    <span class="macro-status {% if consumed.protein < reqs.protein * 0.7 %}macro-bad{% endif %}">{{ ((consumed.protein / reqs.protein)*100)|round|int if reqs.protein else 0 }}%</span>
+                    <div class="macro-header">
+                        <div>
+                            <span class="macro-name">Protein</span>
+                            <span class="macro-target-hint">Daily goal: {{ daily_reqs.protein|round(1) }}g/day</span>
+                        </div>
+                        <div class="macro-numbers">
+                            <span class="macro-consumed"><strong>{{ consumed.protein|round(1) }}g</strong> / {{ reqs.protein|round(1) }}g</span>
+                            <span class="macro-badge {% if pro_pct < 70 %}badge-low{% else %}badge-good{% endif %}">{{ pro_pct }}%</span>
+                        </div>
+                    </div>
+                    <div class="macro-bar">
+                        <div class="macro-bar-fill" style="width: {{ [pro_pct, 100]|min }}%; background: #34d399;"></div>
+                    </div>
                 </div>
+
+                <!-- Carbs -->
+                {% set carb_pct = ((consumed.carbs / reqs.carbs)*100)|round|int if reqs.carbs else 0 %}
                 <div class="macro-row">
-                    <span class="macro-name">Vitamin C</span>
-                    <span class="macro-status {% if consumed.vit_c < reqs.vit_c * 0.7 %}macro-bad{% endif %}">{{ ((consumed.vit_c / reqs.vit_c)*100)|round|int if reqs.vit_c else 0 }}%</span>
+                    <div class="macro-header">
+                        <div>
+                            <span class="macro-name">Carbs</span>
+                            <span class="macro-target-hint">Daily goal: {{ daily_reqs.carbs|round(1) }}g/day</span>
+                        </div>
+                        <div class="macro-numbers">
+                            <span class="macro-consumed"><strong>{{ consumed.carbs|round(1) }}g</strong> / {{ reqs.carbs|round(1) }}g</span>
+                            <span class="macro-badge {% if carb_pct < 70 %}badge-low{% else %}badge-good{% endif %}">{{ carb_pct }}%</span>
+                        </div>
+                    </div>
+                    <div class="macro-bar">
+                        <div class="macro-bar-fill" style="width: {{ [carb_pct, 100]|min }}%; background: #60a5fa;"></div>
+                    </div>
                 </div>
+
+                <!-- Fats -->
+                {% set fat_pct = ((consumed.fats / reqs.fats)*100)|round|int if reqs.fats else 0 %}
                 <div class="macro-row">
-                    <span class="macro-name">Calcium</span>
-                    <span class="macro-status {% if consumed.calcium < reqs.calcium * 0.7 %}macro-bad{% endif %}">{{ ((consumed.calcium / reqs.calcium)*100)|round|int if reqs.calcium else 0 }}%</span>
+                    <div class="macro-header">
+                        <div>
+                            <span class="macro-name">Fats</span>
+                            <span class="macro-target-hint">Daily goal: {{ daily_reqs.fats|round(1) }}g/day</span>
+                        </div>
+                        <div class="macro-numbers">
+                            <span class="macro-consumed"><strong>{{ consumed.fats|round(1) }}g</strong> / {{ reqs.fats|round(1) }}g</span>
+                            <span class="macro-badge {% if fat_pct < 70 %}badge-low{% else %}badge-good{% endif %}">{{ fat_pct }}%</span>
+                        </div>
+                    </div>
+                    <div class="macro-bar">
+                        <div class="macro-bar-fill" style="width: {{ [fat_pct, 100]|min }}%; background: #fb7185;"></div>
+                    </div>
                 </div>
+
+                <!-- Section Divider for Micronutrients -->
+                <div style="margin: 1.2rem 0 0.6rem 0; padding-top: 0.8rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);">Key Micronutrients</span>
+                </div>
+
+                <!-- Vitamin C -->
+                {% set vitc_pct = ((consumed.vit_c / reqs.vit_c)*100)|round|int if reqs.vit_c else 0 %}
                 <div class="macro-row">
-                    <span class="macro-name">Iron</span>
-                    <span class="macro-status {% if consumed.iron < reqs.iron * 0.7 %}macro-bad{% endif %}">{{ ((consumed.iron / reqs.iron)*100)|round|int if reqs.iron else 0 }}%</span>
+                    <div class="macro-header">
+                        <div>
+                            <span class="macro-name">Vitamin C</span>
+                            <span class="macro-target-hint">Daily goal: {{ daily_reqs.vit_c }}mg/day</span>
+                        </div>
+                        <div class="macro-numbers">
+                            <span class="macro-consumed"><strong>{{ consumed.vit_c|round(1) }}mg</strong> / {{ reqs.vit_c|round|int }}mg</span>
+                            <span class="macro-badge {% if vitc_pct < 70 %}badge-low{% else %}badge-good{% endif %}">{{ vitc_pct }}%</span>
+                        </div>
+                    </div>
+                    <div class="macro-bar">
+                        <div class="macro-bar-fill" style="width: {{ [vitc_pct, 100]|min }}%; background: #f59e0b;"></div>
+                    </div>
+                </div>
+
+                <!-- Calcium -->
+                {% set calc_pct = ((consumed.calcium / reqs.calcium)*100)|round|int if reqs.calcium else 0 %}
+                <div class="macro-row">
+                    <div class="macro-header">
+                        <div>
+                            <span class="macro-name">Calcium</span>
+                            <span class="macro-target-hint">Daily goal: {{ daily_reqs.calcium }}mg/day</span>
+                        </div>
+                        <div class="macro-numbers">
+                            <span class="macro-consumed"><strong>{{ consumed.calcium|round(1) }}mg</strong> / {{ reqs.calcium|round|int }}mg</span>
+                            <span class="macro-badge {% if calc_pct < 70 %}badge-low{% else %}badge-good{% endif %}">{{ calc_pct }}%</span>
+                        </div>
+                    </div>
+                    <div class="macro-bar">
+                        <div class="macro-bar-fill" style="width: {{ [calc_pct, 100]|min }}%; background: #a78bfa;"></div>
+                    </div>
+                </div>
+
+                <!-- Iron -->
+                {% set iron_pct = ((consumed.iron / reqs.iron)*100)|round|int if reqs.iron else 0 %}
+                <div class="macro-row">
+                    <div class="macro-header">
+                        <div>
+                            <span class="macro-name">Iron</span>
+                            <span class="macro-target-hint">Daily goal: {{ daily_reqs.iron }}mg/day</span>
+                        </div>
+                        <div class="macro-numbers">
+                            <span class="macro-consumed"><strong>{{ consumed.iron|round(1) }}mg</strong> / {{ reqs.iron|round|int }}mg</span>
+                            <span class="macro-badge {% if iron_pct < 70 %}badge-low{% else %}badge-good{% endif %}">{{ iron_pct }}%</span>
+                        </div>
+                    </div>
+                    <div class="macro-bar">
+                        <div class="macro-bar-fill" style="width: {{ [iron_pct, 100]|min }}%; background: #38bdf8;"></div>
+                    </div>
                 </div>
             </div>
 
