@@ -78,10 +78,11 @@
 
         .qty-row { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg-light); border-radius: 16px; padding: 1rem 1.5rem; margin-bottom: 2rem; }
         .qty-row span { color: var(--text-muted); font-size: 1rem; }
-        .qty-controls { display: flex; align-items: center; gap: 1.5rem; }
+        .qty-controls { display: flex; align-items: center; gap: 1.2rem; }
         .qty-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-color); background: var(--card-bg); color: white; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; }
         .qty-btn:hover { background: var(--border-color); }
-        .qty-input { background: transparent; border: none; color: white; width: 50px; text-align: center; font-size: 1.3rem; font-weight: bold; outline: none; }
+        .qty-input { background: transparent; border: none; color: white; width: 65px; text-align: center; font-size: 1.3rem; font-weight: bold; outline: none; -moz-appearance: textfield; }
+        .qty-input::-webkit-inner-spin-button, .qty-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
         .btn-add { background: var(--primary-color); color: #000; width: 100%; padding: 1.2rem; border-radius: 16px; border: none; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: transform 0.2s; }
         .btn-add:hover { transform: scale(1.02); }
@@ -187,23 +188,18 @@
                     <div class="macro-col"><strong id="val-fats">{{ found_food.nutrition.fats }}g</strong><span>fat</span></div>
                 </div>
 
-                {% set lower_name = found_food.name.lower() %}
-                {% if 'apple' in lower_name or 'egg' in lower_name or 'banana' in lower_name or 'orange' in lower_name or 'piece' in lower_name %}
-                    {% set unit = 'Pieces' %}
-                {% elif 'dal' in lower_name or 'soup' in lower_name or 'kheer' in lower_name or 'curry' in lower_name %}
-                    {% set unit = 'Bowls' %}
-                {% else %}
-                    {% set unit = 'Servings / Plates' %}
-                {% endif %}
-
                 <form id="confirmForm" method="POST" action="/confirm_log_meal">
                     <input type="hidden" name="food_name" value="{{ found_food.name }}">
+                    <input type="hidden" id="quantityHidden" name="quantity" value="100">
                     <div class="qty-row">
-                        <span>{{ unit }}</span>
+                        <span>Weight in Grams</span>
                         <div class="qty-controls">
-                            <button type="button" class="qty-btn" onclick="adjQty(-0.5)">-</button>
-                            <input type="number" id="quantityInput" name="quantity" value="1" min="0.5" step="0.5" oninput="updateNutrition()" class="qty-input">
-                            <button type="button" class="qty-btn" onclick="adjQty(0.5)">+</button>
+                            <button type="button" class="qty-btn" onclick="adjQty(-25)">-</button>
+                            <div style="display: flex; align-items: center; gap: 4px;">
+                                <input type="number" id="quantityInput" name="grams" value="100" min="1" step="10" oninput="updateNutrition()" class="qty-input">
+                                <span style="color: var(--text-muted); font-size: 1.1rem; font-weight: 600;">g</span>
+                            </div>
+                            <button type="button" class="qty-btn" onclick="adjQty(25)">+</button>
                         </div>
                     </div>
                     <button type="submit" class="btn-add">Add to Log - <span id="btn-kcal">{{ found_food.nutrition.calories }}</span> kcal</button>
@@ -212,7 +208,7 @@
             </div>
         </div>
         <script>
-        
+            // Base nutrition values in the database are defined per 100g
             const baseNutrition = {
                 calories: {{ found_food.nutrition.calories }},
                 protein: {{ found_food.nutrition.protein }},
@@ -223,19 +219,21 @@
             function adjQty(val) {
                 let inp = document.getElementById('quantityInput');
                 let cur = parseFloat(inp.value) || 0;
-                if(cur + val >= 0.5) {
-                    inp.value = cur + val;
-                    updateNutrition();
-                }
+                let nextVal = cur + val;
+                if(nextVal < 1) nextVal = 1;
+                inp.value = nextVal;
+                updateNutrition();
             }
 
             function updateNutrition() {
-                let qty = parseFloat(document.getElementById('quantityInput').value) || 0;
-                document.getElementById('val-calories').innerText = (baseNutrition.calories * qty).toFixed(1);
-                document.getElementById('btn-kcal').innerText = (baseNutrition.calories * qty).toFixed(1);
-                document.getElementById('val-protein').innerText = (baseNutrition.protein * qty).toFixed(1) + 'g';
-                document.getElementById('val-carbs').innerText = (baseNutrition.carbs * qty).toFixed(1) + 'g';
-                document.getElementById('val-fats').innerText = (baseNutrition.fats * qty).toFixed(1) + 'g';
+                let grams = parseFloat(document.getElementById('quantityInput').value) || 0;
+                let factor = grams / 100.0;
+                document.getElementById('val-calories').innerText = (baseNutrition.calories * factor).toFixed(1);
+                document.getElementById('btn-kcal').innerText = (baseNutrition.calories * factor).toFixed(1);
+                document.getElementById('val-protein').innerText = (baseNutrition.protein * factor).toFixed(1) + 'g';
+                document.getElementById('val-carbs').innerText = (baseNutrition.carbs * factor).toFixed(1) + 'g';
+                document.getElementById('val-fats').innerText = (baseNutrition.fats * factor).toFixed(1) + 'g';
+                document.getElementById('quantityHidden').value = grams;
             }
         </script>
         {% endif %}

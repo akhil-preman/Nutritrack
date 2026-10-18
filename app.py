@@ -211,23 +211,38 @@ def confirm_log_meal():
     if 'user_id' not in session: return redirect(url_for('login'))
     
     food_name = request.form.get('food_name')
-    quantity = float(request.form.get('quantity', 1.0))
+    
+    # Weight in grams (database nutritional values are calibrated per 100g)
+    if request.form.get('grams'):
+        grams = float(request.form.get('grams', 100))
+        factor = grams / 100.0
+        portion_label = f"{int(grams) if grams.is_integer() else grams}g"
+    else:
+        qty = float(request.form.get('quantity', 100))
+        if qty >= 10:
+            factor = qty / 100.0
+            portion_label = f"{int(qty) if qty.is_integer() else qty}g"
+        else:
+            factor = qty
+            portion_label = f"{qty}x"
+            
     nutrition = get_food_nutrition(food_name)
     
     if nutrition:
         new_meal = Meal(
-            user_id=session['user_id'], food_name=f"{quantity}x {food_name.title()}", 
-            calories=nutrition['calories'] * quantity, 
-            protein=nutrition['protein'] * quantity, 
-            carbs=nutrition['carbs'] * quantity, 
-            fats=nutrition['fats'] * quantity,
-            vit_c=nutrition['vit_c'] * quantity, 
-            calcium=nutrition['calcium'] * quantity, 
-            iron=nutrition['iron'] * quantity
+            user_id=session['user_id'], 
+            food_name=f"{portion_label} {food_name.title()}", 
+            calories=round(nutrition['calories'] * factor, 1), 
+            protein=round(nutrition['protein'] * factor, 1), 
+            carbs=round(nutrition['carbs'] * factor, 1), 
+            fats=round(nutrition['fats'] * factor, 1),
+            vit_c=round(nutrition['vit_c'] * factor, 1), 
+            calcium=round(nutrition['calcium'] * factor, 1), 
+            iron=round(nutrition['iron'] * factor, 1)
         )
         db.session.add(new_meal)
         db.session.commit()
-        flash(f"Successfully logged {quantity}x {food_name.title()}!")
+        flash(f"Successfully logged {portion_label} of {food_name.title()}!")
         return redirect(url_for('dashboard'))
         
     flash("Error logging meal.")
