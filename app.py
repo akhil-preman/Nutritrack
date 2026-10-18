@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-from utils.food_db import get_food_nutrition, suggest_foods, search_food_names, add_custom_food, delete_custom_food, get_all_foods, FOOD_DATA
+from utils.food_db import get_food_nutrition, suggest_foods, search_food_names, add_custom_food, delete_custom_food, get_all_foods, is_count_based_food, FOOD_DATA
 from utils.ai_engine import predict_food_from_image, generate_weekly_deficiencies
 from werkzeug.utils import secure_filename
 
@@ -199,7 +199,8 @@ def log_meal():
             # Instead of saving, just return the data to the template to show the modal
             found_food = {
                 "name": food_name.title(),
-                "nutrition": nutrition
+                "nutrition": nutrition,
+                "is_count_based": is_count_based_food(food_name)
             }
         else:
             flash(f"Sorry, couldn't find '{food_name}'. Try 'Palak Paneer' or 'Egg'.")
@@ -210,21 +211,19 @@ def log_meal():
 def confirm_log_meal():
     if 'user_id' not in session: return redirect(url_for('login'))
     
-    food_name = request.form.get('food_name')
+    food_name = request.form.get('food_name', '')
+    is_count = request.form.get('is_count_based') == '1' or is_count_based_food(food_name)
     
-    # Weight in grams (database nutritional values are calibrated per 100g)
-    if request.form.get('grams'):
-        grams = float(request.form.get('grams', 100))
+    if is_count:
+        num = float(request.form.get('quantity_num') or request.form.get('quantity', 1))
+        if num < 1: num = 1
+        factor = num
+        portion_label = f"{int(num) if num.is_integer() else num}x"
+    else:
+        grams = float(request.form.get('grams') or request.form.get('quantity', 100))
+        if grams < 1: grams = 1
         factor = grams / 100.0
         portion_label = f"{int(grams) if grams.is_integer() else grams}g"
-    else:
-        qty = float(request.form.get('quantity', 100))
-        if qty >= 10:
-            factor = qty / 100.0
-            portion_label = f"{int(qty) if qty.is_integer() else qty}g"
-        else:
-            factor = qty
-            portion_label = f"{qty}x"
             
     nutrition = get_food_nutrition(food_name)
     
@@ -290,7 +289,8 @@ def predict_meal():
             found_food = {
                 "name": predicted_food.title(),
                 "nutrition": nutrition,
-                "is_ai": True
+                "is_ai": True,
+                "is_count_based": is_count_based_food(predicted_food)
             }
             return render_template('log_meal.html', user=user, found_food=found_food)
             

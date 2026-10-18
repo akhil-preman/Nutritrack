@@ -137,3 +137,35 @@ def get_all_foods():
             "iron": data["iron"]
         })
     return items
+
+UNCOOKED_SINGLE_ITEMS = [
+    'egg', 'apple', 'banana', 'orange', 'mango', 'papaya', 'guava',
+    'watermelon', 'grapes', 'grape', 'pineapple', 'strawberry', 'berries', 'berry',
+    'pomegranate', 'kiwi', 'pear', 'peach', 'plum', 'fig', 'chikoo',
+    'sapota', 'custard apple', 'sweet lime', 'mosambi', 'lemon', 'lime', 'avocado',
+    'cucumber', 'tomato', 'carrot', 'radish'
+]
+
+COOKED_COMPOSITE_WORDS = [
+    'curry', 'sabji', 'sabzi', 'masala', 'bhurji', 'fry', 'halwa', 'kheer',
+    'vadi', 'rice', 'dal', 'daal', 'biryani', 'pitha', 'ladoo', 'laddu',
+    'roll', 'sandwich', 'salad', 'cake', 'shake', 'juice', 'jam', 'tikka', 'bhatura', 'dosa'
+]
+
+def is_count_based_food(name):
+    """
+    Checks if a food is an uncooked single-ingredient item (e.g., egg, apple)
+    that should be measured in whole numbers rather than grams.
+    """
+    if not name:
+        return False
+    lower = name.lower().strip()
+    if any(cw in lower for cw in COOKED_COMPOSITE_WORDS):
+        return False
+    for item in UNCOOKED_SINGLE_ITEMS:
+        if item == lower or lower.startswith(item + ' ') or lower.endswith(' ' + item) or f' {item} ' in lower or f'({item}' in lower or f'{item})' in lower:
+            return True
+        if lower == item + 's' or lower == item + 'es':
+            return True
+    return False
+

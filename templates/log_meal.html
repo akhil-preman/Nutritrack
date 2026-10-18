@@ -190,7 +190,21 @@
 
                 <form id="confirmForm" method="POST" action="/confirm_log_meal">
                     <input type="hidden" name="food_name" value="{{ found_food.name }}">
-                    <input type="hidden" id="quantityHidden" name="quantity" value="100">
+                    <input type="hidden" name="is_count_based" value="{{ '1' if found_food.is_count_based else '0' }}">
+                    <input type="hidden" id="quantityHidden" name="quantity" value="{{ '1' if found_food.is_count_based else '100' }}">
+
+                    {% if found_food.is_count_based %}
+                    <!-- For uncooked / single-ingredient foods (e.g. egg, apple): measured in numbers -->
+                    <div class="qty-row">
+                        <span>Quantity (Number)</span>
+                        <div class="qty-controls">
+                            <button type="button" class="qty-btn" onclick="adjQty(-1)">-</button>
+                            <input type="number" id="quantityInput" name="quantity_num" value="1" min="1" step="1" oninput="updateNutrition()" class="qty-input">
+                            <button type="button" class="qty-btn" onclick="adjQty(1)">+</button>
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- For cooked or ingredient-added foods: measured in grams -->
                     <div class="qty-row">
                         <span>Weight in Grams</span>
                         <div class="qty-controls">
@@ -202,13 +216,15 @@
                             <button type="button" class="qty-btn" onclick="adjQty(25)">+</button>
                         </div>
                     </div>
+                    {% endif %}
+
                     <button type="submit" class="btn-add">Add to Log - <span id="btn-kcal">{{ found_food.nutrition.calories }}</span> kcal</button>
                     <button type="button" class="btn-cancel" onclick="document.getElementById('confirmationModal').style.display='none';">Cancel</button>
                 </form>
             </div>
         </div>
         <script>
-            // Base nutrition values in the database are defined per 100g
+            const isCountBased = {{ 'true' if found_food.is_count_based else 'false' }};
             const baseNutrition = {
                 calories: {{ found_food.nutrition.calories }},
                 protein: {{ found_food.nutrition.protein }},
@@ -226,14 +242,17 @@
             }
 
             function updateNutrition() {
-                let grams = parseFloat(document.getElementById('quantityInput').value) || 0;
-                let factor = grams / 100.0;
+                let rawVal = parseFloat(document.getElementById('quantityInput').value) || 0;
+                if (rawVal < 0) rawVal = 0;
+                
+                let factor = isCountBased ? rawVal : (rawVal / 100.0);
+                
                 document.getElementById('val-calories').innerText = (baseNutrition.calories * factor).toFixed(1);
                 document.getElementById('btn-kcal').innerText = (baseNutrition.calories * factor).toFixed(1);
                 document.getElementById('val-protein').innerText = (baseNutrition.protein * factor).toFixed(1) + 'g';
                 document.getElementById('val-carbs').innerText = (baseNutrition.carbs * factor).toFixed(1) + 'g';
                 document.getElementById('val-fats').innerText = (baseNutrition.fats * factor).toFixed(1) + 'g';
-                document.getElementById('quantityHidden').value = grams;
+                document.getElementById('quantityHidden').value = rawVal;
             }
         </script>
         {% endif %}
