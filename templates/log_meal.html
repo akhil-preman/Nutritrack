@@ -199,7 +199,7 @@
                         <span>Quantity (Number)</span>
                         <div class="qty-controls">
                             <button type="button" class="qty-btn" onclick="adjQty(-1)">-</button>
-                            <input type="number" id="quantityInput" name="quantity_num" value="1" min="1" step="1" oninput="updateNutrition()" class="qty-input">
+                            <input type="number" id="quantityInput" name="quantity_num" value="1" min="1" step="any" oninput="updateNutrition()" class="qty-input">
                             <button type="button" class="qty-btn" onclick="adjQty(1)">+</button>
                         </div>
                     </div>
@@ -210,7 +210,7 @@
                         <div class="qty-controls">
                             <button type="button" class="qty-btn" onclick="adjQty(-25)">-</button>
                             <div style="display: flex; align-items: center; gap: 4px;">
-                                <input type="number" id="quantityInput" name="grams" value="100" min="1" step="10" oninput="updateNutrition()" class="qty-input">
+                                <input type="number" id="quantityInput" name="grams" value="100" min="1" step="any" oninput="updateNutrition()" class="qty-input">
                                 <span style="color: var(--text-muted); font-size: 1.1rem; font-weight: 600;">g</span>
                             </div>
                             <button type="button" class="qty-btn" onclick="adjQty(25)">+</button>
