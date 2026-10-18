@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - NutriTrack AI</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1c1c1e;
+            --card-bg-light: #2c2c2e;
+            --primary-color: #c4f042;
+            --text-main: #ffffff;
+            --text-muted: #8e8e93;
+            --border-color: #2c2c2e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+        }
+        
+        /* Navbar (Matches Inside Pages) */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            padding: 0 3rem;
+            box-sizing: border-box;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .admin-badge {
+            font-size: 0.72rem;
+            font-weight: 800;
+            background: var(--primary-color);
+            color: #000;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 4rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .content-box {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 3rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .header h1 {
+            font-size: 2rem;
+            margin: 0 0 8px 0;
+            color: var(--text-main);
+        }
+        .header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .flashes {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem 0;
+            text-align: center;
+        }
+        .flashes li {
+            background: rgba(244, 63, 94, 0.1);
+            color: #f43f5e;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            border: 1px solid rgba(244, 63, 94, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+        .form-group input {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--card-bg-light);
+            border: 1px solid transparent;
+            border-radius: 16px;
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            background: rgba(196, 240, 66, 0.05);
+        }
+        .form-group input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.5;
+            font-weight: normal;
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--primary-color);
+            color: #000;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 1rem;
+        }
+        .btn-submit:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(196, 240, 66, 0.2);
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+        .auth-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+
+        .demo-credentials {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(196, 240, 66, 0.05);
+            border: 1px dashed rgba(196, 240, 66, 0.25);
+            border-radius: 14px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.6;
+        }
+        .demo-credentials strong {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            NutriTrack AI
+            <span class="admin-badge">ADMIN</span>
+        </a>
+        <div class="nav-links">
+            <a href="/login">User Login</a>
+            <a href="/">Home</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content-box">
+            <div class="header">
+                <h1>Admin Portal</h1>
+                <p>Sign in to manage users, foods, and system data</p>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="/admin/login">
+                <div class="form-group">
+                    <label for="username">Username or Email</label>
+                    <input type="text" id="username" name="username" placeholder="e.g. admin or admin@nutritrack.com" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn-submit">Sign In to Dashboard</button>
+            </form>
+
+            <div class="demo-credentials">
+                Default Credentials:<br>
+                Username: <strong>admin</strong> &nbsp;|&nbsp; Password: <strong>admin123</strong>
+            </div>
+
+            <div class="auth-links">
+                Looking for the user portal? <a href="/login">User Login</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

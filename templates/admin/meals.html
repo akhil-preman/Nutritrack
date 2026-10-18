@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Logs Monitor - NutriTrack AI Admin</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1c1c1e;
+            --card-bg-light: #2c2c2e;
+            --primary-color: #c4f042;
+            --primary-dark: #a8d626;
+            --text-main: #ffffff;
+            --text-muted: #8e8e93;
+            --border-color: #2c2c2e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+        }
+        
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            padding: 0 3rem;
+            box-sizing: border-box;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .admin-badge {
+            font-size: 0.72rem;
+            font-weight: 800;
+            background: var(--primary-color);
+            color: #000;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-color);
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .profile-pic {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--card-bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .app-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+        .app-link:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .logout-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .logout-link:hover {
+            color: #f43f5e;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2.5rem auto 4rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            margin: 0 0 6px 0;
+            font-weight: 700;
+        }
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            margin: 0;
+        }
+
+        /* Flashes */
+        .flashes {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem 0;
+        }
+        .flashes li {
+            background: rgba(196, 240, 66, 0.1);
+            color: var(--primary-color);
+            padding: 1rem 1.5rem;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            border: 1px solid rgba(196, 240, 66, 0.2);
+            margin-bottom: 0.8rem;
+        }
+
+        /* Controls */
+        .controls-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.2rem 1.8rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .search-form {
+            display: flex;
+            gap: 0.8rem;
+            flex: 1;
+            max-width: 480px;
+        }
+        .search-input {
+            width: 100%;
+            background: var(--card-bg-light);
+            border: 1px solid transparent;
+            border-radius: 14px;
+            padding: 0.8rem 1.2rem;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .search-input:focus {
+            border-color: var(--primary-color);
+        }
+        .search-input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+        .btn-search {
+            background: var(--primary-color);
+            color: #000;
+            border: none;
+            border-radius: 14px;
+            padding: 0 1.4rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-search:hover {
+            opacity: 0.9;
+        }
+
+        /* Table Card */
+        .card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+        }
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: left;
+        }
+        .admin-table th {
+            padding: 1rem 1.2rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .admin-table td {
+            padding: 1.1rem 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+        .admin-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .btn-delete {
+            background: rgba(244, 63, 94, 0.1);
+            color: #f43f5e;
+            border: 1px solid rgba(244, 63, 94, 0.25);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-delete:hover {
+            background: rgba(244, 63, 94, 0.25);
+            border-color: #f43f5e;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/admin/dashboard" class="nav-brand">
+            NutriTrack AI
+            <span class="admin-badge">ADMIN</span>
+        </a>
+        <div class="nav-links">
+            <a href="/admin/dashboard">Dashboard</a>
+            <a href="/admin/users">Users</a>
+            <a href="/admin/meals" class="active">Meal Logs</a>
+            <a href="/admin/foods">Food Database</a>
+        </div>
+        <div class="user-profile">
+            <div class="profile-pic">A</div>
+            <span style="font-size: 0.95rem; font-weight: 600;">{{ session.get('admin_username', 'Admin') }}</span>
+            <a href="/dashboard" target="_blank" class="app-link">User View ↗</a>
+            <a href="/admin/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>Global Meal Logs Monitor</h1>
+                <p>Showing <strong>{{ meals|length }}</strong> total logged meals across all users</p>
+            </div>
+            <a href="/admin/dashboard" class="btn-action" style="background: var(--card-bg-light); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.7rem 1.4rem; border-radius: 14px; text-decoration: none; font-weight: 600;">
+                ← Back to Dashboard
+            </a>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <!-- Search Controls -->
+        <div class="controls-card">
+            <form action="/admin/meals" method="GET" class="search-form">
+                <input type="text" name="q" value="{{ query or '' }}" placeholder="Search by food name or user name..." class="search-input">
+                <button type="submit" class="btn-search">Search</button>
+            </form>
+            {% if query %}
+            <div>
+                <a href="/admin/meals" style="color: var(--primary-color); font-size: 0.9rem; text-decoration: none;">✕ Clear Filter</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Meals Table -->
+        <div class="card">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Log ID</th>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Food Item</th>
+                            <th>Calories</th>
+                            <th>Protein</th>
+                            <th>Carbs</th>
+                            <th>Fats</th>
+                            <th>Vitamins (C / Ca / Fe)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in meals %}
+                        <tr>
+                            <td style="color: var(--text-muted); font-weight: 600;">#{{ m.id }}</td>
+                            <td style="color: var(--text-muted); font-size: 0.88rem;">{{ m.date_logged }}</td>
+                            <td>
+                                <strong style="color: var(--text-main);">{{ m.user_name }}</strong>
+                                <div style="color: var(--text-muted); font-size: 0.8rem;">ID #{{ m.user_id }}</div>
+                            </td>
+                            <td>
+                                <strong style="color: var(--text-main); font-size: 1.05rem;">{{ m.food_name }}</strong>
+                            </td>
+                            <td><strong style="color: var(--primary-color);">{{ m.calories|round|int }} kcal</strong></td>
+                            <td>{{ m.protein|round(1) }}g</td>
+                            <td>{{ m.carbs|round(1) }}g</td>
+                            <td>{{ m.fats|round(1) }}g</td>
+                            <td style="color: var(--text-muted); font-size: 0.82rem;">
+                                {{ m.vit_c|round(1) }}mg / {{ m.calcium|round(1) }}mg / {{ m.iron|round(1) }}mg
+                            </td>
+                            <td>
+                                <form action="/admin/meal/{{ m.id }}/delete?redirect_to=meals" method="POST" onsubmit="return confirm('Delete meal log \'{{ m.food_name }}\' for user {{ m.user_name }}?');" style="margin: 0;">
+                                    <button type="submit" class="btn-delete">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                                No meals found matching your query.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

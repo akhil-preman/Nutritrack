@@ -1,15 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
+from functools import wraps
 import os
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
 
-from utils.food_db import get_food_nutrition, suggest_foods, search_food_names
-from flask import jsonify
+from utils.food_db import get_food_nutrition, suggest_foods, search_food_names, add_custom_food, delete_custom_food, get_all_foods, FOOD_DATA
 from utils.ai_engine import predict_food_from_image, generate_weekly_deficiencies
 from werkzeug.utils import secure_filename
 
@@ -49,8 +49,33 @@ class Meal(db.Model):
     iron = db.Column(db.Float, nullable=False, default=0.0)
     date_logged = db.Column(db.Date, default=datetime.now)
 
+class Admin(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
+
 with app.app_context():
     db.create_all()
+    # Ensure default admin account exists
+    default_admin = Admin.query.filter_by(username='admin').first()
+    if not default_admin:
+        default_admin = Admin(
+            username='admin',
+            email='admin@nutritrack.com',
+            password_hash=generate_password_hash('admin123')
+        )
+        db.session.add(default_admin)
+        db.session.commit()
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'admin_id' not in session:
+            flash("Please sign in as an administrator to access the Admin Portal.")
+            return redirect(url_for('admin_login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 def calculate_bmi(weight_kg, height_cm):
     return round(weight_kg / ((height_cm / 100) ** 2), 2)
@@ -355,6 +380,235 @@ def api_generate_weekly_insights():
         
     deficiencies = generate_weekly_deficiencies(consumed, active_reqs, unique_days)
     return jsonify(deficiencies)
+
+
+# ==========================================
+# ADMIN MODULE ROUTES
+# ==========================================
+
+@app.route('/admin')
+@app.route('/admin/dashboard')
+@admin_required
+def admin_dashboard():
+    total_users = User.query.count()
+    total_meals = Meal.query.count()
+    total_calories = db.session.query(db.func.sum(Meal.calories)).scalar() or 0.0
+    total_foods = len(FOOD_DATA)
+    
+    goal_cut = User.query.filter_by(goal='cut').count()
+    goal_maintain = User.query.filter_by(goal='maintain').count()
+    goal_gain = User.query.filter_by(goal='gain').count()
+    
+    recent_users_raw = User.query.order_by(User.id.desc()).limit(5).all()
+    recent_users = []
+    for u in recent_users_raw:
+        bmi = calculate_bmi(u.weight_kg, u.height_cm)
+        recent_users.append({
+            "id": u.id,
+            "name": u.name,
+            "email": u.email,
+            "goal": u.goal or 'maintain',
+            "bmi": bmi,
+            "bmi_category": get_bmi_category(bmi),
+            "meals_count": len(u.meals)
+        })
+        
+    recent_meals_raw = Meal.query.order_by(Meal.id.desc()).limit(6).all()
+    recent_meals = []
+    for m in recent_meals_raw:
+        recent_meals.append({
+            "id": m.id,
+            "user_name": m.user.name if m.user else "Unknown User",
+            "food_name": m.food_name,
+            "calories": m.calories,
+            "protein": m.protein,
+            "carbs": m.carbs,
+            "fats": m.fats,
+            "date_logged": m.date_logged.strftime('%Y-%m-%d') if m.date_logged else ""
+        })
+        
+    stats = {
+        "total_users": total_users,
+        "total_meals": total_meals,
+        "total_calories": total_calories,
+        "total_foods": total_foods,
+        "goal_cut": goal_cut,
+        "goal_maintain": goal_maintain,
+        "goal_gain": goal_gain
+    }
+    
+    return render_template('admin/dashboard.html', stats=stats, recent_users=recent_users, recent_meals=recent_meals)
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if 'admin_id' in session:
+        return redirect(url_for('admin_dashboard'))
+        
+    if request.method == 'POST':
+        login_input = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        
+        admin = Admin.query.filter((Admin.username == login_input) | (Admin.email == login_input)).first()
+        if admin and check_password_hash(admin.password_hash, password):
+            session['admin_id'] = admin.id
+            session['admin_username'] = admin.username
+            session['admin_email'] = admin.email
+            flash(f"Welcome back, {admin.username}!", "success")
+            return redirect(url_for('admin_dashboard'))
+            
+        flash("Invalid admin username or password.")
+        
+    return render_template('admin/login.html')
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin_id', None)
+    session.pop('admin_username', None)
+    session.pop('admin_email', None)
+    flash("You have been logged out of the Admin Portal.")
+    return redirect(url_for('admin_login'))
+
+@app.route('/admin/users')
+@admin_required
+def admin_users():
+    q = request.args.get('q', '').strip()
+    selected_goal = request.args.get('goal', '').strip()
+    
+    query = User.query
+    if q:
+        query = query.filter((User.name.ilike(f'%{q}%')) | (User.email.ilike(f'%{q}%')))
+    if selected_goal:
+        query = query.filter_by(goal=selected_goal)
+        
+    users_raw = query.order_by(User.id.desc()).all()
+    users = []
+    for u in users_raw:
+        bmi = calculate_bmi(u.weight_kg, u.height_cm)
+        users.append({
+            "id": u.id,
+            "name": u.name,
+            "email": u.email,
+            "age": u.age,
+            "height_cm": u.height_cm,
+            "weight_kg": u.weight_kg,
+            "goal": u.goal or 'maintain',
+            "bmi": bmi,
+            "bmi_category": get_bmi_category(bmi),
+            "meals_count": len(u.meals)
+        })
+        
+    return render_template('admin/users.html', users=users, query=q, selected_goal=selected_goal)
+
+@app.route('/admin/user/<int:user_id>/meals')
+@admin_required
+def admin_user_meals(user_id):
+    target_user = User.query.get_or_404(user_id)
+    meals = Meal.query.filter_by(user_id=user_id).order_by(Meal.date_logged.desc(), Meal.id.desc()).all()
+    bmi = calculate_bmi(target_user.weight_kg, target_user.height_cm)
+    bmi_category = get_bmi_category(bmi)
+    reqs = get_daily_requirements(target_user.weight_kg, target_user.height_cm, target_user.age, target_user.goal)
+    
+    return render_template('admin/user_meals.html', target_user=target_user, meals=meals, bmi=bmi, bmi_category=bmi_category, reqs=reqs)
+
+@app.route('/admin/user/<int:user_id>/delete', methods=['POST'])
+@admin_required
+def admin_delete_user(user_id):
+    target_user = User.query.get_or_404(user_id)
+    user_name = target_user.name
+    Meal.query.filter_by(user_id=user_id).delete()
+    db.session.delete(target_user)
+    db.session.commit()
+    flash(f"User '{user_name}' and their logged meals have been deleted successfully.")
+    return redirect(url_for('admin_users'))
+
+@app.route('/admin/meals')
+@admin_required
+def admin_meals():
+    q = request.args.get('q', '').strip()
+    query = Meal.query.join(User)
+    if q:
+        query = query.filter((Meal.food_name.ilike(f'%{q}%')) | (User.name.ilike(f'%{q}%')) | (User.email.ilike(f'%{q}%')))
+        
+    meals_raw = query.order_by(Meal.date_logged.desc(), Meal.id.desc()).all()
+    meals = []
+    for m in meals_raw:
+        meals.append({
+            "id": m.id,
+            "user_id": m.user_id,
+            "user_name": m.user.name if m.user else "Unknown User",
+            "food_name": m.food_name,
+            "calories": m.calories,
+            "protein": m.protein,
+            "carbs": m.carbs,
+            "fats": m.fats,
+            "vit_c": m.vit_c,
+            "calcium": m.calcium,
+            "iron": m.iron,
+            "date_logged": m.date_logged.strftime('%Y-%m-%d') if m.date_logged else ""
+        })
+        
+    return render_template('admin/meals.html', meals=meals, query=q)
+
+@app.route('/admin/meal/<int:meal_id>/delete', methods=['POST'])
+@admin_required
+def admin_delete_meal(meal_id):
+    meal = Meal.query.get_or_404(meal_id)
+    food_name = meal.food_name
+    db.session.delete(meal)
+    db.session.commit()
+    flash(f"Meal log '{food_name}' was removed successfully.")
+    
+    redirect_to = request.args.get('redirect_to')
+    user_id = request.args.get('user_id')
+    if redirect_to == 'user' and user_id:
+        return redirect(url_for('admin_user_meals', user_id=user_id))
+    return redirect(url_for('admin_meals'))
+
+@app.route('/admin/foods', methods=['GET', 'POST'])
+@admin_required
+def admin_foods():
+    if request.method == 'POST':
+        name = request.form.get('food_name', '').strip()
+        try:
+            calories = float(request.form.get('calories', 0))
+            protein = float(request.form.get('protein', 0))
+            carbs = float(request.form.get('carbs', 0))
+            fats = float(request.form.get('fats', 0))
+            vit_c = float(request.form.get('vit_c', 0))
+            calcium = float(request.form.get('calcium', 0))
+            iron = float(request.form.get('iron', 0))
+            
+            if name:
+                success = add_custom_food(name, calories, protein, carbs, fats, vit_c, calcium, iron)
+                if success:
+                    flash(f"Food item '{name.title()}' added to database successfully!")
+                else:
+                    flash("Failed to add food item to CSV storage.")
+            else:
+                flash("Food name cannot be empty.")
+        except ValueError:
+            flash("Invalid nutritional values entered. Please provide valid numbers.")
+            
+        return redirect(url_for('admin_foods'))
+        
+    q = request.args.get('q', '').strip().lower()
+    all_foods = get_all_foods()
+    if q:
+        foods = [f for f in all_foods if q in f['name'].lower()]
+    else:
+        foods = all_foods
+        
+    return render_template('admin/foods.html', foods=foods, query=q)
+
+@app.route('/admin/food/delete', methods=['POST'])
+@admin_required
+def admin_delete_food():
+    food_name = request.form.get('food_name', '').strip()
+    if food_name and delete_custom_food(food_name):
+        flash(f"Food item '{food_name}' was deleted from database.")
+    else:
+        flash(f"Could not delete '{food_name}'.")
+    return redirect(url_for('admin_foods'))
 
 if __name__ == '__main__':
     app.run(debug=True)

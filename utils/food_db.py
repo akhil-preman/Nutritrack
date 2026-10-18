@@ -72,3 +72,68 @@ def search_food_names(query, limit=5):
                 break
                 
     return matches
+
+def add_custom_food(name, calories, protein, carbs, fats, vit_c=0.0, calcium=0.0, iron=0.0):
+    """
+    Adds a new food item to FOOD_DATA in-memory and appends it to the CSV file permanently.
+    """
+    food_name = name.strip().lower()
+    data = {
+        "calories": float(calories),
+        "protein": float(protein),
+        "carbs": float(carbs),
+        "fats": float(fats),
+        "vit_c": float(vit_c),
+        "calcium": float(calcium),
+        "iron": float(iron)
+    }
+    FOOD_DATA[food_name] = data
+    try:
+        with open(csv_path, 'a', encoding='utf-8', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([name.strip().title(), calories, protein, carbs, fats, vit_c, calcium, iron])
+        return True
+    except Exception as e:
+        print(f"Error saving new food to CSV: {e}")
+        return False
+
+def delete_custom_food(food_name):
+    """
+    Deletes a food item from FOOD_DATA in-memory and removes it from the CSV file.
+    """
+    key = food_name.strip().lower()
+    if key in FOOD_DATA:
+        del FOOD_DATA[key]
+        try:
+            with open(csv_path, 'r', encoding='utf-8') as f:
+                reader = list(csv.reader(f))
+            if not reader:
+                return True
+            header = reader[0]
+            new_rows = [header] + [row for row in reader[1:] if row and row[0].strip().lower() != key]
+            with open(csv_path, 'w', encoding='utf-8', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerows(new_rows)
+            return True
+        except Exception as e:
+            print(f"Error updating CSV: {e}")
+            return False
+    return False
+
+def get_all_foods():
+    """
+    Returns a list of all foods sorted alphabetically.
+    """
+    items = []
+    for name, data in sorted(FOOD_DATA.items(), key=lambda x: x[0]):
+        items.append({
+            "name": name.title(),
+            "calories": data["calories"],
+            "protein": data["protein"],
+            "carbs": data["carbs"],
+            "fats": data["fats"],
+            "vit_c": data["vit_c"],
+            "calcium": data["calcium"],
+            "iron": data["iron"]
+        })
+    return items

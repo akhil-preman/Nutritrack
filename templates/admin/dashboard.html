@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - NutriTrack AI</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1c1c1e;
+            --card-bg-light: #2c2c2e;
+            --primary-color: #c4f042;
+            --primary-dark: #a8d626;
+            --text-main: #ffffff;
+            --text-muted: #8e8e93;
+            --border-color: #2c2c2e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+        }
+        
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            padding: 0 3rem;
+            box-sizing: border-box;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .admin-badge {
+            font-size: 0.72rem;
+            font-weight: 800;
+            background: var(--primary-color);
+            color: #000;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-color);
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .profile-pic {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--card-bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            border: 2px solid transparent;
+        }
+        .app-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+        .app-link:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .logout-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .logout-link:hover {
+            color: #f43f5e;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 2.5rem auto 4rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            margin: 0 0 6px 0;
+            font-weight: 700;
+        }
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            margin: 0;
+        }
+
+        /* Flash */
+        .flashes {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem 0;
+        }
+        .flashes li {
+            background: rgba(196, 240, 66, 0.1);
+            color: var(--primary-color);
+            padding: 1rem 1.5rem;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            border: 1px solid rgba(196, 240, 66, 0.2);
+            margin-bottom: 0.8rem;
+        }
+
+        /* KPI Cards Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.8rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .stat-card:hover {
+            border-color: rgba(196, 240, 66, 0.3);
+            transform: translateY(-2px);
+        }
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .stat-title {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(196, 240, 66, 0.1);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .stat-value {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
+            line-height: 1.1;
+        }
+        .stat-sub {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        /* Main Content Layout */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .card-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        .view-all-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: underline 0.2s;
+        }
+        .view-all-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Table */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: left;
+        }
+        .admin-table th {
+            padding: 0.9rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .admin-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.92rem;
+            vertical-align: middle;
+        }
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+        .admin-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .badge-cut { background: rgba(244, 63, 94, 0.15); color: #f43f5e; }
+        .badge-maintain { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+        .badge-gain { background: rgba(196, 240, 66, 0.15); color: var(--primary-color); }
+
+        .btn-action {
+            background: var(--card-bg-light);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.9rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        .btn-action:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* Goals Break bar */
+        .goal-bar-row {
+            margin-bottom: 1.2rem;
+        }
+        .goal-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+        .goal-bar {
+            height: 8px;
+            width: 100%;
+            background: var(--card-bg-light);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .goal-fill {
+            height: 100%;
+            border-radius: 6px;
+        }
+
+        /* Quick actions */
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .btn-quick {
+            flex: 1;
+            min-width: 140px;
+            background: var(--card-bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.2rem;
+            text-decoration: none;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-quick:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            background: rgba(196, 240, 66, 0.04);
+        }
+        .btn-quick strong {
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+        .btn-quick span {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/admin/dashboard" class="nav-brand">
+            NutriTrack AI
+            <span class="admin-badge">ADMIN</span>
+        </a>
+        <div class="nav-links">
+            <a href="/admin/dashboard" class="active">Dashboard</a>
+            <a href="/admin/users">Users</a>
+            <a href="/admin/meals">Meal Logs</a>
+            <a href="/admin/foods">Food Database</a>
+        </div>
+        <div class="user-profile">
+            <div class="profile-pic">A</div>
+            <span style="font-size: 0.95rem; font-weight: 600;">{{ session.get('admin_username', 'Admin') }}</span>
+            <a href="/dashboard" target="_blank" class="app-link">User View ↗</a>
+            <a href="/admin/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>Admin Overview</h1>
+                <p>Real-time telemetry and management across the NutriTrack ecosystem</p>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <a href="/admin/foods" style="background: var(--primary-color); color: #000; padding: 0.8rem 1.6rem; border-radius: 16px; font-weight: 700; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                    + Add New Food
+                </a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <!-- KPI Metric Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-title">Total Users</span>
+                    <div class="stat-icon">👥</div>
+                </div>
+                <h2 class="stat-value">{{ stats.total_users }}</h2>
+                <div class="stat-sub">Registered platform members</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-title">Total Meals</span>
+                    <div class="stat-icon">🍽️</div>
+                </div>
+                <h2 class="stat-value">{{ stats.total_meals }}</h2>
+                <div class="stat-sub">Logged meal records</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-title">Calories Logged</span>
+                    <div class="stat-icon">⚡</div>
+                </div>
+                <h2 class="stat-value">{{ stats.total_calories|round|int }}</h2>
+                <div class="stat-sub">kcal cumulative intake</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-title">Food Items</span>
+                    <div class="stat-icon">🥗</div>
+                </div>
+                <h2 class="stat-value">{{ stats.total_foods }}</h2>
+                <div class="stat-sub">In database with macros</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content-grid">
+            <!-- Left: Recent Users Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Recent User Registrations</h3>
+                    <a href="/admin/users" class="view-all-link">View All Users ({{ stats.total_users }}) →</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Name & Email</th>
+                                <th>Goal</th>
+                                <th>BMI</th>
+                                <th>Meals</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in recent_users %}
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 600; color: var(--text-main);">{{ u.name }}</div>
+                                    <div style="color: var(--text-muted); font-size: 0.8rem;">{{ u.email }}</div>
+                                </td>
+                                <td>
+                                    <span class="badge badge-{{ u.goal }}">{{ u.goal }}</span>
+                                </td>
+                                <td>
+                                    <strong>{{ u.bmi }}</strong>
+                                    <span style="font-size: 0.78rem; color: var(--text-muted);">({{ u.bmi_category }})</span>
+                                </td>
+                                <td>
+                                    <strong>{{ u.meals_count }}</strong>
+                                </td>
+                                <td>
+                                    <a href="/admin/user/{{ u.id }}/meals" class="btn-action">View Logs</a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No users found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right: Health Goals Breakdown & System Info -->
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>User Goal Distribution</h3>
+                    </div>
+
+                    {% set total_u = stats.total_users if stats.total_users > 0 else 1 %}
+                    {% set cut_pct = ((stats.goal_cut / total_u) * 100)|round|int %}
+                    {% set maint_pct = ((stats.goal_maintain / total_u) * 100)|round|int %}
+                    {% set gain_pct = ((stats.goal_gain / total_u) * 100)|round|int %}
+
+                    <div class="goal-bar-row">
+                        <div class="goal-bar-label">
+                            <span style="color: #f43f5e; font-weight: 600;">📉 Cut Weight</span>
+                            <span>{{ stats.goal_cut }} users ({{ cut_pct }}%)</span>
+                        </div>
+                        <div class="goal-bar">
+                            <div class="goal-fill" style="width: {{ cut_pct }}%; background: #f43f5e;"></div>
+                        </div>
+                    </div>
+
+                    <div class="goal-bar-row">
+                        <div class="goal-bar-label">
+                            <span style="color: #60a5fa; font-weight: 600;">⚖️ Maintain</span>
+                            <span>{{ stats.goal_maintain }} users ({{ maint_pct }}%)</span>
+                        </div>
+                        <div class="goal-bar">
+                            <div class="goal-fill" style="width: {{ maint_pct }}%; background: #60a5fa;"></div>
+                        </div>
+                    </div>
+
+                    <div class="goal-bar-row">
+                        <div class="goal-bar-label">
+                            <span style="color: var(--primary-color); font-weight: 600;">💪 Gain Weight</span>
+                            <span>{{ stats.goal_gain }} users ({{ gain_pct }}%)</span>
+                        </div>
+                        <div class="goal-bar">
+                            <div class="goal-fill" style="width: {{ gain_pct }}%; background: var(--primary-color);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Navigation Box -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Quick Navigation</h3>
+                    </div>
+                    <div class="quick-actions">
+                        <a href="/admin/users" class="btn-quick">
+                            <strong>👥 Manage Users</strong>
+                            <span>View accounts & biometrics</span>
+                        </a>
+                        <a href="/admin/meals" class="btn-quick">
+                            <strong>📋 All Meal Logs</strong>
+                            <span>Review logged diets</span>
+                        </a>
+                        <a href="/admin/foods" class="btn-quick">
+                            <strong>🥗 Food Database</strong>
+                            <span>Search or add food items</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Meals Feed -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Latest Meal Logs Across Platform</h3>
+                <a href="/admin/meals" class="view-all-link">View All Logs ({{ stats.total_meals }}) →</a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Food Item</th>
+                            <th>Calories</th>
+                            <th>Protein</th>
+                            <th>Carbs</th>
+                            <th>Fats</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in recent_meals %}
+                        <tr>
+                            <td style="color: var(--text-muted); font-size: 0.85rem;">{{ m.date_logged }}</td>
+                            <td>
+                                <strong style="color: var(--text-main);">{{ m.user_name }}</strong>
+                            </td>
+                            <td>{{ m.food_name }}</td>
+                            <td><strong style="color: var(--primary-color);">{{ m.calories|round|int }} kcal</strong></td>
+                            <td>{{ m.protein|round(1) }}g</td>
+                            <td>{{ m.carbs|round(1) }}g</td>
+                            <td>{{ m.fats|round(1) }}g</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">No meal logs recorded yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

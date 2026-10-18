@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - NutriTrack AI Admin</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1c1c1e;
+            --card-bg-light: #2c2c2e;
+            --primary-color: #c4f042;
+            --primary-dark: #a8d626;
+            --text-main: #ffffff;
+            --text-muted: #8e8e93;
+            --border-color: #2c2c2e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+        }
+        
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            padding: 0 3rem;
+            box-sizing: border-box;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .admin-badge {
+            font-size: 0.72rem;
+            font-weight: 800;
+            background: var(--primary-color);
+            color: #000;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-color);
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .profile-pic {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--card-bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .app-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+        .app-link:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .logout-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .logout-link:hover {
+            color: #f43f5e;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2.5rem auto 4rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            margin: 0 0 6px 0;
+            font-weight: 700;
+        }
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            margin: 0;
+        }
+
+        /* Flashes */
+        .flashes {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem 0;
+        }
+        .flashes li {
+            background: rgba(196, 240, 66, 0.1);
+            color: var(--primary-color);
+            padding: 1rem 1.5rem;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            border: 1px solid rgba(196, 240, 66, 0.2);
+            margin-bottom: 0.8rem;
+        }
+
+        /* Controls Bar: Search & Filters */
+        .controls-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.2rem 1.8rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .search-form {
+            display: flex;
+            gap: 0.8rem;
+            flex: 1;
+            max-width: 450px;
+        }
+        .search-input {
+            width: 100%;
+            background: var(--card-bg-light);
+            border: 1px solid transparent;
+            border-radius: 14px;
+            padding: 0.8rem 1.2rem;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .search-input:focus {
+            border-color: var(--primary-color);
+        }
+        .search-input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+        .btn-search {
+            background: var(--primary-color);
+            color: #000;
+            border: none;
+            border-radius: 14px;
+            padding: 0 1.4rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-search:hover {
+            opacity: 0.9;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .filter-btn {
+            background: var(--card-bg-light);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 1.1rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover {
+            color: var(--text-main);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: #000;
+            border-color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        /* Card & Table */
+        .card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+        }
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: left;
+        }
+        .admin-table th {
+            padding: 1rem 1.2rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .admin-table td {
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+        .admin-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .badge-cut { background: rgba(244, 63, 94, 0.15); color: #f43f5e; }
+        .badge-maintain { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+        .badge-gain { background: rgba(196, 240, 66, 0.15); color: var(--primary-color); }
+
+        .badge-normal { background: rgba(196, 240, 66, 0.15); color: var(--primary-color); }
+        .badge-overweight { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+        .badge-underweight { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+        .badge-obese { background: rgba(244, 63, 94, 0.15); color: #f43f5e; }
+
+        .btn-action {
+            background: var(--card-bg-light);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        .btn-action:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-delete {
+            background: rgba(244, 63, 94, 0.1);
+            color: #f43f5e;
+            border: 1px solid rgba(244, 63, 94, 0.25);
+            padding: 0.5rem 0.9rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-delete:hover {
+            background: rgba(244, 63, 94, 0.25);
+            border-color: #f43f5e;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/admin/dashboard" class="nav-brand">
+            NutriTrack AI
+            <span class="admin-badge">ADMIN</span>
+        </a>
+        <div class="nav-links">
+            <a href="/admin/dashboard">Dashboard</a>
+            <a href="/admin/users" class="active">Users</a>
+            <a href="/admin/meals">Meal Logs</a>
+            <a href="/admin/foods">Food Database</a>
+        </div>
+        <div class="user-profile">
+            <div class="profile-pic">A</div>
+            <span style="font-size: 0.95rem; font-weight: 600;">{{ session.get('admin_username', 'Admin') }}</span>
+            <a href="/dashboard" target="_blank" class="app-link">User View ↗</a>
+            <a href="/admin/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>User Management</h1>
+                <p>Total Registered Users: <strong>{{ users|length }}</strong></p>
+            </div>
+            <a href="/admin/dashboard" class="btn-action" style="padding: 0.7rem 1.4rem; border-radius: 14px;">
+                ← Back to Dashboard
+            </a>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <!-- Filter & Search Controls -->
+        <div class="controls-card">
+            <form action="/admin/users" method="GET" class="search-form">
+                <input type="text" name="q" value="{{ query or '' }}" placeholder="Search by name or email..." class="search-input">
+                {% if selected_goal %}
+                <input type="hidden" name="goal" value="{{ selected_goal }}">
+                {% endif %}
+                <button type="submit" class="btn-search">Search</button>
+            </form>
+
+            <div class="filter-group">
+                <a href="/admin/users{% if query %}?q={{ query }}{% endif %}" class="filter-btn {% if not selected_goal %}active{% endif %}">All Goals</a>
+                <a href="/admin/users?goal=cut{% if query %}&q={{ query }}{% endif %}" class="filter-btn {% if selected_goal == 'cut' %}active{% endif %}">Cut</a>
+                <a href="/admin/users?goal=maintain{% if query %}&q={{ query }}{% endif %}" class="filter-btn {% if selected_goal == 'maintain' %}active{% endif %}">Maintain</a>
+                <a href="/admin/users?goal=gain{% if query %}&q={{ query }}{% endif %}" class="filter-btn {% if selected_goal == 'gain' %}active{% endif %}">Gain</a>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="card">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Name & Email</th>
+                            <th>Biometrics</th>
+                            <th>BMI</th>
+                            <th>Goal</th>
+                            <th>Meals Logged</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr>
+                            <td style="color: var(--text-muted); font-weight: 600;">#{{ u.id }}</td>
+                            <td>
+                                <div style="font-weight: 600; color: var(--text-main); font-size: 1.05rem;">{{ u.name }}</div>
+                                <div style="color: var(--text-muted); font-size: 0.85rem;">{{ u.email }}</div>
+                            </td>
+                            <td>
+                                <div>{{ u.age }} yrs • {{ u.height_cm }} cm</div>
+                                <div style="color: var(--text-muted); font-size: 0.85rem;">{{ u.weight_kg }} kg bodyweight</div>
+                            </td>
+                            <td>
+                                <strong style="font-size: 1.05rem;">{{ u.bmi }}</strong>
+                                <span class="badge badge-{{ u.bmi_category|lower }}">{{ u.bmi_category }}</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-{{ u.goal }}">{{ u.goal }}</span>
+                            </td>
+                            <td>
+                                <strong style="font-size: 1.1rem; color: var(--primary-color);">{{ u.meals_count }}</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-muted);">meals</span>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <a href="/admin/user/{{ u.id }}/meals" class="btn-action">
+                                        View Logs
+                                    </a>
+                                    <form action="/admin/user/{{ u.id }}/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete user \'{{ u.name }}\'? This will also delete all their logged meals.');" style="margin: 0;">
+                                        <button type="submit" class="btn-delete">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                                No users match your search or filter criteria.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
