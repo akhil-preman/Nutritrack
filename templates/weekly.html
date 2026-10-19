@@ -148,11 +148,17 @@
         .macro-consumed { font-size: 0.95rem; color: var(--text-muted); }
         .macro-consumed strong { color: var(--text-main); font-weight: 700; font-size: 1.05rem; }
         .macro-badge { font-weight: 700; font-size: 0.95rem; min-width: 42px; text-align: right; }
+        .macro-badge.critical { color: #f43f5e; }
+        .macro-badge.moderate { color: #fb923c; }
+        .macro-badge.optimal { color: var(--primary-color); }
         .badge-good { color: var(--primary-color); }
         .badge-low { color: #f43f5e; }
         
         .macro-bar { width: 100%; height: 8px; background: var(--card-bg-light); border-radius: 6px; overflow: hidden; }
-        .macro-bar-fill { height: 100%; border-radius: 6px; transition: width 0.4s ease; }
+        .macro-bar-fill { height: 100%; border-radius: 6px; transition: width 0.4s ease, background 0.3s ease; }
+        .macro-bar-fill.critical { background: #f43f5e; }
+        .macro-bar-fill.moderate { background: #fb923c; }
+        .macro-bar-fill.optimal { background: var(--primary-color); }
 
         /* AI Section & Food Suggestions */
         .ai-card {
@@ -517,6 +523,7 @@
                 
                 <!-- Calories -->
                 {% set cal_pct = ((consumed.calories / reqs.calories)*100)|round|int if reqs.calories else 0 %}
+                {% set cal_status = 'critical' if cal_pct < 40 else ('moderate' if cal_pct < 75 else 'optimal') %}
                 <div class="macro-row">
                     <div class="macro-header">
                         <div>
@@ -525,16 +532,17 @@
                         </div>
                         <div class="macro-numbers">
                             <span class="macro-consumed"><strong>{{ consumed.calories|round|int }}</strong> / {{ reqs.calories|round|int }} kcal</span>
-                            <span class="macro-badge {% if cal_pct < 70 %}badge-low{% else %}badge-good{% endif %}">{{ cal_pct }}%</span>
+                            <span class="macro-badge {{ cal_status }}">{{ cal_pct }}%</span>
                         </div>
                     </div>
                     <div class="macro-bar">
-                        <div class="macro-bar-fill" style="width: {{ [cal_pct, 100]|min }}%; background: var(--primary-color);"></div>
+                        <div class="macro-bar-fill {{ cal_status }}" style="width: {{ [cal_pct, 100]|min }}%;"></div>
                     </div>
                 </div>
 
                 <!-- Protein -->
                 {% set pro_pct = ((consumed.protein / reqs.protein)*100)|round|int if reqs.protein else 0 %}
+                {% set pro_status = 'critical' if pro_pct < 40 else ('moderate' if pro_pct < 75 else 'optimal') %}
                 <div class="macro-row">
                     <div class="macro-header">
                         <div>
@@ -543,16 +551,17 @@
                         </div>
                         <div class="macro-numbers">
                             <span class="macro-consumed"><strong>{{ consumed.protein|round(1) }}g</strong> / {{ reqs.protein|round(1) }}g</span>
-                            <span class="macro-badge {% if pro_pct < 70 %}badge-low{% else %}badge-good{% endif %}">{{ pro_pct }}%</span>
+                            <span class="macro-badge {{ pro_status }}">{{ pro_pct }}%</span>
                         </div>
                     </div>
                     <div class="macro-bar">
-                        <div class="macro-bar-fill" style="width: {{ [pro_pct, 100]|min }}%; background: #34d399;"></div>
+                        <div class="macro-bar-fill {{ pro_status }}" style="width: {{ [pro_pct, 100]|min }}%;"></div>
                     </div>
                 </div>
 
                 <!-- Carbs -->
                 {% set carb_pct = ((consumed.carbs / reqs.carbs)*100)|round|int if reqs.carbs else 0 %}
+                {% set carb_status = 'critical' if carb_pct < 40 else ('moderate' if carb_pct < 75 else 'optimal') %}
                 <div class="macro-row">
                     <div class="macro-header">
                         <div>
@@ -561,16 +570,17 @@
                         </div>
                         <div class="macro-numbers">
                             <span class="macro-consumed"><strong>{{ consumed.carbs|round(1) }}g</strong> / {{ reqs.carbs|round(1) }}g</span>
-                            <span class="macro-badge {% if carb_pct < 70 %}badge-low{% else %}badge-good{% endif %}">{{ carb_pct }}%</span>
+                            <span class="macro-badge {{ carb_status }}">{{ carb_pct }}%</span>
                         </div>
                     </div>
                     <div class="macro-bar">
-                        <div class="macro-bar-fill" style="width: {{ [carb_pct, 100]|min }}%; background: #60a5fa;"></div>
+                        <div class="macro-bar-fill {{ carb_status }}" style="width: {{ [carb_pct, 100]|min }}%;"></div>
                     </div>
                 </div>
 
                 <!-- Fats -->
                 {% set fat_pct = ((consumed.fats / reqs.fats)*100)|round|int if reqs.fats else 0 %}
+                {% set fat_status = 'critical' if fat_pct < 40 else ('moderate' if fat_pct < 75 else 'optimal') %}
                 <div class="macro-row">
                     <div class="macro-header">
                         <div>
@@ -579,11 +589,11 @@
                         </div>
                         <div class="macro-numbers">
                             <span class="macro-consumed"><strong>{{ consumed.fats|round(1) }}g</strong> / {{ reqs.fats|round(1) }}g</span>
-                            <span class="macro-badge {% if fat_pct < 70 %}badge-low{% else %}badge-good{% endif %}">{{ fat_pct }}%</span>
+                            <span class="macro-badge {{ fat_status }}">{{ fat_pct }}%</span>
                         </div>
                     </div>
                     <div class="macro-bar">
-                        <div class="macro-bar-fill" style="width: {{ [fat_pct, 100]|min }}%; background: #fb7185;"></div>
+                        <div class="macro-bar-fill {{ fat_status }}" style="width: {{ [fat_pct, 100]|min }}%;"></div>
                     </div>
                 </div>
 
@@ -594,6 +604,7 @@
 
                 <!-- Vitamin C -->
                 {% set vitc_pct = ((consumed.vit_c / reqs.vit_c)*100)|round|int if reqs.vit_c else 0 %}
+                {% set vitc_status = 'critical' if vitc_pct < 40 else ('moderate' if vitc_pct < 75 else 'optimal') %}
                 <div class="macro-row">
                     <div class="macro-header">
                         <div>
@@ -602,16 +613,17 @@
                         </div>
                         <div class="macro-numbers">
                             <span class="macro-consumed"><strong>{{ consumed.vit_c|round(1) }}mg</strong> / {{ reqs.vit_c|round|int }}mg</span>
-                            <span class="macro-badge {% if vitc_pct < 70 %}badge-low{% else %}badge-good{% endif %}">{{ vitc_pct }}%</span>
+                            <span class="macro-badge {{ vitc_status }}">{{ vitc_pct }}%</span>
                         </div>
                     </div>
                     <div class="macro-bar">
-                        <div class="macro-bar-fill" style="width: {{ [vitc_pct, 100]|min }}%; background: #f59e0b;"></div>
+                        <div class="macro-bar-fill {{ vitc_status }}" style="width: {{ [vitc_pct, 100]|min }}%;"></div>
                     </div>
                 </div>
 
                 <!-- Calcium -->
                 {% set calc_pct = ((consumed.calcium / reqs.calcium)*100)|round|int if reqs.calcium else 0 %}
+                {% set calc_status = 'critical' if calc_pct < 40 else ('moderate' if calc_pct < 75 else 'optimal') %}
                 <div class="macro-row">
                     <div class="macro-header">
                         <div>
@@ -620,16 +632,17 @@
                         </div>
                         <div class="macro-numbers">
                             <span class="macro-consumed"><strong>{{ consumed.calcium|round(1) }}mg</strong> / {{ reqs.calcium|round|int }}mg</span>
-                            <span class="macro-badge {% if calc_pct < 70 %}badge-low{% else %}badge-good{% endif %}">{{ calc_pct }}%</span>
+                            <span class="macro-badge {{ calc_status }}">{{ calc_pct }}%</span>
                         </div>
                     </div>
                     <div class="macro-bar">
-                        <div class="macro-bar-fill" style="width: {{ [calc_pct, 100]|min }}%; background: #a78bfa;"></div>
+                        <div class="macro-bar-fill {{ calc_status }}" style="width: {{ [calc_pct, 100]|min }}%;"></div>
                     </div>
                 </div>
 
                 <!-- Iron -->
                 {% set iron_pct = ((consumed.iron / reqs.iron)*100)|round|int if reqs.iron else 0 %}
+                {% set iron_status = 'critical' if iron_pct < 40 else ('moderate' if iron_pct < 75 else 'optimal') %}
                 <div class="macro-row">
                     <div class="macro-header">
                         <div>
@@ -638,11 +651,11 @@
                         </div>
                         <div class="macro-numbers">
                             <span class="macro-consumed"><strong>{{ consumed.iron|round(1) }}mg</strong> / {{ reqs.iron|round|int }}mg</span>
-                            <span class="macro-badge {% if iron_pct < 70 %}badge-low{% else %}badge-good{% endif %}">{{ iron_pct }}%</span>
+                            <span class="macro-badge {{ iron_status }}">{{ iron_pct }}%</span>
                         </div>
                     </div>
                     <div class="macro-bar">
-                        <div class="macro-bar-fill" style="width: {{ [iron_pct, 100]|min }}%; background: #38bdf8;"></div>
+                        <div class="macro-bar-fill {{ iron_status }}" style="width: {{ [iron_pct, 100]|min }}%;"></div>
                     </div>
                 </div>
             </div>
