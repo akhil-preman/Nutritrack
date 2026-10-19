@@ -76,6 +76,52 @@
             pointer-events: none;
         }
 
+        /* Minimal Status Legend Pill */
+        .legend-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 1.1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 0.45rem 1.1rem;
+            border-radius: 999px;
+            margin-top: 0.95rem;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.82rem;
+        }
+        .legend-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .legend-dot.critical {
+            background: #f43f5e;
+            box-shadow: 0 0 6px rgba(244, 63, 94, 0.6);
+        }
+        .legend-dot.moderate {
+            background: #fb923c;
+            box-shadow: 0 0 6px rgba(251, 146, 60, 0.6);
+        }
+        .legend-dot.optimal {
+            background: var(--primary-color);
+            box-shadow: 0 0 6px rgba(196, 240, 66, 0.6);
+        }
+        .legend-text {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+        .legend-range {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
         .weekly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
         .summary-col { position: relative; }
 
@@ -406,6 +452,23 @@
             <div class="header-info">
                 <h1>Progress & Analysis</h1>
                 <p>Weekly Macro & Micronutrient Clinical Report</p>
+                <div class="legend-box">
+                    <div class="legend-item">
+                        <span class="legend-dot critical"></span>
+                        <span class="legend-text">Critical</span>
+                        <span class="legend-range">(&lt;40%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot moderate"></span>
+                        <span class="legend-text">Moderate</span>
+                        <span class="legend-range">(40–74%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot optimal"></span>
+                        <span class="legend-text">Optimal</span>
+                        <span class="legend-range">(&ge;75%)</span>
+                    </div>
+                </div>
             </div>
 
             <!-- 7-Day Date Grouped Week Selector -->
