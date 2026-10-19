@@ -5,5 +5,6 @@ venv/
 .env
 .DS_Store
 *.png
+!static/img/*
 draw_*.py
 test_*.py
