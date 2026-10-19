@@ -428,7 +428,19 @@ def admin_dashboard():
             "meals_count": len(u.meals)
         })
         
-    recent_meals_raw = Meal.query.order_by(Meal.id.desc()).limit(6).all()
+    today = datetime.now().date()
+    date_str = request.args.get('date')
+    if date_str:
+        try:
+            selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        except ValueError:
+            selected_date = today
+    else:
+        selected_date = today
+        
+    is_today = (selected_date == today)
+        
+    recent_meals_raw = Meal.query.filter(Meal.date_logged == selected_date).order_by(Meal.id.desc()).all()
     recent_meals = []
     for m in recent_meals_raw:
         recent_meals.append({
@@ -452,7 +464,10 @@ def admin_dashboard():
         "goal_gain": goal_gain
     }
     
-    return render_template('admin/dashboard.html', stats=stats, recent_users=recent_users, recent_meals=recent_meals)
+    return render_template('admin/dashboard.html', stats=stats, recent_users=recent_users, recent_meals=recent_meals,
+                           selected_date=selected_date.strftime('%Y-%m-%d'),
+                           is_today=is_today,
+                           datetime_now=today.strftime('%Y-%m-%d'))
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
@@ -540,9 +555,16 @@ def admin_delete_user(user_id):
 @admin_required
 def admin_meals():
     q = request.args.get('q', '').strip()
+    date_str = request.args.get('date', '').strip()
     query = Meal.query.join(User)
     if q:
         query = query.filter((Meal.food_name.ilike(f'%{q}%')) | (User.name.ilike(f'%{q}%')) | (User.email.ilike(f'%{q}%')))
+    if date_str:
+        try:
+            filter_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            query = query.filter(Meal.date_logged == filter_date)
+        except ValueError:
+            date_str = ''
         
     meals_raw = query.order_by(Meal.date_logged.desc(), Meal.id.desc()).all()
     meals = []
@@ -562,7 +584,7 @@ def admin_meals():
             "date_logged": m.date_logged.strftime('%Y-%m-%d') if m.date_logged else ""
         })
         
-    return render_template('admin/meals.html', meals=meals, query=q)
+    return render_template('admin/meals.html', meals=meals, query=q, selected_date=date_str)
 
 @app.route('/admin/meal/<int:meal_id>/delete', methods=['POST'])
 @admin_required

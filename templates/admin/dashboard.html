@@ -243,6 +243,23 @@
             text-decoration: underline;
         }
 
+        .date-picker {
+            background: var(--card-bg-light);
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 1rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s;
+            color-scheme: dark;
+            font-family: inherit;
+        }
+        .date-picker:focus, .date-picker:hover {
+            border-color: var(--primary-color);
+        }
+
         /* Table */
         .table-responsive {
             width: 100%;
@@ -574,9 +591,22 @@
 
         <!-- Recent Meals Feed -->
         <div class="card">
-            <div class="card-header">
-                <h3>Latest Meal Logs Across Platform</h3>
-                <a href="/admin/meals" class="view-all-link">View All Logs ({{ stats.total_meals }}) →</a>
+            <div class="card-header" style="flex-wrap: wrap; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;">
+                    <h3 style="margin: 0;">Latest Meal Logs Across Platform</h3>
+                    <span style="font-size: 0.82rem; color: var(--text-muted); background: var(--card-bg-light); padding: 4px 10px; border-radius: 8px; font-weight: 500;">
+                        {% if is_today %}Today ({{ recent_meals|length }}){% else %}{{ selected_date }} ({{ recent_meals|length }}){% endif %}
+                    </span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <form id="adminDateForm" action="/admin/dashboard" method="GET" style="margin: 0; display: flex; align-items: center; gap: 0.6rem;">
+                        <input type="date" name="date" class="date-picker" value="{{ selected_date }}" onchange="document.getElementById('adminDateForm').submit();" max="{{ datetime_now }}">
+                        {% if not is_today %}
+                        <a href="/admin/dashboard" style="color: var(--primary-color); font-size: 0.85rem; text-decoration: none; padding: 0.5rem 0.8rem; background: rgba(196, 240, 66, 0.1); border-radius: 10px; border: 1px solid rgba(196, 240, 66, 0.2); font-weight: 600;">Today</a>
+                        {% endif %}
+                    </form>
+                    <a href="/admin/meals" class="view-all-link">View All Logs ({{ stats.total_meals }}) →</a>
+                </div>
             </div>
 
             <div class="table-responsive">
@@ -607,7 +637,10 @@
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">No meal logs recorded yet.</td>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2.5rem;">
+                                <div style="font-size: 1rem; color: var(--text-muted); margin-bottom: 0.3rem;">No food logs recorded on {{ selected_date }}.</div>
+                                <div style="font-size: 0.85rem; color: var(--text-muted); opacity: 0.6;">Select another date from the date box above to view historical logs.</div>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
