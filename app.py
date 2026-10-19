@@ -488,7 +488,7 @@ def api_generate_weekly_insights():
         return jsonify([])
         
     daily_reqs = get_daily_requirements(user.weight_kg, user.height_cm, user.age, user.goal)
-    active_reqs = {k: v * unique_days for k, v in daily_reqs.items()}
+    weekly_reqs = {k: v * 7 for k, v in daily_reqs.items()}
     
     consumed = {"calories": 0, "protein": 0, "carbs": 0, "fats": 0, "vit_c": 0, "calcium": 0, "iron": 0}
     for meal in meals:
@@ -500,7 +500,7 @@ def api_generate_weekly_insights():
         consumed["calcium"] += meal.calcium
         consumed["iron"] += meal.iron
         
-    deficiencies = generate_weekly_deficiencies(consumed, active_reqs, unique_days)
+    deficiencies = generate_weekly_deficiencies(consumed, weekly_reqs, unique_days)
     return jsonify(deficiencies)
 
 

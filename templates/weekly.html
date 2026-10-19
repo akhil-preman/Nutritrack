@@ -445,7 +445,7 @@
                     <div class="macro-header">
                         <div>
                             <span class="macro-name">Calories</span>
-                            <span class="macro-target-hint">Daily goal: {{ daily_reqs.calories|round|int }} kcal/day</span>
+                            <span class="macro-target-hint">Total weekly goal: {{ reqs.calories|round|int }} kcal</span>
                         </div>
                         <div class="macro-numbers">
                             <span class="macro-consumed"><strong>{{ consumed.calories|round|int }}</strong> / {{ reqs.calories|round|int }} kcal</span>
@@ -463,7 +463,7 @@
                     <div class="macro-header">
                         <div>
                             <span class="macro-name">Protein</span>
-                            <span class="macro-target-hint">Daily goal: {{ daily_reqs.protein|round(1) }}g/day</span>
+                            <span class="macro-target-hint">Total weekly goal: {{ reqs.protein|round(1) }}g</span>
                         </div>
                         <div class="macro-numbers">
                             <span class="macro-consumed"><strong>{{ consumed.protein|round(1) }}g</strong> / {{ reqs.protein|round(1) }}g</span>
@@ -481,7 +481,7 @@
                     <div class="macro-header">
                         <div>
                             <span class="macro-name">Carbs</span>
-                            <span class="macro-target-hint">Daily goal: {{ daily_reqs.carbs|round(1) }}g/day</span>
+                            <span class="macro-target-hint">Total weekly goal: {{ reqs.carbs|round(1) }}g</span>
                         </div>
                         <div class="macro-numbers">
                             <span class="macro-consumed"><strong>{{ consumed.carbs|round(1) }}g</strong> / {{ reqs.carbs|round(1) }}g</span>
@@ -499,7 +499,7 @@
                     <div class="macro-header">
                         <div>
                             <span class="macro-name">Fats</span>
-                            <span class="macro-target-hint">Daily goal: {{ daily_reqs.fats|round(1) }}g/day</span>
+                            <span class="macro-target-hint">Total weekly goal: {{ reqs.fats|round(1) }}g</span>
                         </div>
                         <div class="macro-numbers">
                             <span class="macro-consumed"><strong>{{ consumed.fats|round(1) }}g</strong> / {{ reqs.fats|round(1) }}g</span>
@@ -522,7 +522,7 @@
                     <div class="macro-header">
                         <div>
                             <span class="macro-name">Vitamin C</span>
-                            <span class="macro-target-hint">Daily goal: {{ daily_reqs.vit_c }}mg/day</span>
+                            <span class="macro-target-hint">Total weekly goal: {{ reqs.vit_c|round|int }}mg</span>
                         </div>
                         <div class="macro-numbers">
                             <span class="macro-consumed"><strong>{{ consumed.vit_c|round(1) }}mg</strong> / {{ reqs.vit_c|round|int }}mg</span>
@@ -540,7 +540,7 @@
                     <div class="macro-header">
                         <div>
                             <span class="macro-name">Calcium</span>
-                            <span class="macro-target-hint">Daily goal: {{ daily_reqs.calcium }}mg/day</span>
+                            <span class="macro-target-hint">Total weekly goal: {{ reqs.calcium|round|int }}mg</span>
                         </div>
                         <div class="macro-numbers">
                             <span class="macro-consumed"><strong>{{ consumed.calcium|round(1) }}mg</strong> / {{ reqs.calcium|round|int }}mg</span>
@@ -558,7 +558,7 @@
                     <div class="macro-header">
                         <div>
                             <span class="macro-name">Iron</span>
-                            <span class="macro-target-hint">Daily goal: {{ daily_reqs.iron }}mg/day</span>
+                            <span class="macro-target-hint">Total weekly goal: {{ reqs.iron|round|int }}mg</span>
                         </div>
                         <div class="macro-numbers">
                             <span class="macro-consumed"><strong>{{ consumed.iron|round(1) }}mg</strong> / {{ reqs.iron|round|int }}mg</span>

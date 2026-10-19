@@ -67,23 +67,23 @@ def generate_weekly_deficiencies(consumed, requirements, days_logged):
             model = genai.GenerativeModel('gemini-3.5-flash-lite')
             
             prompt = f"""
-            You are a formal clinical nutritionist for NutriTrack AI. Analyze the user's {days_logged}-day trailing nutrition intake vs clinical targets:
-            - Calories: {round(consumed.get('calories', 0), 1)} kcal (Target: {round(requirements.get('calories', 0), 1)} kcal)
-            - Protein: {round(consumed.get('protein', 0), 1)}g (Target: {round(requirements.get('protein', 0), 1)}g)
-            - Carbohydrates: {round(consumed.get('carbs', 0), 1)}g (Target: {round(requirements.get('carbs', 0), 1)}g)
-            - Healthy Fats: {round(consumed.get('fats', 0), 1)}g (Target: {round(requirements.get('fats', 0), 1)}g)
-            - Vitamin C: {round(consumed.get('vit_c', 0), 1)}mg (Target: {round(requirements.get('vit_c', 0), 1)}mg)
-            - Calcium: {round(consumed.get('calcium', 0), 1)}mg (Target: {round(requirements.get('calcium', 0), 1)}mg)
-            - Iron: {round(consumed.get('iron', 0), 1)}mg (Target: {round(requirements.get('iron', 0), 1)}mg)
+            You are a formal clinical nutritionist for NutriTrack AI. Analyze the user's weekly nutrition intake vs 7-day total weekly goals:
+            - Calories: {round(consumed.get('calories', 0), 1)} kcal (Total Weekly Goal: {round(requirements.get('calories', 0), 1)} kcal)
+            - Protein: {round(consumed.get('protein', 0), 1)}g (Total Weekly Goal: {round(requirements.get('protein', 0), 1)}g)
+            - Carbohydrates: {round(consumed.get('carbs', 0), 1)}g (Total Weekly Goal: {round(requirements.get('carbs', 0), 1)}g)
+            - Healthy Fats: {round(consumed.get('fats', 0), 1)}g (Total Weekly Goal: {round(requirements.get('fats', 0), 1)}g)
+            - Vitamin C: {round(consumed.get('vit_c', 0), 1)}mg (Total Weekly Goal: {round(requirements.get('vit_c', 0), 1)}mg)
+            - Calcium: {round(consumed.get('calcium', 0), 1)}mg (Total Weekly Goal: {round(requirements.get('calcium', 0), 1)}mg)
+            - Iron: {round(consumed.get('iron', 0), 1)}mg (Total Weekly Goal: {round(requirements.get('iron', 0), 1)}mg)
             
-            Identify all nutrients that are significantly under target (< 75% met).
+            Identify all nutrients that are significantly under weekly target (< 75% met of weekly goal).
             Return ONLY a valid JSON array of objects. Do NOT use markdown code blocks (no ```json).
             Each object must have these exact keys:
             - "name": Nutrient name (e.g. "Protein", "Vitamin C", "Calcium", "Iron", "Calories", "Carbohydrates", "Healthy Fats")
-            - "severity": "critical" if under 40% met, else "moderate"
-            - "pct_met": Integer percentage met (e.g. 24)
-            - "consumed": string with unit (e.g. "24.5g", "0mg")
-            - "target": string with unit (e.g. "80.0g", "65mg")
+            - "severity": "critical" if under 40% met of weekly goal, else "moderate"
+            - "pct_met": Integer percentage met of weekly goal, strictly calculated as round((consumed / total_weekly_goal) * 100)
+            - "consumed": string with unit showing total consumed in week (e.g. "{round(consumed.get('calories', 0), 1)} kcal")
+            - "target": string with unit showing the total weekly goal (e.g. "{round(requirements.get('calories', 0), 1)} kcal")
             - "message": Concise, formal 1-sentence explanation of why this deficit matters.
             - "foods": Array of 3-4 specific healthy Indian foods high in this nutrient.
             """
