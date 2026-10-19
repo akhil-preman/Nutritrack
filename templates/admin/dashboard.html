@@ -456,7 +456,12 @@
             <div class="stat-card">
                 <div class="stat-top">
                     <span class="stat-title">Calories Logged</span>
-                    <div class="stat-icon">⚡</div>
+                    <div class="stat-icon" style="background: var(--primary-color);">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </div>
                 </div>
                 <h2 class="stat-value">{{ stats.total_calories|round|int }}</h2>
                 <div class="stat-sub">kcal cumulative intake</div>
@@ -537,7 +542,7 @@
 
                     <div class="goal-bar-row">
                         <div class="goal-bar-label">
-                            <span style="color: #f43f5e; font-weight: 600;">📉 Cut Weight</span>
+                            <span style="color: #f43f5e; font-weight: 600;">Cut Weight</span>
                             <span>{{ stats.goal_cut }} users ({{ cut_pct }}%)</span>
                         </div>
                         <div class="goal-bar">
@@ -547,7 +552,7 @@
 
                     <div class="goal-bar-row">
                         <div class="goal-bar-label">
-                            <span style="color: #60a5fa; font-weight: 600;">⚖️ Maintain</span>
+                            <span style="color: #60a5fa; font-weight: 600;">Maintain</span>
                             <span>{{ stats.goal_maintain }} users ({{ maint_pct }}%)</span>
                         </div>
                         <div class="goal-bar">
@@ -557,7 +562,7 @@
 
                     <div class="goal-bar-row">
                         <div class="goal-bar-label">
-                            <span style="color: var(--primary-color); font-weight: 600;">💪 Gain Weight</span>
+                            <span style="color: var(--primary-color); font-weight: 600;">Gain Weight</span>
                             <span>{{ stats.goal_gain }} users ({{ gain_pct }}%)</span>
                         </div>
                         <div class="goal-bar">
