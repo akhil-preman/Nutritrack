@@ -88,7 +88,7 @@ def generate_weekly_deficiencies(consumed, requirements, days_logged):
             - "foods": Array of 3-4 specific healthy Indian foods high in this nutrient.
             """
             
-            response = model.generate_content(prompt)
+            response = model.generate_content(prompt, request_options={"timeout": 10})
             raw_text = response.text.strip().replace('```json', '').replace('```', '').strip()
             parsed = json.loads(raw_text)
             if isinstance(parsed, list) and len(parsed) > 0:

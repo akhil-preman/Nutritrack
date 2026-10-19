@@ -27,8 +27,54 @@
 
         .container { max-width: 1000px; margin: 4rem auto; padding: 0 1.5rem; }
         
-        .header h1 { font-size: 2.5rem; font-weight: 700; margin: 0 0 8px 0; }
-        .header p { font-size: 1.1rem; color: var(--text-muted); margin: 0 0 3rem 0; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1.2rem; }
+        .header-info h1 { font-size: 2.5rem; font-weight: 700; margin: 0 0 6px 0; }
+        .header-info p { font-size: 1.05rem; color: var(--text-muted); margin: 0; }
+        
+        .week-controls { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+        .week-select-wrapper { position: relative; display: inline-flex; align-items: center; }
+        .week-select {
+            background: var(--card-bg);
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 2.2rem 0.75rem 2.4rem;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            font-family: inherit;
+            color-scheme: dark;
+        }
+        .week-select:hover, .week-select:focus { border-color: var(--primary-color); }
+        .week-select-wrapper .calendar-icon { position: absolute; left: 12px; pointer-events: none; color: var(--primary-color); }
+        .week-select-wrapper .chevron-icon { position: absolute; right: 12px; pointer-events: none; color: var(--text-muted); }
+        .btn-week-nav {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1.1rem;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-week-nav:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background: rgba(196, 240, 66, 0.05);
+        }
+        .btn-week-nav.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
 
         .weekly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
 
@@ -345,15 +391,49 @@
     <div class="container">
         
         <div class="header">
-            <h1>Progress & Analysis</h1>
-            <p>7-Day Rolling Macro & Micronutrient Analysis</p>
+            <div class="header-info">
+                <h1>Progress & Analysis</h1>
+                <p>Weekly Macro & Micronutrient Clinical Report</p>
+            </div>
+
+            <!-- 7-Day Date Grouped Week Selector -->
+            <div class="week-controls">
+                <form id="weekForm" action="/weekly" method="GET" style="margin: 0; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                    <a href="{% if prev_week_start %}/weekly?week={{ prev_week_start }}{% else %}#{% endif %}" 
+                       class="btn-week-nav {% if not prev_week_start %}disabled{% endif %}" 
+                       title="Previous 7-Day Week">←</a>
+
+                    <div class="week-select-wrapper">
+                        <svg class="calendar-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        
+                        <select name="week" class="week-select" onchange="document.getElementById('weekForm').submit();" title="Select 7-day grouped week">
+                            {% for w in available_weeks %}
+                            <option value="{{ w.start }}" {% if w.start == selected_week_start %}selected{% endif %}>
+                                {{ w.label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        
+                        <svg class="chevron-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+
+                    <a href="{% if next_week_start %}/weekly?week={{ next_week_start }}{% else %}#{% endif %}" 
+                       class="btn-week-nav {% if not next_week_start %}disabled{% endif %}" 
+                       title="Next 7-Day Week">→</a>
+                </form>
+            </div>
         </div>
 
         <div class="weekly-grid">
             <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem;">
-                    <h3 style="margin: 0;">Weekly Summary</h3>
-                    <span style="font-size: 0.85rem; color: var(--text-muted); background: var(--card-bg-light); padding: 4px 12px; border-radius: 12px; font-weight: 500;">{{ days_logged }} of 7 days logged</span>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <div>
+                        <h3 style="margin: 0 0 4px 0;">Weekly Summary</h3>
+                        <span style="font-size: 0.88rem; color: var(--primary-color); font-weight: 600;">{{ week_label }}</span>
+                    </div>
+                    <span style="font-size: 0.82rem; color: var(--text-muted); background: var(--card-bg-light); padding: 4px 12px; border-radius: 12px; font-weight: 600;">
+                        {{ days_logged }} of 7 days logged
+                    </span>
                 </div>
                 <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0 0 1.5rem 0;">
                     7-day totals consumed vs 7-day targets (based on {{ user.weight_kg }}kg bodyweight, {{ user.goal }} goal).
@@ -552,7 +632,9 @@
                         }
 
                         try {
-                            const res = await fetch('/api/generate_weekly_insights');
+                            const selectedWeek = '{{ selected_week_start }}';
+                            const url = selectedWeek ? `/api/generate_weekly_insights?week=${encodeURIComponent(selectedWeek)}` : '/api/generate_weekly_insights';
+                            const res = await fetch(url);
                             const data = await res.json();
 
                             loadingDiv.style.display = 'none';
@@ -642,11 +724,11 @@
                 {% else %}
                     <div style="background: var(--card-bg-light); padding: 3rem 1.5rem; border-radius: 18px; border: 1px dashed var(--border-color); color: var(--text-muted); text-align: center;">
                         <div style="font-size: 2rem; margin-bottom: 0.8rem;">📋</div>
-                        <h4 style="color: var(--text-main); margin: 0 0 0.5rem 0; font-size: 1.15rem;">No Meals Logged This Week</h4>
-                        <p style="font-size: 0.9rem; margin: 0 0 1.5rem 0; max-width: 320px; margin-left: auto; margin-right: auto;">
-                            Log your daily breakfast, lunch, or dinner to unlock clinical AI deficiency detection and targeted food suggestions.
+                        <h4 style="color: var(--text-main); margin: 0 0 0.5rem 0; font-size: 1.15rem;">No Meals Logged For {{ week_label }}</h4>
+                        <p style="font-size: 0.9rem; margin: 0 0 1.5rem 0; max-width: 360px; margin-left: auto; margin-right: auto;">
+                            No meals were logged during this 7-day period. Select another week from the dropdown above to view that week's report.
                         </p>
-                        <a href="/log_meal" class="btn-ai-generate" style="text-decoration: none;">Log Your First Meal →</a>
+                        <a href="/log_meal" class="btn-ai-generate" style="text-decoration: none;">Log A Meal →</a>
                     </div>
                 {% endif %}
             </div>

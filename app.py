@@ -325,23 +325,73 @@ def weekly():
         
     user = User.query.get(session['user_id'])
     
-    # Get the last 7 days of meals
     today = datetime.now().date()
-    seven_days_ago = today - timedelta(days=6) # 7 days total including today
+    cur_monday = today - timedelta(days=today.weekday())
+    last_completed_monday = cur_monday - timedelta(days=7)
     
-    meals_last_7_days = Meal.query.filter(
+    # 1. Determine selected week from query param
+    week_str = request.args.get('week') or request.args.get('date')
+    if week_str:
+        try:
+            target_date = datetime.strptime(week_str.split('_')[0], '%Y-%m-%d').date()
+            start_date = target_date - timedelta(days=target_date.weekday())
+        except ValueError:
+            start_date = last_completed_monday
+    else:
+        # Default: if current week has logged meals, default to current week; otherwise default to last completed week
+        cur_sunday = cur_monday + timedelta(days=6)
+        cur_count = Meal.query.filter(Meal.user_id == user.id, Meal.date_logged >= cur_monday, Meal.date_logged <= cur_sunday).count()
+        start_date = cur_monday if cur_count > 0 else last_completed_monday
+        
+    end_date = start_date + timedelta(days=6)
+    
+    # 2. Build 7-day date grouped weeks list for selector (going back to earliest meal or 10 weeks)
+    earliest_date = today - timedelta(days=70)
+    earliest_meal = Meal.query.filter_by(user_id=user.id).order_by(Meal.date_logged.asc()).first()
+    if earliest_meal and earliest_meal.date_logged:
+        earliest_date = min(earliest_date, earliest_meal.date_logged)
+    earliest_monday = earliest_date - timedelta(days=earliest_date.weekday())
+    
+    available_weeks = []
+    mon = cur_monday
+    while mon >= earliest_monday:
+        sun = mon + timedelta(days=6)
+        is_cur = (mon == cur_monday)
+        is_last = (mon == last_completed_monday)
+        
+        dates_label = f"{mon.strftime('%d %b %Y')} – {sun.strftime('%d %b %Y')}"
+        if is_cur:
+            label = f"{dates_label} (Current Week)"
+        elif is_last:
+            label = f"{dates_label} (Completed Week)"
+        else:
+            label = dates_label
+            
+        available_weeks.append({
+            "start": mon.strftime('%Y-%m-%d'),
+            "end": sun.strftime('%Y-%m-%d'),
+            "label": label,
+            "is_current": is_cur,
+            "is_completed": is_last
+        })
+        mon -= timedelta(days=7)
+        
+    prev_week_start = (start_date - timedelta(days=7)).strftime('%Y-%m-%d')
+    next_monday = start_date + timedelta(days=7)
+    next_week_start = next_monday.strftime('%Y-%m-%d') if next_monday <= cur_monday else None
+    
+    # 3. Query meals for the selected 7-day week
+    meals_for_week = Meal.query.filter(
         Meal.user_id == user.id,
-        Meal.date_logged >= seven_days_ago,
-        Meal.date_logged <= today
+        Meal.date_logged >= start_date,
+        Meal.date_logged <= end_date
     ).all()
     
-    # Calculate daily requirements and multiply by 7 for the week
     daily_reqs = get_daily_requirements(user.weight_kg, user.height_cm, user.age, user.goal)
     weekly_reqs = {k: v * 7 for k, v in daily_reqs.items()}
     
-    # Sum consumed nutrients over the last 7 days
     consumed = {"calories": 0, "protein": 0, "carbs": 0, "fats": 0, "vit_c": 0, "calcium": 0, "iron": 0}
-    for meal in meals_last_7_days:
+    for meal in meals_for_week:
         consumed["calories"] += meal.calories
         consumed["protein"] += meal.protein
         consumed["carbs"] += meal.carbs
@@ -350,10 +400,25 @@ def weekly():
         consumed["calcium"] += meal.calcium
         consumed["iron"] += meal.iron
         
-    # Count how many unique days they logged food
-    unique_days = len(set(m.date_logged for m in meals_last_7_days))
-
-    return render_template('weekly.html', user=user, reqs=weekly_reqs, daily_reqs=daily_reqs, consumed=consumed, days_logged=unique_days)
+    unique_days = len(set(m.date_logged for m in meals_for_week))
+    week_label = f"{start_date.strftime('%d %b %Y')} – {end_date.strftime('%d %b %Y')}"
+    
+    return render_template(
+        'weekly.html', 
+        user=user, 
+        reqs=weekly_reqs, 
+        daily_reqs=daily_reqs, 
+        consumed=consumed, 
+        days_logged=unique_days,
+        available_weeks=available_weeks,
+        selected_week_start=start_date.strftime('%Y-%m-%d'),
+        selected_week_end=end_date.strftime('%Y-%m-%d'),
+        week_label=week_label,
+        prev_week_start=prev_week_start,
+        next_week_start=next_week_start,
+        is_current_week=(start_date == cur_monday),
+        is_completed_week=(end_date < today)
+    )
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
@@ -395,8 +460,28 @@ def api_generate_weekly_insights():
     user = User.query.get(session['user_id'])
     
     today = datetime.now().date()
-    seven_days_ago = today - timedelta(days=6)
-    meals = Meal.query.filter(Meal.user_id == user.id, Meal.date_logged >= seven_days_ago, Meal.date_logged <= today).all()
+    cur_monday = today - timedelta(days=today.weekday())
+    last_completed_monday = cur_monday - timedelta(days=7)
+    
+    week_str = request.args.get('week') or request.args.get('start') or request.args.get('date')
+    if week_str:
+        try:
+            target_date = datetime.strptime(week_str.split('_')[0], '%Y-%m-%d').date()
+            start_date = target_date - timedelta(days=target_date.weekday())
+        except ValueError:
+            start_date = last_completed_monday
+    else:
+        cur_sunday = cur_monday + timedelta(days=6)
+        cur_count = Meal.query.filter(Meal.user_id == user.id, Meal.date_logged >= cur_monday, Meal.date_logged <= cur_sunday).count()
+        start_date = cur_monday if cur_count > 0 else last_completed_monday
+        
+    end_date = start_date + timedelta(days=6)
+    
+    meals = Meal.query.filter(
+        Meal.user_id == user.id, 
+        Meal.date_logged >= start_date, 
+        Meal.date_logged <= end_date
+    ).all()
     
     unique_days = len(set(m.date_logged for m in meals))
     if unique_days == 0:
