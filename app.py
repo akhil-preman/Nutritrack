@@ -190,6 +190,7 @@ def log_meal():
     user = User.query.get(session['user_id'])
     
     found_food = None
+    query_param = request.args.get('food', '').strip()
         
     if request.method == 'POST':
         food_name = request.form.get('food_name')
@@ -204,8 +205,29 @@ def log_meal():
             }
         else:
             flash(f"Sorry, couldn't find '{food_name}'. Try 'Palak Paneer' or 'Egg'.")
+    elif query_param:
+        nutrition = get_food_nutrition(query_param)
+        if not nutrition:
+            # Try finding closest match in DB
+            matches = search_food_names(query_param, limit=1)
+            if not matches:
+                for word in query_param.split():
+                    if len(word) >= 3 and word.lower() not in ['with', 'and', 'the', 'for', 'curry', 'fresh', 'milk', 'pure']:
+                        matches = search_food_names(word, limit=1)
+                        if matches: break
+            if matches:
+                nutrition = get_food_nutrition(matches[0])
+                if nutrition:
+                    query_param = matches[0]
+
+        if nutrition:
+            found_food = {
+                "name": query_param.title(),
+                "nutrition": nutrition,
+                "is_count_based": is_count_based_food(query_param)
+            }
             
-    return render_template('log_meal.html', user=user, found_food=found_food)
+    return render_template('log_meal.html', user=user, found_food=found_food, initial_query=query_param)
 
 @app.route('/confirm_log_meal', methods=['POST'])
 def confirm_log_meal():
