@@ -76,9 +76,21 @@
             pointer-events: none;
         }
 
-        .weekly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+        .weekly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .summary-col { position: relative; }
 
-        .card { background: var(--card-bg); border-radius: 24px; padding: 2.5rem; border: 1px solid var(--border-color); height: fit-content; }
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 24px; 
+            padding: 2.2rem; 
+            border: 1px solid var(--border-color); 
+            position: sticky;
+            top: 2rem;
+            max-height: calc(100vh - 4rem);
+            overflow-y: auto;
+        }
+        .card::-webkit-scrollbar { width: 4px; }
+        .card::-webkit-scrollbar-thumb { background: var(--card-bg-light); border-radius: 4px; }
         .card h3 { font-size: 1.4rem; margin: 0 0 1.5rem 0; font-weight: 600; }
         
         .macro-row { padding: 1rem 0; border-bottom: 1px solid var(--border-color); }
@@ -425,7 +437,8 @@
         </div>
 
         <div class="weekly-grid">
-            <div class="card">
+            <div class="summary-col">
+                <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.5rem;">
                     <div>
                         <h3 style="margin: 0 0 4px 0;">Weekly Summary</h3>
@@ -570,8 +583,9 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="ai-card">
+        <div class="ai-card">
                 <div class="ai-header">
                     <div>
                         <div style="display: flex; align-items: center; gap: 8px;">
