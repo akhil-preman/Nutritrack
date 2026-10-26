@@ -1,15 +1,16 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 from functools import wraps
 import os
+import json
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
 
-from utils.food_db import get_food_nutrition, suggest_foods, search_food_names, add_custom_food, delete_custom_food, get_all_foods, is_count_based_food, FOOD_DATA
+from utils.food_db import get_food_nutrition, get_canonical_food_name, suggest_foods, search_food_names, add_custom_food, delete_custom_food, get_all_foods, is_count_based_food, get_food_ingredients, get_food_details_extra, is_nut_or_seed, FOOD_DATA
 from utils.ai_engine import predict_food_from_image, generate_weekly_deficiencies
 from werkzeug.utils import secure_filename
 
@@ -193,39 +194,41 @@ def log_meal():
     query_param = request.args.get('food', '').strip()
         
     if request.method == 'POST':
-        food_name = request.form.get('food_name')
+        food_name = (request.form.get('food_name') or '').strip()
         nutrition = get_food_nutrition(food_name)
+        canonical_name = get_canonical_food_name(food_name)
         
-        if nutrition:
-            # Instead of saving, just return the data to the template to show the modal
+        if nutrition and canonical_name:
+            # Return the verified database food to show the modal
+            extra = get_food_details_extra(canonical_name)
             found_food = {
-                "name": food_name.title(),
+                "name": canonical_name,
                 "nutrition": nutrition,
-                "is_count_based": is_count_based_food(food_name)
+                "is_count_based": is_count_based_food(canonical_name),
+                "ingredients": get_food_ingredients(canonical_name),
+                "benefits": extra.get("benefits", ""),
+                "daily_portion": extra.get("daily_portion", ""),
+                "image_link": extra.get("image_link", "")
             }
         else:
-            flash(f"Sorry, couldn't find '{food_name}'. Try 'Palak Paneer' or 'Egg'.")
+            flash(f"Sorry, couldn't find '{food_name}' in our database. Try 'Palak Paneer', 'Egg', or 'Rice'.")
     elif query_param:
         nutrition = get_food_nutrition(query_param)
-        if not nutrition:
-            # Try finding closest match in DB
-            matches = search_food_names(query_param, limit=1)
-            if not matches:
-                for word in query_param.split():
-                    if len(word) >= 3 and word.lower() not in ['with', 'and', 'the', 'for', 'curry', 'fresh', 'milk', 'pure']:
-                        matches = search_food_names(word, limit=1)
-                        if matches: break
-            if matches:
-                nutrition = get_food_nutrition(matches[0])
-                if nutrition:
-                    query_param = matches[0]
+        canonical_name = get_canonical_food_name(query_param)
 
-        if nutrition:
+        if nutrition and canonical_name:
+            extra = get_food_details_extra(canonical_name)
             found_food = {
-                "name": query_param.title(),
+                "name": canonical_name,
                 "nutrition": nutrition,
-                "is_count_based": is_count_based_food(query_param)
+                "is_count_based": is_count_based_food(canonical_name),
+                "ingredients": get_food_ingredients(canonical_name),
+                "benefits": extra.get("benefits", ""),
+                "daily_portion": extra.get("daily_portion", ""),
+                "image_link": extra.get("image_link", "")
             }
+        else:
+            flash(f"Sorry, couldn't find '{query_param}' in our database. Try ' Paneer', 'Egg', or 'Rice'.")
             
     return render_template('log_meal.html', user=user, found_food=found_food, initial_query=query_param)
 
@@ -248,6 +251,9 @@ def confirm_log_meal():
         portion_label = f"{int(grams) if grams.is_integer() else grams}g"
             
     nutrition = get_food_nutrition(food_name)
+    canonical_name = get_canonical_food_name(food_name)
+    if canonical_name:
+        food_name = canonical_name
     
     if nutrition:
         new_meal = Meal(
@@ -257,17 +263,88 @@ def confirm_log_meal():
             protein=round(nutrition['protein'] * factor, 1), 
             carbs=round(nutrition['carbs'] * factor, 1), 
             fats=round(nutrition['fats'] * factor, 1),
-            vit_c=round(nutrition['vit_c'] * factor, 1), 
-            calcium=round(nutrition['calcium'] * factor, 1), 
-            iron=round(nutrition['iron'] * factor, 1)
+            vit_c=round(nutrition.get('vit_c', 0.0) * factor, 1), 
+            calcium=round(nutrition.get('calcium', 0.0) * factor, 1), 
+            iron=round(nutrition.get('iron', 0.0) * factor, 1)
         )
         db.session.add(new_meal)
+
+        # Process optional side dishes
+        side_dishes_json = request.form.get('side_dishes_data', '')
+        side_names_logged = []
+        if side_dishes_json:
+            try:
+                side_dishes = json.loads(side_dishes_json)
+                for side in side_dishes:
+                    s_name = side.get('name', '').strip()
+                    if not s_name:
+                        continue
+                    s_is_count = side.get('is_count', False) or is_count_based_food(s_name)
+                    s_qty = float(side.get('quantity', 1 if s_is_count else 100))
+                    if s_qty < 1: s_qty = 1
+                    if s_is_count:
+                        s_factor = s_qty
+                        s_label = f"{int(s_qty) if s_qty.is_integer() else s_qty}x"
+                    else:
+                        s_factor = s_qty / 100.0
+                        s_label = f"{int(s_qty) if s_qty.is_integer() else s_qty}g"
+                    
+                    s_nutr = get_food_nutrition(s_name)
+                    s_canon = get_canonical_food_name(s_name)
+                    if s_canon:
+                        s_name = s_canon
+                    
+                    if s_nutr:
+                        side_meal = Meal(
+                            user_id=session['user_id'],
+                            food_name=f"{s_label} {s_name.title()}",
+                            calories=round(s_nutr['calories'] * s_factor, 1),
+                            protein=round(s_nutr['protein'] * s_factor, 1),
+                            carbs=round(s_nutr['carbs'] * s_factor, 1),
+                            fats=round(s_nutr['fats'] * s_factor, 1),
+                            vit_c=round(s_nutr.get('vit_c', 0.0) * s_factor, 1),
+                            calcium=round(s_nutr.get('calcium', 0.0) * s_factor, 1),
+                            iron=round(s_nutr.get('iron', 0.0) * s_factor, 1)
+                        )
+                        db.session.add(side_meal)
+                        side_names_logged.append(f"{s_label} {s_name.title()}")
+            except Exception as e:
+                print(f"[LOG MEAL] Error processing side dishes: {e}")
+
         db.session.commit()
-        flash(f"Successfully logged {portion_label} of {food_name.title()}!")
+        if side_names_logged:
+            flash(f"Successfully logged {portion_label} {food_name.title()} with {', '.join(side_names_logged)}!")
+        else:
+            flash(f"Successfully logged {portion_label} of {food_name.title()}!")
         return redirect(url_for('dashboard'))
         
     flash("Error logging meal.")
     return redirect(url_for('log_meal'))
+
+@app.route('/delete_meal/<int:meal_id>', methods=['POST'])
+def delete_meal(meal_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+        
+    meal = Meal.query.get_or_404(meal_id)
+    if meal.user_id != session['user_id']:
+        abort(403)
+        
+    today = datetime.now().date()
+    if meal.date_logged and meal.date_logged != today:
+        flash("Cannot delete meals from past dates as that day has already ended.")
+        return redirect(url_for('dashboard', date=meal.date_logged.strftime('%Y-%m-%d')))
+        
+    food_name = meal.food_name
+    date_param = request.form.get('date') or (meal.date_logged.strftime('%Y-%m-%d') if meal.date_logged else None)
+    
+    db.session.delete(meal)
+    db.session.commit()
+    flash(f"Removed '{food_name}' from your log.")
+    
+    if date_param:
+        return redirect(url_for('dashboard', date=date_param))
+    return redirect(url_for('dashboard'))
 
 @app.route('/predict_meal', methods=['POST'])
 def predict_meal():
@@ -308,11 +385,16 @@ def predict_meal():
         nutrition = get_food_nutrition(predicted_food)
         if nutrition:
             # Trigger confirmation modal instead of instant save
+            extra = get_food_details_extra(predicted_food)
             found_food = {
                 "name": predicted_food.title(),
                 "nutrition": nutrition,
                 "is_ai": True,
-                "is_count_based": is_count_based_food(predicted_food)
+                "is_count_based": is_count_based_food(predicted_food),
+                "ingredients": get_food_ingredients(predicted_food),
+                "benefits": extra.get("benefits", ""),
+                "daily_portion": extra.get("daily_portion", ""),
+                "image_link": extra.get("image_link", "")
             }
             return render_template('log_meal.html', user=user, found_food=found_food)
             
@@ -454,6 +536,39 @@ def api_suggestions():
     return jsonify(suggestions)
 
 
+@app.route('/api/food_details')
+def api_food_details():
+    name = request.args.get('name', '').strip()
+    if not name:
+        return jsonify({"error": "No food name provided"}), 400
+    nutrition = get_food_nutrition(name)
+    canonical_name = get_canonical_food_name(name)
+    if nutrition and canonical_name:
+        extra = get_food_details_extra(canonical_name)
+        return jsonify({
+            "name": canonical_name,
+            "nutrition": nutrition,
+            "is_count_based": is_count_based_food(canonical_name),
+            "is_nut_seed": is_nut_or_seed(canonical_name),
+            "ingredients": get_food_ingredients(canonical_name),
+            "benefits": extra.get("benefits", ""),
+            "daily_portion": extra.get("daily_portion", ""),
+            "image_link": extra.get("image_link", "")
+        })
+    return jsonify({"error": "Food not found"}), 404
+
+
+@app.route('/api/food_ingredients')
+def api_food_ingredients():
+    name = request.args.get('name', '').strip()
+    if not name:
+        return jsonify({"ingredients": []})
+    return jsonify({
+        "name": name.title(),
+        "ingredients": get_food_ingredients(name)
+    })
+
+
 @app.route('/api/generate_weekly_insights')
 def api_generate_weekly_insights():
     if 'user_id' not in session: return jsonify({"error": "Unauthorized"}), 401
@@ -476,6 +591,14 @@ def api_generate_weekly_insights():
         start_date = cur_monday if cur_count > 0 else last_completed_monday
         
     end_date = start_date + timedelta(days=6)
+    
+    # Weekly AI analysis is calculated and shown only when the total 7 days of that week are completed
+    if end_date >= today:
+        return jsonify({
+            "in_progress": True,
+            "message": "Weekly clinical analysis and suggestions are calculated once all 7 days of the week are completed.",
+            "deficiencies": []
+        })
     
     meals = Meal.query.filter(
         Meal.user_id == user.id, 

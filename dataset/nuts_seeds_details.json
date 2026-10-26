@@ -1,0 +1,611 @@
+{
+  "almond (badam)": {
+    "name": "Almond (Badam)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Vitamin E and healthy fats support brain function and memory, useful for studying; magnesium aids concentration and reduces mental fatigue; protein supports steady growth",
+    "daily_portion": "6-8 almonds (~15-20g), soaked or plain, once a day",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/507_Almond.jpg"
+  },
+  "walnut (akhrot)": {
+    "name": "Walnut (Akhrot)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Highest plant-based Omega-3 content supports brain development and memory in growing teens; antioxidants support focus during long study sessions; healthy fats support overall growth",
+    "daily_portion": "2-3 whole walnuts (~15g) daily",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/508_Walnut.jpg"
+  },
+  "cashew nut (kaju)": {
+    "name": "Cashew Nut (Kaju)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Zinc supports immunity and cognitive function, helpful during school-going years; magnesium supports energy metabolism and reduces tiredness; a tasty way to add healthy fat to the diet",
+    "daily_portion": "6-8 cashews (~15-20g) daily",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/509_Cashew_Nut.jpg"
+  },
+  "pistachio (pista)": {
+    "name": "Pistachio (Pista)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Vitamin B6 supports brain neurotransmitter function and mood balance in teens; lutein/zeaxanthin support eye health, useful for screen-heavy study days; potassium supports muscle and nerve function",
+    "daily_portion": "15-20 kernels (~15-20g) daily",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/510_Pistachio.jpg"
+  },
+  "peanut / groundnut (mungfali)": {
+    "name": "Peanut / Groundnut (Mungfali)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "High, affordable protein source supports muscle growth and repair for active students; niacin and folate support brain energy metabolism; an easily available everyday healthy-fat option",
+    "daily_portion": "1 small handful (~20-25g) daily",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/511_Peanut_Groundnut.jpg"
+  },
+  "pecan nut (pecan)": {
+    "name": "Pecan Nut (Pecan)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Antioxidants help protect growing cells from everyday oxidative stress; manganese supports bone development; healthy fats support brain and nerve function",
+    "daily_portion": "4-5 halves (~15g), a few times a week",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/512_Pecan_Nut.jpg"
+  },
+  "macadamia nut (macadamia integrifolia)": {
+    "name": "Macadamia Nut (Macadamia integrifolia)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "High monounsaturated fat content supports healthy brain development; thiamine supports energy release from food, useful for active school days; a calorie-dense option for growing appetites",
+    "daily_portion": "4-5 kernels (~15g), occasionally as a treat",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/513_Macadamia_Nut.jpg"
+  },
+  "hazelnut (pahadi badam)": {
+    "name": "Hazelnut (Pahadi Badam)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Vitamin E supports healthy skin and protects growing cells; good fat and protein combination supports steady energy through the school day; manganese supports bone growth",
+    "daily_portion": "8-10 kernels (~15-20g), a few times a week",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/514_Hazelnut.jpg"
+  },
+  "brazil nut (bertholletia excelsa)": {
+    "name": "Brazil Nut (Bertholletia excelsa)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Extremely rich in selenium, which supports immunity and thyroid function; supports antioxidant defence in growing bodies; note - selenium is easy to over-consume with this nut, so strict moderation matters",
+    "daily_portion": "Only 1 nut (~5g) per day - do not exceed 1-2 nuts, as excess selenium can be harmful",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/515_Brazil_Nut.jpg"
+  },
+  "pine nut (chilgoza)": {
+    "name": "Pine Nut (Chilgoza)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Zinc supports immunity and wound healing, useful for active, sports-going students; healthy fats support brain function; a energy-dense option for growing appetites",
+    "daily_portion": "1 small handful (~10-15g), a few times a week",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/516_Pine_Nut.jpg"
+  },
+  "chestnut (sweet chestnut)": {
+    "name": "Chestnut (Sweet Chestnut)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Lower in fat than other nuts, making it a lighter energy source before physical activity; contains Vitamin C, which most nuts lack, supporting immunity; good fiber supports digestion",
+    "daily_portion": "3-4 roasted chestnuts (~30-40g) as an occasional snack",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/517_Chestnut.jpg"
+  },
+  "coconut, dry copra (sukha nariyal / khopra)": {
+    "name": "Coconut, Dry Copra (Sukha Nariyal / Khopra)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Medium-chain fats provide quick, usable energy for active school days; fiber supports digestion; manganese and copper support bone and connective-tissue growth",
+    "daily_portion": "1-2 small pieces (~15-20g) occasionally, given its high saturated-fat content",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/518_Coconut_Dry_Copra.jpg"
+  },
+  "white sesame seeds (safed til)": {
+    "name": "White Sesame Seeds (Safed Til)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "One of the richest plant sources of calcium, supporting strong bones during the growth-spurt years; good iron content helps prevent fatigue and supports focus; healthy fats support brain development",
+    "daily_portion": "1-2 teaspoons (~10g), sprinkled on food or as til-chikki, daily",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/519_White_Sesame_Seeds.jpg"
+  },
+  "black sesame seeds (kala til.)": {
+    "name": "Black Sesame Seeds (Kala Til.)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Very high calcium content supports bone density during teenage growth; iron supports blood health and concentration; sesamin antioxidants support overall cell protection",
+    "daily_portion": "1-2 teaspoons (~10g) daily, in laddoos or sprinkled on food",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/520_Black_Sesame_Seeds.jpg"
+  },
+  "flaxseeds (alsi)": {
+    "name": "Flaxseeds (Alsi)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Richest plant source of Omega-3s, supporting brain development and focus; very high fiber supports healthy digestion; best consumed ground, as whole seeds pass through undigested",
+    "daily_portion": "1 tablespoon (~10g) ground flaxseed daily, mixed into food",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/521_Flaxseeds.jpg"
+  },
+  "chia seeds (salvia hispanica)": {
+    "name": "Chia Seeds (Salvia hispanica)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "High fiber and calcium content support digestion and bone growth together; Omega-3 content supports brain function and focus; soaked chia forms a gel that keeps students feeling full and hydrated",
+    "daily_portion": "1-1.5 tablespoons (~15g), soaked in water or milk, daily",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/522_Chia_Seeds.png"
+  },
+  "basil seeds (sabja / tukmaria)": {
+    "name": "Basil Seeds (Sabja / Tukmaria)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Soaked sabja seeds add fiber and hydration, useful in hot weather and for digestion; provide a plant-based Omega-3 boost for brain health; low-calorie way to feel full between meals",
+    "daily_portion": "1 tablespoon (~10g), soaked in water, a few times a week",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/523_Basil_Seeds.jpg"
+  },
+  "hemp seeds (bhang beej)": {
+    "name": "Hemp Seeds (Bhang Beej)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Complete plant protein strongly supports muscle and tissue growth in teenagers; magnesium supports muscle function and reduces fatigue; balanced Omega-3/Omega-6 fats support brain health. (Note: food-grade hemp seeds are non-intoxicating and legal to consume as food.)",
+    "daily_portion": "1 tablespoon (~10g), sprinkled on food, a few times a week",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/524_Hemp_Seeds.jpg"
+  },
+  "sunflower seeds (surajmukhi beej)": {
+    "name": "Sunflower Seeds (Surajmukhi Beej)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Very high Vitamin E content protects growing cells and supports skin health; good protein and healthy fats support daily growth; B-vitamins support energy metabolism for active school days",
+    "daily_portion": "1 small handful (~20g), a few times a week",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/525_Sunflower_Seeds.jpg"
+  },
+  "pumpkin seeds (kaddu beej / pepita)": {
+    "name": "Pumpkin Seeds (Kaddu Beej / Pepita)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "High zinc content strongly supports immunity and cognitive development in growing teens; magnesium helps with sleep quality and muscle recovery; good plant protein supports growth",
+    "daily_portion": "1 small handful (~20g), a few times a week",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/526_Pumpkin_Seeds.jpg"
+  },
+  "safflower seeds (kardi / kusum beej)": {
+    "name": "Safflower Seeds (Kardi / Kusum Beej)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Linoleic acid (an essential fatty acid) supports skin and cell membrane health; Vitamin E supports antioxidant protection during growth; a less common but useful addition to a varied diet",
+    "daily_portion": "Small amounts (~5-10g) occasionally, typically via cooking oil rather than eaten whole",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/527_Safflower_Seeds.jpg"
+  },
+  "niger seeds (ramtil / khursani)": {
+    "name": "Niger Seeds (Ramtil / Khursani)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Provides plant protein and healthy fat similar to other oilseeds, useful in a varied diet; iron content can support blood health; traditionally used in regional chutneys in small amounts",
+    "daily_portion": "1 teaspoon (~5g) occasionally, mainly as a condiment/chutney ingredient rather than a daily snack",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/528_Niger_Seeds.jpg"
+  },
+  "poppy seeds (khus khus)": {
+    "name": "Poppy Seeds (Khus Khus)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Very high calcium content supports strong bones and teeth during growth; healthy fats support brain development; commonly used to thicken and enrich Indian gravies in small amounts",
+    "daily_portion": "1-2 teaspoons (~5-10g) used in cooking, not as a standalone snack",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/529_Poppy_Seeds.png"
+  },
+  "black mustard seeds (rai / kali sarson)": {
+    "name": "Black Mustard Seeds (Rai / Kali Sarson)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Used in tiny amounts for tempering, mustard seeds add antioxidant compounds to daily cooking; selenium supports immune function; the pungent compounds may support digestion",
+    "daily_portion": "A pinch to 1/2 teaspoon (~1-2g) used in cooking/tempering, not eaten directly",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/530_Mustard_Seeds_Black.jpg"
+  },
+  "watermelon seeds (tarbuz magaz)": {
+    "name": "Watermelon Seeds (Tarbuz Magaz)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "High magnesium content supports muscle function and reduces fatigue during exams; good plant protein supports growth; roasted seeds make a healthier snack than fried/packaged alternatives",
+    "daily_portion": "1 small handful (~15-20g) roasted, a few times a week",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/531_Watermelon_Seeds.jpg"
+  },
+  "muskmelon seeds (kharbuja magaz)": {
+    "name": "Muskmelon Seeds (Kharbuja Magaz)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Good plant protein and healthy fat combination supports steady growth; magnesium and zinc support immunity and muscle recovery; a light, easily available roasted snack",
+    "daily_portion": "1 small handful (~15-20g) roasted, a few times a week",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/532_Muskmelon_Seeds.jpg"
+  },
+  "cucumber seeds (kheera magaz)": {
+    "name": "Cucumber Seeds (Kheera Magaz)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Similar to other melon-family seeds, provides plant protein and cooling nutrients traditionally valued in Indian cuisine; contributes healthy fats to a mixed diet",
+    "daily_portion": "Small amounts (~10-15g), typically eaten as part of a mixed magaz (melon seed) blend rather than alone",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/533_Cucumber_Seeds.jpg"
+  },
+  "ash gourd seeds (petha magaz)": {
+    "name": "Ash Gourd Seeds (Petha Magaz)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Contributes plant protein and fats similar to other melon-family seeds; traditionally used in regional snacks and sweets in small amounts",
+    "daily_portion": "Small amounts (~10-15g) occasionally, usually as part of a mixed seed snack",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/534_Ash_Gourd_Seeds.png"
+  },
+  "apple gourd / tinda seeds (praecitrullus fistulosus)": {
+    "name": "Apple Gourd / Tinda Seeds (Praecitrullus fistulosus)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Not a common standalone snack food; when consumed, contributes plant protein and fat similar to other gourd-family seeds",
+    "daily_portion": "Not typically eaten as a separate snack; occasional, small amounts only if included in regional preparations",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/535_Apple_Gourd_Seeds.jpg"
+  },
+  "almondette kernel (chironji / charoli)": {
+    "name": "Almondette Kernel (Chironji / Charoli)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Good plant protein and iron support growth and help prevent fatigue; traditionally used in Indian sweets, adding healthy fats in small quantities",
+    "daily_portion": "1 teaspoon (~5-10g), mainly used in cooking/sweets rather than eaten alone",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/536_Almondette_Kernel.jpg"
+  },
+  "lotus seed kernel, dry (kamal gatta)": {
+    "name": "Lotus Seed Kernel, Dry (Kamal Gatta)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Low in fat but good in protein, a lighter option than most nuts for a filling snack; potassium supports muscle and nerve function; used in kheer and soups for a nutrient boost",
+    "daily_portion": "1 small bowl cooked (~20-30g dry kernels), a few times a week",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/537_Lotus_Seed_Kernel_Dry.jpg"
+  },
+  "jackfruit seeds, cooked (kathal beej)": {
+    "name": "Jackfruit Seeds, Cooked (Kathal Beej)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "A starchy, low-fat snack that provides steady energy; good fiber supports digestion; must always be boiled or roasted, never eaten raw, as raw seeds contain anti-nutrients",
+    "daily_portion": "4-5 boiled seeds (~40-50g), occasionally as a snack or added to curries",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/538_Jackfruit_Seeds.jpg"
+  },
+  "tamarind seeds, roasted (imli beej)": {
+    "name": "Tamarind Seeds, Roasted (Imli Beej)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "A traditional, minor regional snack once properly roasted/de-husked; provides some plant protein; not a mainstream food and should only be eaten in small, properly processed amounts",
+    "daily_portion": "A few roasted seeds (~10g) occasionally; not a regular daily food",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/539_Tamarind_Seeds_Roasted.jpg"
+  },
+  "water caltrop kernel, dry (sookha singhara)": {
+    "name": "Water Caltrop Kernel, Dry (Sookha Singhara)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "A low-fat, energy-dense starchy food, traditionally eaten during religious fasting; easy to digest and provides quick energy; naturally gluten-free",
+    "daily_portion": "1 small bowl cooked or as flour preparation (~40-50g), occasionally",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/547_Water_Caltrop_Kernel_Dry.jpg"
+  },
+  "cumin seeds (jeera)": {
+    "name": "Cumin Seeds (Jeera)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Very high iron content (in the small amounts typically consumed) supports blood health and focus; traditionally used to aid digestion; a flavourful way to add micronutrients to daily meals",
+    "daily_portion": "1/2 to 1 teaspoon (~2-3g) used in daily cooking, not eaten as a standalone snack",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/548_Cumin_Seeds.jpg"
+  },
+  "fennel seeds (saunf)": {
+    "name": "Fennel Seeds (Saunf)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Traditionally used after meals to freshen breath and aid digestion; provides trace calcium and iron in the small amounts consumed; naturally caffeine-free alternative to other after-meal habits",
+    "daily_portion": "1/2 to 1 teaspoon (~3-5g) after meals, as a mouth freshener/digestive",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/549_Fennel_Seeds.jpg"
+  },
+  "coriander seeds (sabut dhaniya)": {
+    "name": "Coriander Seeds (Sabut Dhaniya)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Used daily in Indian cooking, contributing antioxidants and trace minerals to meals; supports digestion; adds flavour without needing excess salt or sugar",
+    "daily_portion": "1-2 teaspoons (~5g) used in cooking daily, not eaten as a standalone snack",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/550_Coriander_Seeds.jpg"
+  },
+  "carom seeds (ajwain)": {
+    "name": "Carom Seeds (Ajwain)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Traditionally used to ease digestion and mild stomach discomfort; adds antimicrobial-supporting compounds to cooking; used in small amounts, well-suited to Indian home remedies",
+    "daily_portion": "A pinch to 1/4 teaspoon (~1g), used occasionally in cooking or as a home remedy, not as a snack",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/552_Carom_Seeds.jpg"
+  },
+  "nigella seeds (kalonji)": {
+    "name": "Nigella Seeds (Kalonji)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Thymoquinone content supports antioxidant defence; traditionally used to season breads and pickles; provides trace iron in typical cooking amounts",
+    "daily_portion": "1/4 to 1/2 teaspoon (~1-2g) used in cooking, not eaten as a standalone snack",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/553_Nigella_Seeds.jpg"
+  },
+  "dill seeds (suva beej)": {
+    "name": "Dill Seeds (Suva Beej)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Used traditionally to support digestion, especially after heavy meals; provides trace calcium and iron in cooking amounts; mild, family-friendly flavour",
+    "daily_portion": "1/2 teaspoon (~2-3g) used in cooking or as an occasional digestive infusion",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/554_Dill_Seeds.jpg"
+  },
+  "celery seeds (ajmod / radhuni)": {
+    "name": "Celery Seeds (Ajmod / Radhuni)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Used in small quantities to flavour dals and curries in Eastern Indian cuisine; contributes trace minerals; supports digestion in traditional use",
+    "daily_portion": "A pinch (~0.5-1g) used in cooking, not eaten as a standalone snack",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/555_Celery_Seeds.jpg"
+  },
+  "anise seeds (chhoti saunf / valaiti saunf)": {
+    "name": "Anise Seeds (Chhoti Saunf / Valaiti Saunf)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Traditionally used to ease mild digestive discomfort; adds a mild licorice-like flavour to snacks and drinks; supplies trace minerals in typical cooking amounts",
+    "daily_portion": "1/2 teaspoon (~2-3g), used occasionally in cooking or herbal infusions",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/556_Anise_Seeds.jpg"
+  },
+  "caraway seeds (shahi jeera)": {
+    "name": "Caraway Seeds (Shahi Jeera)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Used in festive rice and biryanis for flavour, contributing trace minerals; traditionally valued for digestive support; a milder, more delicate cousin of regular cumin",
+    "daily_portion": "1/4 to 1/2 teaspoon (~1-2g), used in cooking, not eaten as a standalone snack",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/557_Caraway_Seeds.jpg"
+  },
+  "tiger nut (chufa nut)": {
+    "name": "Tiger Nut (Chufa Nut)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "High resistant starch and fiber support gut health and steady digestion; naturally sweet and easy snack alternative to processed sugary snacks; provides potassium for muscle function",
+    "daily_portion": "1 small handful (~20-30g), soaked or dried, a few times a week",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/560_Tiger_Nut.jpg"
+  },
+  "sacha inchi (inca peanut)": {
+    "name": "Sacha Inchi (Inca Peanut)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Exceptional plant-based Omega-3 content strongly supports brain development and focus; complete protein supports muscle growth; Vitamin E supports antioxidant protection",
+    "daily_portion": "1 small handful (~15-20g), a few times a week",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/561_Sacha_Inchi.jpg"
+  },
+  "pili nut (canarium ovatum)": {
+    "name": "Pili Nut (Canarium ovatum)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Very high healthy-fat content supports brain and nerve development; a calorie-dense option useful for active, growing students; buttery texture makes it a satisfying occasional treat",
+    "daily_portion": "4-5 kernels (~15g), occasionally as a treat",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/562_Pili_Nut.jpg"
+  },
+  "baru nut (dipteryx alata)": {
+    "name": "Baru Nut (Dipteryx alata)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Unusually high protein content among nuts supports muscle growth and repair; good iron and zinc support blood health and immunity; an emerging, nutrient-dense option, though less common in Indian markets",
+    "daily_portion": "1 small handful (~15-20g), occasionally",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/563_Baru_Nut.jpg"
+  },
+  "macadamia nut, roasted (macadamia tetraphylla)": {
+    "name": "Macadamia Nut, Roasted (Macadamia tetraphylla)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Same core benefits as raw macadamia - supports brain development via healthy fats; roasting enhances flavour without adding sugar; a calorie-dense treat for active students",
+    "daily_portion": "4-5 kernels (~15g), occasionally as a treat",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/566_Macadamia_Nut_Roasted.jpg"
+  },
+  "mongongo nut (manketti nut)": {
+    "name": "Mongongo Nut (Manketti Nut)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Once properly roasted, a high-protein, high-iron traditional African nut that can support growth and blood health; must never be eaten raw",
+    "daily_portion": "Not conventionally available in India; if consumed, only in small amounts (~15g), always fully roasted",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/571_Mongongo_Nut.jpg"
+  },
+  "cedar nut / siberian pine nut (pinus sibirica)": {
+    "name": "Cedar Nut / Siberian Pine Nut (Pinus sibirica)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Arginine content supports growth-hormone-related processes during the teen growth phase; healthy fats support brain development; zinc supports immunity",
+    "daily_portion": "1 small handful (~10-15g), occasionally",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/572_Cedar_Nut.jpg"
+  },
+  "bunya nut (araucaria bidwillii)": {
+    "name": "Bunya Nut (Araucaria bidwillii)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "A low-fat, starchy traditional food providing steady carbohydrate energy once cooked; not conventionally available in India but nutritionally similar to chestnuts",
+    "daily_portion": "Not conventionally available in India; if consumed, only after thorough cooking, similar portion to chestnuts (~30-40g)",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/573_Bunya_Nut.jpg"
+  },
+  "pomegranate seeds, dry (anardana)": {
+    "name": "Pomegranate Seeds, Dry (Anardana)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "Adds tangy flavour and antioxidants to chaats and curries without needing extra salt; Vitamin C supports immunity; used in small amounts as a spice rather than eaten in quantity",
+    "daily_portion": "1/2 to 1 teaspoon (~2-3g) used in cooking/chaats, not eaten as a standalone snack",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/575_Pomegranate_Seeds_Dry.jpg"
+  },
+  "black walnut (kala akhrot)": {
+    "name": "Black Walnut (Kala Akhrot)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "4-5 kernel halves (about 15g) a few times a week.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/583_Black_Walnut.jpg"
+  },
+  "white walnut / butternut (safed akhrot)": {
+    "name": "White Walnut / Butternut (Safed Akhrot)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "3-4 kernel halves (about 12-15g) a few times a week.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/584_White_Walnut_Butternut.png"
+  },
+  "heartnut (heart walnut)": {
+    "name": "Heartnut (Heart Walnut)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "4-5 kernels (about 15g) a few times a week.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/585_Heartnut.jpg"
+  },
+  "hickory nut (hickory kernel)": {
+    "name": "Hickory Nut (Hickory Kernel)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "3-4 kernels (about 12-15g) a few times a week.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/586_Hickory_Nut.jpg"
+  },
+  "cobnut (wild hazelnut. grandis)": {
+    "name": "Cobnut (Wild Hazelnut. grandis)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "8-10 kernels (about 15-20g) a few times a week.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/587_Cobnut.jpg"
+  },
+  "filbert (filbert nut)": {
+    "name": "Filbert (Filbert Nut)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "8-10 kernels (about 15-20g) a few times a week.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/588_Filbert.jpg"
+  },
+  "water chestnut (chinese) (pani phal)": {
+    "name": "Water Chestnut (Chinese) (Pani Phal)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "4-5 whole pieces (about 50g) as an occasional snack.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/589_Water_Chestnut_Chinese.jpg"
+  },
+  "breadnut (maya nut)": {
+    "name": "Breadnut (Maya Nut)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "1-2 tbsp of roasted/ground seed (as flour/porridge, common preparation) occasionally.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/590_Breadnut.jpg"
+  },
+  "malabar chestnut (pachira nut / saba nut)": {
+    "name": "Malabar Chestnut (Pachira Nut / Saba Nut)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "A small roasted handful (15-20g) occasionally.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/592_Malabar_Chestnut.jpg"
+  },
+  "palmyra palm nut (taal / munjal kernel)": {
+    "name": "Palmyra Palm Nut (Taal / Munjal Kernel)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "1-2 pieces of the young jelly seed (tadgola) as a seasonal, hot-weather snack.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/595_Palmyra_Palm_Nut.jpg"
+  },
+  "brown mustard seeds (bhuri sarson)": {
+    "name": "Brown Mustard Seeds (Bhuri Sarson)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "Used only as a cooking spice (a few grams per dish, i.e. a pinch to 1 tsp), not as a snack.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/602_Brown_Mustard_Seeds.jpg"
+  },
+  "black cumin (kala jeera / bunium)": {
+    "name": "Black Cumin (Kala Jeera / Bunium)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "Used only as a cooking spice (less than 1g per dish), not as a snack.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/603_Black_Cumin.jpg"
+  },
+  "bitter fennel seeds (kadu saunf. vulgare)": {
+    "name": "Bitter Fennel Seeds (Kadu Saunf. vulgare)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "1/2 to 1 teaspoon (about 2-3g) after meals.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/604_Bitter_Fennel_Seeds.jpg"
+  },
+  "sweet fennel seeds (mithi saunf. dulce)": {
+    "name": "Sweet Fennel Seeds (Mithi Saunf. dulce)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "1/2 to 1 teaspoon (about 2-3g) after meals.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/605_Sweet_Fennel_Seeds.jpg"
+  },
+  "cress seeds (chandrashoor / halim)": {
+    "name": "Cress Seeds (Chandrashoor / Halim)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "1 teaspoon (about 3-5g), soaked, a few times a week — not more, as excess can be strongly heating/laxative.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/606_Cress_Seeds.jpg"
+  },
+  "alfalfa seeds (rijka beej)": {
+    "name": "Alfalfa Seeds (Rijka Beej)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "A small handful of sprouts (20-30g) added to a meal, occasionally.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/607_Alfalfa_Seeds.jpg"
+  },
+  "celery seed (indian) (radhuni)": {
+    "name": "Celery Seed (Indian) (Radhuni)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "Used only as a cooking spice (under 1g per dish), not as a snack.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/608_Celery_Seed_Indian.jpg"
+  },
+  "cardamom seeds (elaichi beej)": {
+    "name": "Cardamom Seeds (Elaichi Beej)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "1-2 pods (a pinch of seeds) in food or milk, not eaten by the spoonful.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/612_Cardamom_Seeds.jpg"
+  },
+  "black cardamom seeds (badi elaichi beej)": {
+    "name": "Black Cardamom Seeds (Badi Elaichi Beej)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "1 pod (a pinch of seeds) per dish, not eaten by the spoonful.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/613_Black_Cardamom_Seeds.png"
+  },
+  "winter melon seeds (safed petha beej)": {
+    "name": "Winter Melon Seeds (Safed Petha Beej)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "Not a standard snack food; if used at all, only in very small amounts.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/623_Winter_Melon_Seeds.jpg"
+  },
+  "zucchini seeds (courgette seeds.)": {
+    "name": "Zucchini Seeds (Courgette Seeds.)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "A small roasted handful (15-20g) a few times a week.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/624_Zucchini_Seeds.jpg"
+  },
+  "butternut squash seeds (squash beej)": {
+    "name": "Butternut Squash Seeds (Squash Beej)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "A small roasted handful (15-20g) a few times a week.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/625_Butternut_Squash_Seeds.jpg"
+  },
+  "ogbono seeds (wild mango seed)": {
+    "name": "Ogbono Seeds (Wild Mango Seed)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "Used only as a cooked soup-thickening ingredient (1-2 tbsp ground seed in a dish), not as a snack.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/628_Ogbono_Seeds.jpg"
+  },
+  "argan nut (argan kernel)": {
+    "name": "Argan Nut (Argan Kernel)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "1 teaspoon of argan-based paste/oil occasionally; not commonly available as a whole-nut snack in India.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/629_Argan_Nut.jpg"
+  },
+  "marula nut (marula kernel)": {
+    "name": "Marula Nut (Marula Kernel)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "A small handful (15-20g) occasionally, where available.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/630_Marula_Nut.jpg"
+  },
+  "linseed (san beej)": {
+    "name": "Linseed (San Beej)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "1-2 teaspoons of ground (not whole) flaxseed a day, mixed into food.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/634_Linseed.jpg"
+  },
+  "pecan nut (wild) (junglee pecan)": {
+    "name": "Pecan Nut (Wild) (Junglee Pecan)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "4-5 halves (about 15g) a few times a week.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/648_Pecan_Nut_Wild.jpg"
+  },
+  "yellow mustard seeds (pili sarson)": {
+    "name": "Yellow Mustard Seeds (Pili Sarson)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "Used only as a cooking spice (a pinch to 1 tsp per dish), not as a snack.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/649_Yellow_Mustard_Seeds.jpg"
+  },
+  "white chia seeds (safed chia 'white')": {
+    "name": "White Chia Seeds (Safed Chia 'White')",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "1-2 tablespoons (about 15g) a day, soaked in water/milk before eating.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/650_White_Chia_Seeds.png"
+  },
+  "watermelon seeds (roasted) (bhuna tarbuz magaz)": {
+    "name": "Watermelon Seeds (Roasted) (Bhuna Tarbuz Magaz)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "A small roasted handful (15-20g) a few times a week.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/651_Watermelon_Seeds_Roasted.jpg"
+  },
+  "peanut (roasted) (bhuni mungfali)": {
+    "name": "Peanut (Roasted) (Bhuni Mungfali)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "A small handful (20-25g) a few times a week; avoid for students with a known peanut allergy.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/652_Peanut_Roasted.jpg"
+  },
+  "pine nut (korean) (korean pine nut)": {
+    "name": "Pine Nut (Korean) (Korean Pine Nut)",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "1 tablespoon (about 10-15g) a few times a week — pine nuts are calorie-dense, so keep portions modest.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/653_Pine_Nut_Korean.jpg"
+  },
+  "almond (mamra) (mamra badam 'mamra')": {
+    "name": "Almond (Mamra) (Mamra Badam 'Mamra')",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "4-5 almonds (about 10-15g) a day, ideally soaked overnight.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/654_Almond_Mamra.jpg"
+  },
+  "almond (gurbandi) (gurbandi badam 'gurbandi')": {
+    "name": "Almond (Gurbandi) (Gurbandi Badam 'Gurbandi')",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "4-5 almonds (about 10-15g) a day, ideally soaked overnight.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/655_Almond_Gurbandi.jpg"
+  },
+  "walnut (kashmiri kagzi) (kashmiri akhrot 'kagzi')": {
+    "name": "Walnut (Kashmiri Kagzi) (Kashmiri Akhrot 'Kagzi')",
+    "category": "Nuts, Seeds & Kernels",
+    "benefits": "",
+    "daily_portion": "3-4 kernel halves (about 15g) a day.",
+    "image_link": "https://raw.githubusercontent.com/KunalCodeCraft02/school-health-dashboard-images/main/nuts_seeds_dashboard/images/656_Walnut_Kashmiri_Kagzi.png"
+  }
+}

@@ -65,7 +65,7 @@
 
         /* Modal Overlay for Desktop */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 2000; display: flex; align-items: center; justify-content: center; }
-        .modal-box { background: var(--card-bg); border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 500px; border: 1px solid var(--border-color); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .modal-box { background: var(--card-bg); border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-sizing: border-box; border: 1px solid var(--border-color); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
         .modal-header { display: flex; align-items: center; margin-bottom: 2rem; }
         .modal-icon { width: 60px; height: 60px; background: var(--card-bg-light); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin-right: 1.5rem; }
         .modal-title h2 { margin: 0 0 6px 0; font-size: 1.5rem; }
@@ -102,6 +102,386 @@
         }
         .suggestion-item:last-child { border-bottom: none; }
         .suggestion-item:hover { background: rgba(196, 240, 66, 0.1); color: var(--primary-color); font-weight: bold; }
+
+        /* Image Source & Camera Modals */
+        .source-option-btn {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            background: var(--card-bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 1.1rem 1.4rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            text-align: left;
+            font-family: inherit;
+        }
+        .source-option-btn:hover {
+            border-color: var(--primary-color);
+            background: rgba(196, 240, 66, 0.05);
+            transform: translateY(-2px);
+        }
+        .source-icon-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .source-option-btn:hover .source-icon-wrap {
+            background: var(--primary-color);
+            color: #000;
+        }
+        .source-icon-wrap.highlight {
+            background: rgba(196, 240, 66, 0.12);
+            color: var(--primary-color);
+        }
+        .camera-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(196, 240, 66, 0.2);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Side Dishes Section in Modal */
+        .side-dishes-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 1.1rem;
+            margin-bottom: 1.8rem;
+            text-align: left;
+        }
+        .side-dishes-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.6rem;
+        }
+        .side-dishes-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .side-dishes-title span.badge {
+            background: rgba(196, 240, 66, 0.15);
+            color: var(--primary-color);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+        .btn-toggle-side {
+            background: rgba(196, 240, 66, 0.08);
+            border: 1px solid rgba(196, 240, 66, 0.3);
+            color: var(--primary-color);
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-toggle-side:hover {
+            background: var(--primary-color);
+            color: #000;
+        }
+        .side-search-wrap {
+            position: relative;
+            margin-bottom: 0.8rem;
+        }
+        .side-search-input {
+            width: 100%;
+            background: var(--card-bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.65rem 1rem;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .side-search-input:focus {
+            border-color: var(--primary-color);
+        }
+        .side-suggestions-box {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 4px;
+            background: #252528;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            max-height: 180px;
+            overflow-y: auto;
+            z-index: 50;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            display: none;
+        }
+        .side-suggestion-item {
+            padding: 0.65rem 1rem;
+            font-size: 0.88rem;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.15s;
+        }
+        .side-suggestion-item:last-child {
+            border-bottom: none;
+        }
+        .side-suggestion-item:hover {
+            background: rgba(196, 240, 66, 0.12);
+            color: var(--primary-color);
+        }
+        .quick-chips-wrapper {
+            margin-bottom: 0.8rem;
+        }
+        .quick-chips-label {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        .quick-chips-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .quick-chip-btn {
+            background: var(--card-bg-light);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 14px;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .quick-chip-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background: rgba(196, 240, 66, 0.08);
+        }
+        .quick-chip-btn .plus-icon {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .side-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 0.4rem;
+        }
+        .side-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.6rem 0.9rem;
+            transition: border-color 0.2s;
+        }
+        .side-item-row:hover {
+            border-color: rgba(196, 240, 66, 0.3);
+        }
+        .side-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            text-align: left;
+        }
+        .side-item-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+        .side-item-macros {
+            font-size: 0.78rem;
+            color: var(--primary-color);
+        }
+        .side-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .side-qty-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.15s;
+        }
+        .side-qty-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .side-qty-display {
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: var(--text-main);
+            min-width: 48px;
+            text-align: center;
+        }
+        .side-remove-btn {
+            background: transparent;
+            border: none;
+            color: #ef4444;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 2px 6px;
+            margin-left: 4px;
+            border-radius: 6px;
+            transition: background 0.15s;
+            line-height: 1;
+        }
+        .side-remove-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        /* Small Ignorable Ingredients Option */
+        .ingredients-trigger-row {
+            margin: -1rem 0 1.5rem 0;
+            text-align: left;
+        }
+        .btn-toggle-ingredients {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-toggle-ingredients:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background: rgba(196, 240, 66, 0.08);
+        }
+        .ingredients-collapse-box {
+            background: var(--card-bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 0.8rem 1rem;
+            margin-top: 0.6rem;
+            text-align: left;
+        }
+        .ingredients-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+        .ingredients-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .ingredient-chip {
+            background: rgba(196, 240, 66, 0.08);
+            border: 1px solid rgba(196, 240, 66, 0.22);
+            color: var(--text-main);
+            font-size: 0.78rem;
+            padding: 3px 8px;
+            border-radius: 8px;
+            line-height: 1.3;
+        }
+        .ingredient-chip.sm {
+            font-size: 0.72rem;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+        .ingredient-chip.muted {
+            color: var(--text-muted);
+            border-color: var(--border-color);
+            background: transparent;
+        }
+        .side-item-wrapper {
+            background: var(--card-bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.6rem 0.9rem;
+            transition: border-color 0.2s;
+        }
+        .side-item-wrapper:hover {
+            border-color: rgba(196, 240, 66, 0.3);
+        }
+        .side-item-main-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .side-ing-toggle-line {
+            margin-top: 5px;
+            padding-top: 4px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .btn-side-ing-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.15s;
+        }
+        .btn-side-ing-toggle:hover {
+            color: var(--primary-color);
+        }
+        .side-ing-collapse {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 3px;
+        }
     </style>
 
 </head>
@@ -146,7 +526,7 @@
                 <form method="POST" action="/log_meal">
                     <div class="search-box" style="position: relative;">
                         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                        <input type="text" id="searchInput" name="food_name" value="{{ initial_query or '' }}" placeholder="Search from 260+ Indian foods and fruits..." required autofocus autocomplete="off" onkeyup="fetchSuggestions()">
+                        <input type="text" id="searchInput" name="food_name" value="{{ initial_query or '' }}" placeholder="Search from 1,300+ Indian foods, nuts, seeds, and recipes..." required autofocus autocomplete="off" onkeyup="fetchSuggestions()">
                         <button type="submit" style="display: none;"></button>
                         
                         <div class="suggestions-box" id="suggestionsBox"></div>
@@ -157,7 +537,7 @@
             <div id="tab-photo" style="display: none;">
                 <form method="POST" action="/predict_meal" enctype="multipart/form-data" id="photoForm">
                     <input type="file" id="food_image" name="food_image" accept="image/*" style="display: none;" onchange="document.getElementById('uploadText').innerText = 'Analyzing with Gemini AI...'; document.getElementById('photoForm').submit();">
-                    <div class="camera-ui" onclick="document.getElementById('food_image').click();">
+                    <div class="camera-ui" onclick="openChoiceModal();">
                         <div class="camera-icon-wrapper">
                             <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
@@ -170,6 +550,111 @@
             </div>
         </div>
 
+        <!-- Source Choice Modal -->
+        <div class="modal-overlay" id="choiceModal" style="display: none;" onclick="if(event.target === this) closeChoiceModal();">
+            <div class="modal-box" style="max-width: 440px; text-align: center;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+                    <h3 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: var(--text-main);">Add Food Photo</h3>
+                    <button type="button" onclick="closeChoiceModal()" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; padding: 4px 8px; line-height: 1;">&times;</button>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 1.6rem 0; line-height: 1.4;">
+                    Choose how you would like to provide your meal photo for AI analysis.
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <!-- Option 1: Upload Photo -->
+                    <button type="button" class="source-option-btn" onclick="triggerFileUpload();">
+                        <div class="source-icon-wrap">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <div style="text-align: left; flex: 1;">
+                            <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main); margin-bottom: 3px;">Upload Photo</div>
+                            <div style="font-size: 0.82rem; color: var(--text-muted);">Choose an image file from your device</div>
+                        </div>
+                        <span style="color: var(--text-muted); font-size: 1.2rem;">&rsaquo;</span>
+                    </button>
+
+                    <!-- Option 2: Open Camera -->
+                    <button type="button" class="source-option-btn" onclick="openCameraModal();">
+                        <div class="source-icon-wrap highlight">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                        </div>
+                        <div style="text-align: left; flex: 1;">
+                            <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main); margin-bottom: 3px;">Open Camera</div>
+                            <div style="font-size: 0.82rem; color: var(--text-muted);">Take a live picture of your food</div>
+                        </div>
+                        <span style="color: var(--text-muted); font-size: 1.2rem;">&rsaquo;</span>
+                    </button>
+                </div>
+
+                <button type="button" class="btn-cancel" onclick="closeChoiceModal();" style="margin-top: 1.5rem; padding: 0.6rem;">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Live Camera Modal -->
+        <div class="modal-overlay" id="cameraModal" style="display: none;" onclick="if(event.target === this) closeCameraModal();">
+            <div class="modal-box" style="max-width: 520px; text-align: center; padding: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #f43f5e; box-shadow: 0 0 8px #f43f5e; display: inline-block;"></span>
+                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--text-main);">Live Camera</h3>
+                    </div>
+                    <button type="button" onclick="closeCameraModal()" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; padding: 4px 8px; line-height: 1;">&times;</button>
+                </div>
+
+                <!-- Video Viewport -->
+                <div style="position: relative; width: 100%; border-radius: 18px; overflow: hidden; background: #000; aspect-ratio: 4/3; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center;">
+                    <video id="cameraVideo" autoplay playsinline muted style="width: 100%; height: 100%; object-fit: cover;"></video>
+                    <canvas id="cameraCanvas" style="display: none;"></canvas>
+
+                    <!-- Loading state while camera starts -->
+                    <div id="cameraLoading" style="position: absolute; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--text-muted);">
+                        <div class="camera-spinner"></div>
+                        <span style="font-size: 0.9rem;">Starting Camera...</span>
+                    </div>
+
+                    <!-- Error fallback inside viewport if camera permission denied -->
+                    <div id="cameraError" style="display: none; position: absolute; inset: 0; background: var(--card-bg); padding: 2rem; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                        <div style="font-size: 2.2rem; margin-bottom: 0.6rem;">📷</div>
+                        <h4 style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;">Camera Unavailable</h4>
+                        <p id="cameraErrorMsg" style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; margin: 0 0 1.2rem 0; max-width: 320px;">
+                            Please check camera permissions in your browser.
+                        </p>
+                        <button type="button" class="btn-add" style="padding: 0.8rem 1.4rem; font-size: 0.95rem; width: auto;" onclick="closeCameraModal(); triggerFileUpload();">
+                            Upload From Files Instead
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Controls -->
+                <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="button" id="btnCapturePhoto" onclick="capturePhoto()" class="btn-add" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0.95rem 2rem; font-size: 1.05rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+                        </svg>
+                        <span>Take Photo & Analyze</span>
+                    </button>
+
+                    <!-- Flip camera button (shown if multiple cameras available) -->
+                    <button type="button" id="btnFlipCamera" onclick="flipCamera()" title="Flip Camera" style="display: none; width: 48px; height: 48px; border-radius: 50%; background: var(--card-bg-light); border: 1px solid var(--border-color); color: var(--text-main); align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <button type="button" class="btn-cancel" onclick="closeCameraModal();" style="margin-top: 0.8rem; padding: 0.5rem;">Cancel</button>
+            </div>
+        </div>
+
         {% if found_food %}
         <div class="modal-overlay" id="confirmationModal">
             <div class="modal-box">
@@ -178,6 +663,41 @@
                     <div class="modal-title">
                         <h2>{{ found_food.name }}</h2>
                         <p>{% if found_food.is_ai %}✨ Detected by AI Vision{% else %}Database Match{% endif %}</p>
+                    </div>
+                </div>
+
+                <!-- Small Ignorable Option: View Default Ingredients -->
+                <div class="ingredients-trigger-row">
+                    <button type="button" class="btn-toggle-ingredients" onclick="toggleMainIngredients()">
+                        <span>📋</span>
+                        <span>View default ingredients</span>
+                        <span id="mainIngCaret">▾</span>
+                    </button>
+                    <div id="mainIngredientsBox" class="ingredients-collapse-box" style="display: none;">
+                        <div class="ingredients-label">Default Recipe Ingredients:</div>
+                        <div class="ingredients-chips" id="mainIngredientsChips">
+                            {% if found_food.ingredients %}
+                                {% for ing in found_food.ingredients %}
+                                    <span class="ingredient-chip">{{ ing }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="ingredient-chip muted">Standard traditional home preparation</span>
+                            {% endif %}
+                        </div>
+                        {% if found_food.daily_portion or found_food.benefits %}
+                        <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 0.82rem; color: var(--text-muted); line-height: 1.4;">
+                            {% if found_food.daily_portion %}
+                            <div style="color: var(--primary-color); font-weight: 600; margin-bottom: 2px;">
+                                💡 Daily Portion Guide: <span style="color: var(--text-main); font-weight: 400;">{{ found_food.daily_portion }}</span>
+                            </div>
+                            {% endif %}
+                            {% if found_food.benefits %}
+                            <div style="font-size: 0.76rem; color: var(--text-muted);">
+                                <strong>Benefits:</strong> {{ found_food.benefits }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -218,6 +738,59 @@
                     </div>
                     {% endif %}
 
+                    <!-- Hidden input for side dishes JSON array -->
+                    <input type="hidden" id="sideDishesHidden" name="side_dishes_data" value="[]">
+
+                    <!-- Side Dishes Section -->
+                    <div class="side-dishes-section">
+                        <div class="side-dishes-header">
+                            <div class="side-dishes-title">
+                                <span>🥗 Side Dishes & Extras</span>
+                                <span class="badge" id="sideDishCountBadge" style="display: none;">0 added</span>
+                            </div>
+                            <button type="button" class="btn-toggle-side" id="btnToggleSideSearch" onclick="toggleSideSearchBox()">
+                                <span id="toggleSideIcon">+</span> <span id="toggleSideText">Add Side</span>
+                            </button>
+                        </div>
+
+                        <!-- Side Dish Search & Quick Chips Container -->
+                        <div id="sideSearchContainer" style="display: none;">
+                            <div class="side-search-wrap" style="display: flex; gap: 8px; position: relative;">
+                                <input type="text" id="sideSearchInput" class="side-search-input" placeholder="Search side dish, nuts or seeds (e.g. Sambar, Badam, Curd, Kaju, Akhrot)..." autocomplete="off" onkeyup="handleSideSearchInput(event)" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); addSideFromInput(); }">
+                                <button type="button" class="btn-add" onclick="addSideFromInput()" style="width: auto; padding: 0.6rem 1.1rem; font-size: 0.85rem; font-weight: 700; white-space: nowrap; margin: 0; border-radius: 12px; cursor: pointer;">+ Add</button>
+                                <div class="side-suggestions-box" id="sideSuggestionsBox"></div>
+                            </div>
+
+                            <div class="quick-chips-wrapper">
+                                <div class="quick-chips-label">Quick Add Common Sides:</div>
+                                <div class="quick-chips-list">
+                                    <button type="button" class="quick-chip-btn" onclick="addSideDishByName('Sambar')"><span class="plus-icon">+</span> Sambar</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addSideDishByName('Curd')"><span class="plus-icon">+</span> Curd</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addSideDishByName('Green Salad')"><span class="plus-icon">+</span> Salad</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addSideDishByName('Coconut Chutney')"><span class="plus-icon">+</span> Chutney</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addSideDishByName('Dal Tadka')"><span class="plus-icon">+</span> Dal</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addSideDishByName('Chapati')"><span class="plus-icon">+</span> Chapati</button>
+                                </div>
+                            </div>
+
+                            <div class="quick-chips-wrapper" style="margin-top: 10px;">
+                                <div class="quick-chips-label" style="color: var(--primary-color);">🥜 Quick Add Superfood Nuts & Seeds:</div>
+                                <div class="quick-chips-list">
+                                    <button type="button" class="quick-chip-btn" onclick="addSideDishByName('Almond (Badam)')"><span class="plus-icon">+</span> Almond (Badam)</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addSideDishByName('Walnut (Akhrot)')"><span class="plus-icon">+</span> Walnut (Akhrot)</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addSideDishByName('Cashew Nut (Kaju)')"><span class="plus-icon">+</span> Cashew (Kaju)</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addSideDishByName('Pistachio (Pista)')"><span class="plus-icon">+</span> Pistachio (Pista)</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addSideDishByName('Chia Seeds (Salvia hispanica)')"><span class="plus-icon">+</span> Chia Seeds</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addSideDishByName('Flaxseeds (Alsi)')"><span class="plus-icon">+</span> Flaxseeds (Alsi)</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addSideDishByName('Pumpkin Seeds (Kaddu Beej / Pepita)')"><span class="plus-icon">+</span> Pumpkin Seeds</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Added Side Dishes List -->
+                        <div class="side-items-list" id="sideItemsList"></div>
+                    </div>
+
                     <button type="submit" class="btn-add">Add to Log - <span id="btn-kcal">{{ found_food.nutrition.calories }}</span> kcal</button>
                     <button type="button" class="btn-cancel" onclick="document.getElementById('confirmationModal').style.display='none';">Cancel</button>
                 </form>
@@ -232,6 +805,254 @@
                 fats: {{ found_food.nutrition.fats }}
             };
 
+            let sideDishes = [];
+            let sideSearchDebounce;
+
+            function toggleMainIngredients() {
+                const box = document.getElementById('mainIngredientsBox');
+                const caret = document.getElementById('mainIngCaret');
+                if (!box) return;
+                const isHidden = box.style.display === 'none' || !box.style.display;
+                if (isHidden) {
+                    box.style.display = 'block';
+                    if (caret) caret.innerText = '▴';
+                } else {
+                    box.style.display = 'none';
+                    if (caret) caret.innerText = '▾';
+                }
+            }
+
+            function toggleSideIngredients(id) {
+                const box = document.getElementById(`side_ing_${id}`);
+                const caret = document.getElementById(`caret_${id}`);
+                if (!box) return;
+                const isHidden = box.style.display === 'none' || !box.style.display;
+                if (isHidden) {
+                    box.style.display = 'flex';
+                    if (caret) caret.innerText = '▴';
+                } else {
+                    box.style.display = 'none';
+                    if (caret) caret.innerText = '▾';
+                }
+            }
+
+            function toggleSideSearchBox() {
+                const container = document.getElementById('sideSearchContainer');
+                if (!container) return;
+                const isHidden = container.style.display === 'none' || !container.style.display;
+                if (isHidden) {
+                    container.style.display = 'block';
+                    document.getElementById('toggleSideIcon').innerText = '✕';
+                    document.getElementById('toggleSideText').innerText = 'Close';
+                    const inp = document.getElementById('sideSearchInput');
+                    if (inp) inp.focus();
+                } else {
+                    container.style.display = 'none';
+                    document.getElementById('toggleSideIcon').innerText = '+';
+                    document.getElementById('toggleSideText').innerText = 'Add Side';
+                    const sbox = document.getElementById('sideSuggestionsBox');
+                    if (sbox) sbox.style.display = 'none';
+                }
+            }
+
+            function escapeRegExp(str) {
+                return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            }
+
+            function handleSideSearchInput(e) {
+                if (e && e.key === 'Enter') {
+                    e.preventDefault();
+                    addSideFromInput();
+                    return;
+                }
+                clearTimeout(sideSearchDebounce);
+                const query = document.getElementById('sideSearchInput').value.trim();
+                const box = document.getElementById('sideSuggestionsBox');
+                if (query.length < 1) {
+                    box.style.display = 'none';
+                    return;
+                }
+                sideSearchDebounce = setTimeout(async () => {
+                    try {
+                        const res = await fetch(`/api/suggestions?q=${encodeURIComponent(query)}`);
+                        const data = await res.json();
+                        if (data && data.length > 0) {
+                            box.innerHTML = '';
+                            data.forEach(item => {
+                                const div = document.createElement('div');
+                                div.className = 'side-suggestion-item';
+                                const escaped = escapeRegExp(query);
+                                const regex = new RegExp(`(${escaped})`, "gi");
+                                const highlighted = item.replace(regex, "<strong>$1</strong>");
+                                
+                                // Distinctive badge for nuts & superfood seeds
+                                const isNutOrSeed = /(seed|seeds|nut|nuts|badam|akhrot|kaju|pista|alsi|chia|flax|pepita|magaz|til|mungfali|chilgoza|hazelnut|walnut|almond|cashew|pistachio|peanut|pecan)/i.test(item);
+                                const badge = isNutOrSeed 
+                                    ? `<span style="font-size: 0.68rem; background: rgba(196, 240, 66, 0.15); color: var(--primary-color); padding: 1px 6px; border-radius: 4px; margin-left: 6px; font-weight: 600;">🥜 Superfood</span>` 
+                                    : '';
+
+                                div.innerHTML = `
+                                    <div style="display: flex; align-items: center; gap: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        <span>${highlighted}</span>
+                                        ${badge}
+                                    </div>
+                                    <span style="color: var(--primary-color); font-size: 0.8rem; font-weight: 600; flex-shrink: 0;">+ Add</span>
+                                `;
+                                div.onclick = () => {
+                                    addSideDishByName(item);
+                                    box.style.display = 'none';
+                                    document.getElementById('sideSearchInput').value = '';
+                                };
+                                box.appendChild(div);
+                            });
+                            box.style.display = 'block';
+                        } else {
+                            box.style.display = 'none';
+                        }
+                    } catch (e) {
+                        console.error('Error fetching side suggestions:', e);
+                    }
+                }, 150);
+            }
+
+            function addSideFromInput() {
+                const inp = document.getElementById('sideSearchInput');
+                if (!inp) return;
+                const val = inp.value.trim();
+                if (!val) {
+                    inp.focus();
+                    return;
+                }
+                addSideDishByName(val);
+                inp.value = '';
+                const box = document.getElementById('sideSuggestionsBox');
+                if (box) box.style.display = 'none';
+            }
+
+            async function addSideDishByName(foodName) {
+                if (!foodName || !foodName.trim()) return;
+                // If already added, increase quantity
+                const existing = sideDishes.find(s => s.name.toLowerCase() === foodName.trim().toLowerCase());
+                if (existing) {
+                    adjSideQty(existing.id, existing.is_count ? 1 : 25);
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`/api/food_details?name=${encodeURIComponent(foodName.trim())}`);
+                    if (!res.ok) {
+                        alert(`Could not load nutrition details for "${foodName}".`);
+                        return;
+                    }
+                    const data = await res.json();
+                    // Healthy default portion: 25g for nuts/seeds (1 standard serving ~1oz), 1x for piece/count items, 100g for dishes
+                    const defaultQty = data.is_count_based ? 1 : (data.is_nut_seed ? 25 : 100);
+                    const newSide = {
+                        id: 'side_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                        name: data.name,
+                        is_count: data.is_count_based,
+                        is_nut_seed: data.is_nut_seed || false,
+                        quantity: defaultQty,
+                        baseNutrition: data.nutrition,
+                        ingredients: data.ingredients || [],
+                        benefits: data.benefits || '',
+                        daily_portion: data.daily_portion || ''
+                    };
+                    sideDishes.push(newSide);
+                    renderSideDishes();
+                    updateNutrition();
+                } catch (e) {
+                    console.error('Error adding side dish:', e);
+                }
+            }
+
+            function adjSideQty(id, delta) {
+                const item = sideDishes.find(s => s.id === id);
+                if (!item) return;
+                const min = item.is_count ? 1 : 25;
+                let nextVal = item.quantity + delta;
+                if (nextVal < min) nextVal = min;
+                item.quantity = nextVal;
+                renderSideDishes();
+                updateNutrition();
+            }
+
+            function removeSideDish(id) {
+                sideDishes = sideDishes.filter(s => s.id !== id);
+                renderSideDishes();
+                updateNutrition();
+            }
+
+            function renderSideDishes() {
+                const list = document.getElementById('sideItemsList');
+                const badge = document.getElementById('sideDishCountBadge');
+                if (!list) return;
+
+                list.innerHTML = '';
+                if (sideDishes.length === 0) {
+                    badge.style.display = 'none';
+                    return;
+                }
+
+                badge.innerText = `${sideDishes.length} added`;
+                badge.style.display = 'inline-block';
+
+                sideDishes.forEach(item => {
+                    const factor = item.is_count ? item.quantity : (item.quantity / 100.0);
+                    const cal = (item.baseNutrition.calories * factor).toFixed(0);
+                    const prot = (item.baseNutrition.protein * factor).toFixed(1);
+                    const qtyLabel = item.is_count ? `${item.quantity}x` : `${item.quantity}g`;
+                    const step = item.is_count ? 1 : 25;
+
+                    const row = document.createElement('div');
+                    row.className = 'side-item-wrapper';
+
+                    const ingsList = (item.ingredients && item.ingredients.length > 0)
+                        ? item.ingredients.map(ing => `<span class="ingredient-chip sm">${ing}</span>`).join('')
+                        : '<span class="ingredient-chip sm muted">Standard traditional home preparation</span>';
+                        
+                    const portionGuide = item.daily_portion 
+                        ? `<div style="width: 100%; font-size: 0.74rem; color: var(--primary-color); margin-top: 5px;">💡 Daily Guide: <span style="color: var(--text-main); font-weight: 400;">${item.daily_portion}</span></div>` 
+                        : '';
+
+                    const benefitsGuide = item.benefits
+                        ? `<div style="width: 100%; font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35;"><strong>Benefits:</strong> ${item.benefits}</div>`
+                        : '';
+
+                    const nutBadge = item.is_nut_seed 
+                        ? `<span style="font-size: 0.68rem; background: rgba(196, 240, 66, 0.15); color: var(--primary-color); padding: 1px 5px; border-radius: 4px; margin-left: 6px; font-weight: 600;">🥜 Superfood</span>` 
+                        : '';
+
+                    row.innerHTML = `
+                        <div class="side-item-main-row">
+                            <div class="side-item-info">
+                                <span class="side-item-name">${item.name} ${nutBadge}</span>
+                                <span class="side-item-macros">+${cal} kcal · ${prot}g P</span>
+                            </div>
+                            <div class="side-item-controls">
+                                <button type="button" class="side-qty-btn" onclick="adjSideQty('${item.id}', -${step})">-</button>
+                                <span class="side-qty-display">${qtyLabel}</span>
+                                <button type="button" class="side-qty-btn" onclick="adjSideQty('${item.id}', ${step})">+</button>
+                                <button type="button" class="side-remove-btn" onclick="removeSideDish('${item.id}')" title="Remove">&times;</button>
+                            </div>
+                        </div>
+                        <div class="side-ing-toggle-line">
+                            <button type="button" class="btn-side-ing-toggle" onclick="toggleSideIngredients('${item.id}')">
+                                <span style="font-size: 0.75rem;">📋</span> view ingredients & guides <span id="caret_${item.id}">▾</span>
+                            </button>
+                            <div id="side_ing_${item.id}" class="side-ing-collapse" style="display: none; flex-direction: column; gap: 4px;">
+                                <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                                    ${ingsList}
+                                </div>
+                                ${portionGuide}
+                                ${benefitsGuide}
+                            </div>
+                        </div>
+                    `;
+                    list.appendChild(row);
+                });
+            }
+
             function adjQty(val) {
                 let inp = document.getElementById('quantityInput');
                 let cur = parseFloat(inp.value) || 0;
@@ -245,15 +1066,45 @@
                 let rawVal = parseFloat(document.getElementById('quantityInput').value) || 0;
                 if (rawVal < 0) rawVal = 0;
                 
-                let factor = isCountBased ? rawVal : (rawVal / 100.0);
+                let mainFactor = isCountBased ? rawVal : (rawVal / 100.0);
                 
-                document.getElementById('val-calories').innerText = (baseNutrition.calories * factor).toFixed(1);
-                document.getElementById('btn-kcal').innerText = (baseNutrition.calories * factor).toFixed(1);
-                document.getElementById('val-protein').innerText = (baseNutrition.protein * factor).toFixed(1) + 'g';
-                document.getElementById('val-carbs').innerText = (baseNutrition.carbs * factor).toFixed(1) + 'g';
-                document.getElementById('val-fats').innerText = (baseNutrition.fats * factor).toFixed(1) + 'g';
+                let totalCalories = baseNutrition.calories * mainFactor;
+                let totalProtein = baseNutrition.protein * mainFactor;
+                let totalCarbs = baseNutrition.carbs * mainFactor;
+                let totalFats = baseNutrition.fats * mainFactor;
+
+                // Sum all side dishes
+                sideDishes.forEach(s => {
+                    const sFactor = s.is_count ? s.quantity : (s.quantity / 100.0);
+                    totalCalories += (s.baseNutrition.calories * sFactor);
+                    totalProtein += (s.baseNutrition.protein * sFactor);
+                    totalCarbs += (s.baseNutrition.carbs * sFactor);
+                    totalFats += (s.baseNutrition.fats * sFactor);
+                });
+
+                document.getElementById('val-calories').innerText = totalCalories.toFixed(1);
+                document.getElementById('btn-kcal').innerText = totalCalories.toFixed(1);
+                document.getElementById('val-protein').innerText = totalProtein.toFixed(1) + 'g';
+                document.getElementById('val-carbs').innerText = totalCarbs.toFixed(1) + 'g';
+                document.getElementById('val-fats').innerText = totalFats.toFixed(1) + 'g';
                 document.getElementById('quantityHidden').value = rawVal;
+
+                // Update hidden input payload
+                const sideDishesPayload = sideDishes.map(s => ({
+                    name: s.name,
+                    quantity: s.quantity,
+                    is_count: s.is_count
+                }));
+                document.getElementById('sideDishesHidden').value = JSON.stringify(sideDishesPayload);
             }
+
+            document.addEventListener('click', function(e) {
+                const box = document.getElementById('sideSuggestionsBox');
+                const inp = document.getElementById('sideSearchInput');
+                if (box && inp && !box.contains(e.target) && e.target !== inp) {
+                    box.style.display = 'none';
+                }
+            });
         </script>
         {% endif %}
     </div>
@@ -318,6 +1169,210 @@
             document.getElementById('btn-photo').classList.toggle('active', tab === 'photo');
             document.getElementById('btn-search').classList.toggle('active', tab === 'search');
         }
+
+        // Photo Source Modal & Camera Stream Management
+        let currentCameraStream = null;
+        let currentFacingMode = 'environment'; // Default to back camera on mobile devices
+
+        function openChoiceModal() {
+            const modal = document.getElementById('choiceModal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeChoiceModal() {
+            const modal = document.getElementById('choiceModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function triggerFileUpload() {
+            closeChoiceModal();
+            const fileInput = document.getElementById('food_image');
+            if (fileInput) fileInput.click();
+        }
+
+        async function openCameraModal() {
+            closeChoiceModal();
+            const modal = document.getElementById('cameraModal');
+            if (modal) modal.style.display = 'flex';
+            
+            const loading = document.getElementById('cameraLoading');
+            const errBox = document.getElementById('cameraError');
+            if (loading) loading.style.display = 'flex';
+            if (errBox) errBox.style.display = 'none';
+
+            await startCameraStream(currentFacingMode);
+        }
+
+        async function startCameraStream(facingMode) {
+            stopCameraStream();
+
+            const video = document.getElementById('cameraVideo');
+            const loading = document.getElementById('cameraLoading');
+            const errBox = document.getElementById('cameraError');
+            const errMsg = document.getElementById('cameraErrorMsg');
+
+            if (loading) loading.style.display = 'flex';
+            if (errBox) errBox.style.display = 'none';
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                if (loading) loading.style.display = 'none';
+                if (errBox) {
+                    errBox.style.display = 'flex';
+                    if (errMsg) errMsg.innerText = "Camera API is not supported by your browser or environment. Please upload an image file instead.";
+                }
+                return;
+            }
+
+            try {
+                const constraints = {
+                    video: {
+                        facingMode: facingMode ? { ideal: facingMode } : 'environment',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                };
+                currentCameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+                if (video) {
+                    video.srcObject = currentCameraStream;
+                    video.onloadedmetadata = () => {
+                        video.play().catch(e => console.warn("Video play error:", e));
+                    };
+                }
+                if (loading) loading.style.display = 'none';
+
+                // Check if multiple camera devices exist to show flip button
+                try {
+                    const devices = await navigator.mediaDevices.enumerateDevices();
+                    const videoDevices = devices.filter(d => d.kind === 'videoinput');
+                    const flipBtn = document.getElementById('btnFlipCamera');
+                    if (flipBtn) {
+                        flipBtn.style.display = videoDevices.length > 1 ? 'inline-flex' : 'none';
+                    }
+                } catch (_) {}
+            } catch (err) {
+                console.error("Camera access error:", err);
+                if (loading) loading.style.display = 'none';
+                if (errBox) {
+                    errBox.style.display = 'flex';
+                    if (errMsg) {
+                        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                            errMsg.innerText = "Camera access was denied. Please allow camera permissions in your browser address bar/settings, or upload a photo instead.";
+                        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                            errMsg.innerText = "No camera hardware detected on this device. Please upload an image file instead.";
+                        } else {
+                            errMsg.innerText = "Could not access camera (" + (err.message || err.name || "Unknown error") + "). You can upload an image file instead.";
+                        }
+                    }
+                }
+            }
+        }
+
+        function stopCameraStream() {
+            if (currentCameraStream) {
+                try {
+                    currentCameraStream.getTracks().forEach(track => {
+                        track.stop();
+                    });
+                } catch (e) {
+                    console.warn("Error stopping camera tracks:", e);
+                }
+                currentCameraStream = null;
+            }
+            const video = document.getElementById('cameraVideo');
+            if (video) {
+                video.srcObject = null;
+            }
+        }
+
+        function closeCameraModal() {
+            stopCameraStream();
+            const modal = document.getElementById('cameraModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        async function flipCamera() {
+            currentFacingMode = (currentFacingMode === 'environment') ? 'user' : 'environment';
+            await startCameraStream(currentFacingMode);
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('cameraCanvas');
+            if (!video || !video.videoWidth || !video.videoHeight) {
+                alert("Camera is still loading. Please wait a moment.");
+                return;
+            }
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const captureBtn = document.getElementById('btnCapturePhoto');
+            if (captureBtn) {
+                captureBtn.disabled = true;
+                captureBtn.innerHTML = `
+                    <div class="camera-spinner" style="width: 18px; height: 18px; border-width: 2px;"></div>
+                    <span>Processing...</span>
+                `;
+            }
+
+            canvas.toBlob(function(blob) {
+                if (!blob) {
+                    alert("Failed to capture image. Please try again or upload a photo.");
+                    if (captureBtn) {
+                        captureBtn.disabled = false;
+                        captureBtn.innerHTML = `
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+                            </svg>
+                            <span>Take Photo & Analyze</span>
+                        `;
+                    }
+                    return;
+                }
+
+                const file = new File([blob], "camera_meal_" + Date.now() + ".jpg", { type: "image/jpeg" });
+                stopCameraStream();
+                closeCameraModal();
+
+                const uploadText = document.getElementById('uploadText');
+                if (uploadText) uploadText.innerText = 'Analyzing with Gemini AI...';
+
+                const input = document.getElementById('food_image');
+                try {
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    input.files = dt.files;
+                    document.getElementById('photoForm').submit();
+                } catch (e) {
+                    const formData = new FormData();
+                    formData.append('food_image', file);
+                    fetch('/predict_meal', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(res => res.text())
+                    .then(html => {
+                        document.open();
+                        document.write(html);
+                        document.close();
+                    })
+                    .catch(err => {
+                        alert("Error uploading meal photo: " + err);
+                    });
+                }
+            }, 'image/jpeg', 0.92);
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeChoiceModal();
+                closeCameraModal();
+            }
+        });
     </script>
 </body>
 </html>

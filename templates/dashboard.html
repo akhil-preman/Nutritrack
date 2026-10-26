@@ -91,7 +91,32 @@
         }
         .meal-info strong { display: block; font-size: 1.1rem; font-weight: 500; margin-bottom: 6px; }
         .meal-info span { font-size: 0.9rem; color: var(--text-muted); }
+        .meal-right-wrap { display: flex; align-items: center; gap: 1.2rem; }
         .meal-cals { font-size: 1.3rem; font-weight: 600; color: var(--text-main); }
+        .btn-delete-meal {
+            background: rgba(244, 63, 94, 0.08);
+            border: 1px solid rgba(244, 63, 94, 0.2);
+            color: #f43f5e;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0;
+            flex-shrink: 0;
+        }
+        .btn-delete-meal:hover {
+            background: #f43f5e;
+            color: #fff;
+            border-color: #f43f5e;
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+        }
+        .flashes { list-style: none; padding: 0; margin: 0 0 1.5rem 0; text-align: center; }
+        .flashes li { background: rgba(196, 240, 66, 0.1); color: var(--primary-color); padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.95rem; border: 1px solid rgba(196, 240, 66, 0.2); }
         
     </style>
 </head>
@@ -121,6 +146,16 @@
                 <input type="date" name="date" class="date-picker" value="{{ selected_date }}" onchange="document.getElementById('dateForm').submit();" max="{{ datetime_now }}">
             </form>
         </div>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
 
         <div class="dashboard-grid">
             <!-- Left Column: Circular Ring & Macros -->
@@ -181,9 +216,24 @@
                             <div class="meal-item">
                                 <div class="meal-info">
                                     <strong>{{ meal.food_name }}</strong>
-                                    <span>Logged today</span>
+                                    <span>{% if is_today %}Logged today{% else %}Logged on {{ selected_date }}{% endif %}</span>
                                 </div>
-                                <div class="meal-cals">{{ meal.calories | round | int }} kcal</div>
+                                <div class="meal-right-wrap">
+                                    <div class="meal-cals">{{ meal.calories | round | int }} kcal</div>
+                                    {% if is_today %}
+                                    <form action="/delete_meal/{{ meal.id }}" method="POST" style="margin: 0;" onsubmit="return confirm('Are you sure you want to delete {{ meal.food_name }}?');">
+                                        <input type="hidden" name="date" value="{{ selected_date }}">
+                                        <button type="submit" class="btn-delete-meal" title="Delete logged food" aria-label="Delete {{ meal.food_name }}">
+                                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
                             </div>
                         {% endfor %}
                     {% else %}
